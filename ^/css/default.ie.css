@@ -1,0 +1,14 @@
+/*****************************************************************************
+ * Project     : Graphite
+ *                Simple MVC web-application framework
+ * Created By  : LoneFry
+ *                dev@lonefry.com
+ * License     : CC BY-NC-SA
+ *                Creative Commons Attribution-NonCommercial-ShareAlike
+ *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+ *
+ * File        : /^/css/default.ie.css
+ *                Graphite default stylesheet - Internet Explorer adjustments
+ ****************************************************************************/
+
+img { -ms-interpolation-mode: bicubic; }

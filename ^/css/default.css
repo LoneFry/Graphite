@@ -1,0 +1,84 @@
+/*****************************************************************************
+ * Project     : Graphite
+ *                Simple MVC web-application framework
+ * Created By  : LoneFry
+ *                dev@lonefry.com
+ * License     : CC BY-NC-SA
+ *                Creative Commons Attribution-NonCommercial-ShareAlike
+ *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+ *
+ * File        : /^/css/default.css
+ *                Graphite default stylesheet
+ ****************************************************************************/
+
+body {margin:0;padding:0;border:0;background-color:#fff;color:#000;font:11pt Tahoma,Arial,sans-serif;}
+
+h1{color:#000;font:bold   22pt Georgia,Palatino,sans-serif;}
+h2{color:#000;font:bold italic 20pt Georgia,Palatino,sans-serif;}
+h3{color:#444;font:bold 18pt Georgia,Palatino,sans-serif;}
+h4{color:#444;font:italic   17pt Georgia,Palatino,sans-serif;}
+h5{color:#555;font: 15pt Georgia,Palatino,sans-serif;}
+code.block {display:block;white-space:pre;border:1px inset gray;background-color:#eee;padding:4px;margin-left:30px;}
+a img {border:0;}
+a {color:#0076fd;}
+a.incognito {font-size:inherit;font-family:inherit;text-decoration:inherit;color:inherit;}
+a[rel~="external"]{background: url(/^/images/url_icon.gif) no-repeat left center;padding-left:15px;} 
+
+.del{text-decoration:line-through;}
+.subtle{color:#80a080;font:italic 0.8em sans-serif;}
+.highlight, #highlight, #highlight td, .highlight td{background-color:#ccff99 !important;}
+.tcenter {text-align:center !important;}
+.tright {text-align:right !important;}
+.tleft {text-align:left !important;}
+.fright {float:right !important;}
+.fleft {float:left !important;}
+.right {float:right !important;text-align:right !important;}
+.left {float:left !important;text-align:left !important;}
+.clear {clear:both;}
+.error {color:red;}
+.ajas_email_error { background-color: #f99; }
+p.error,div.error {border:2px solid red;padding:10px;background-color:#fee;}
+
+div.golden > *:first-child     {width:38.1966%;}
+div.golden > *:first-child + * {width:61.8033%;}
+
+div#header {background-color:#2e2e2e;padding:0 4px 1px;color:#fff;height:34px;overflow:hidden;}
+div#header h1 {margin:-2px 0;color:#fff;text-shadow:0 0 0.2em #fff;}
+div#header p#links {margin:6px 0;}
+div#header a {color:#a0c0ff;}
+div#header div#loginForm {margin:6px 0;font:8pt Tahoma,sans-serif;height:24px;overflow:hidden;}
+div#header div#loginForm label {padding:2px 0;}
+div#header div#loginForm input.text {width:45px;margin:0;padding:0;}
+div#header div#loginForm input.submit {width:65px;height:22px;margin:0 0 0 5px;text-align:center;}
+div#header div#loginForm form {margin:0;padding:0;}
+div#header div#loginForm p {margin:0;padding:0;}
+
+div#msg {}
+div#msg span {color:#444;font:bold 18pt Georgia,Palatino,sans-serif;margin:0 0 0 2em;background-color:white;}
+div#msg ul {border:1px solid black;margin:-1em 1em 1em 1em;padding:1em 1em 1em 5em;}
+div#msg ul li.error{color:red;}
+
+div#body {}
+
+div#footer {margin:200px auto 0;padding:13px;clear:both;}
+div#footer p {margin:0;padding:0;font:0.8em verdana, tahoma, sans-serif;}
+
+div#bodyLogin {width:200px;margin:39px auto;border:3px solid #2e2e2e;background-color:#e2e2e2;padding:50px;}
+div#bodyLogin label {width:65px;font:13pt Tahoma;text-align:right;}
+div#bodyLogin input {width:200px;font:bold 16pt Tahoma;text-align:center;}
+div#bodyLogin input[type=text],div#bodyLogin input[type=password]{margin-bottom:30px;}
+div#bodyLogin form {margin:0;padding:0;}
+div#bodyLogin p {margin:30px 0 0 0;padding:0;}
+
+
+table.formTable th {text-align:right;vertical-align:top;font:bold 10pt Verdana, Tahoma, sans-serif;color:#777;}
+table.formTable td.th {font:bold 9pt Tahoma, sans-serif;color:#777;}
+table.formTable td {text-align:left;vertical-align:top;}
+table.formTable h3 {margin:0;padding:0;}
+
+table.listTable {border:1px outset #ccc;margin:0;border-collapse:collapse;}
+table.listTable th {border:1px outset #ccc;margin:0;text-align:right;font:bold 9pt Tahoma, sans-serif;color:#294a69;background-color:#f8f8ff;}
+table.listTable thead th {text-align:center;}
+table.listTable td {border:1px outset #ccc;margin:0;text-align:left;background-color:#f8f8ff;}
+table.listTable tbody tr.even td{background-color:#f8fff8;}
+table.listTable tbody tr.odd td{}
