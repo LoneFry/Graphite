@@ -157,7 +157,7 @@ abstract class Record {
 		// embed pkey value into instance SELECT query, then run
 		$query=static::$query." WHERE t.`".static::$pkey."`='%d'";
 		$query=sprintf($query,$this->vals[static::$pkey]);
-		if(false===$result=G::$M->query($query)){
+		if(false===$result=G::$m->query($query)){
 			return false;
 		}
 		if(0==$result->num_rows){
@@ -185,7 +185,7 @@ abstract class Record {
 		$query='';
 		foreach(static::$vars as $k => $v){
 			if(null!==$this->vals[$k]){
-				$query.=" AND t.`$k`='".G::$M->escape_string($this->vals[$k])."'";
+				$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
 			}
 		}
 		
@@ -197,7 +197,7 @@ abstract class Record {
 		$query=static::$query." WHERE ".substr($query,4)
 			.' GROUP BY `'.static::$pkey.'`'
 			.' LIMIT 1';
-		if(false===$result=G::$M->query($query)){
+		if(false===$result=G::$m->query($query)){
 			return false;
 		}
 		if(0==$result->num_rows){
@@ -225,7 +225,7 @@ abstract class Record {
 		$query='';
 		foreach(static::$vars as $k => $v){
 			if(null!==$this->vals[$k]){
-				$query.=" AND t.`$k`='".G::$M->escape_string($this->vals[$k])."'";
+				$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
 			}
 		}
 		$query.=(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'');
@@ -239,7 +239,7 @@ abstract class Record {
 			.' GROUP BY `'.static::$pkey.'`'
 			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
 			;
-		if(false===$result=G::$M->query($query)){
+		if(false===$result=G::$m->query($query)){
 			return false;
 		}
 		if(0==$result->num_rows){
