@@ -1,8 +1,8 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
 <html>
 	<head>
-		<title><?php html($title); ?></title>
-		<base href="<?php html($siteURL); ?>">
+		<title><?php html($_title); ?></title>
+		<base href="<?php html($_siteURL); ?>">
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <?php foreach($_meta as $k => $v){ ?>
 		<meta name="<?php html($k)?>" content="<?php html($v)?>">
@@ -16,16 +16,16 @@
 	</head>
 	<body>
 		<div id="header">
-			<h1 class="tleft fleft"><?php html($siteName)?></h1>
+			<h1 class="tleft fleft"><?php html($_siteName)?></h1>
 			<div id="loginForm" class="tright fright">
 <?php 
-	if ($login_id) {
-		echo 'Hello, '.$loginname
-			.'. (<a href="'.$logoutURL.'">Logout</a>)'
+	if ($_login_id) {
+		echo 'Hello, '.$_loginname
+			.'. (<a href="'.$_logoutURL.'">Logout</a>)'
 			;
 	} else {
 ?>
-				<form action="<?php echo $loginURL; ?>" method="post" 
+				<form action="<?php echo $_loginURL; ?>" method="post" 
 					onsubmit="if(sha1_vm_test()){this.h.value=hex_sha1(this.s.value+hex_sha1(this.p.value));this.p.value='';return true;}else{return true;}">
 					<p>
 						<label for="loginU">U</label>
@@ -35,8 +35,8 @@
 						<input id="loginH" type="hidden" name="h">
 						<input id="loginS" type="submit" value="Check-in" class="submit">
 						<input type="hidden" name="s" value="<?php echo session_id(); ?>">
-						<input type="hidden" name="sURI" value="<?php html($sURI); ?>">
-						<input type="hidden" name="sLbl" value="<?php html($sLbl); ?>">
+						<input type="hidden" name="_URI" value="<?php html($_URI); ?>">
+						<input type="hidden" name="_Lbl" value="<?php html($_Lbl); ?>">
 					</p>
 				</form>
 <?

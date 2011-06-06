@@ -84,10 +84,10 @@ G::$G['VIEW']['footer']='footer.php';
 G::$G['VIEW']['template']='404.php';
 
 //display vars
-G::$G['VIEW']['siteName']='Graphite Site';
-G::$G['VIEW']['siteURL']='http://'.$_SERVER['SERVER_NAME'];
-G::$G['VIEW']['loginURL']=G::$G['CON']['URL'].'Account/login';
-G::$G['VIEW']['logoutURL']=G::$G['CON']['URL'].'Account/Logout';
+G::$G['VIEW']['_siteName']='Graphite Site';
+G::$G['VIEW']['_siteURL']='http://'.$_SERVER['SERVER_NAME'];
+G::$G['VIEW']['_loginURL']=G::$G['CON']['URL'].'Account/login';
+G::$G['VIEW']['_logoutURL']=G::$G['CON']['URL'].'Account/Logout';
 G::$G['VIEW']['_meta']=array(
 	"description"=>"Graphite MVC framework",
 	"keywords"=>"Graphite,MVC,framework",
@@ -101,8 +101,8 @@ G::$G['VIEW']['_link']=array(
 	array('rel'=>'stylesheet','type'=>'text/css','href'=>CORE.'/css/default.css')
 );
 //login redirection vars
-G::$G['VIEW']['sURI']=isset($_POST['sURI'])?$_POST['sURI']:$_SERVER['REQUEST_URI'];
-G::$G['VIEW']['sLbl']=isset($_POST['sLbl'])?$_POST['sLbl']:'to the page you requested';
+G::$G['VIEW']['_URI']=isset($_POST['_URI'])?$_POST['_URI']:$_SERVER['REQUEST_URI'];
+G::$G['VIEW']['_Lbl']=isset($_POST['_Lbl'])?$_POST['_Lbl']:'to the page you requested';
 
 /*****************************************************************************
  * /Settings for the View 

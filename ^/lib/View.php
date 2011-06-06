@@ -25,7 +25,7 @@ class View {
 		);
 	protected $includePath=null;
 
-	public $vals=array('_meta'=>array());
+	public $vals=array('_meta'=>array(),'_script'=>array(),'_link'=>array());
 
 	function __construct($cfg){
 		//Check for and validate location of Actors
@@ -41,17 +41,17 @@ class View {
 			$this->includePath[]=SITE.CORE.'/templates/';
 		}
 		
-		if(isset($cfg['header'])){
+		if(isset($cfg['_header'])){
 			$this->setTemplate('header',$cfg['header']);
-			unset($cfg['header']);
+			unset($cfg['_header']);
 		}
-		if(isset($cfg['footer'])){
+		if(isset($cfg['_footer'])){
 			$this->setTemplate('footer',$cfg['footer']);
-			unset($cfg['footer']);
+			unset($cfg['_footer']);
 		}
-		if(isset($cfg['template'])){
+		if(isset($cfg['_template'])){
 			$this->setTemplate('template',$cfg['template']);
-			unset($cfg['template']);
+			unset($cfg['_template']);
 		}
 		if(isset($cfg['_meta']) && is_array($cfg['_meta']) && 0 < count($cfg['_meta'])){
 			foreach($cfg['_meta'] as $name => $content){
@@ -125,18 +125,18 @@ class View {
 
 	function __set($name,$value){
 		switch($name){
-			case 'header': return $this->setTemplate('header',$value);
-			case 'footer': return $this->setTemplate('footer',$value);
-			case 'template': return $this->setTemplate('template',$value);
+			case '_header': return $this->setTemplate('header',$value);
+			case '_footer': return $this->setTemplate('footer',$value);
+			case '_template': return $this->setTemplate('template',$value);
 			default:
 				$this->vals[$name]=$value;
 		}
 	}
 	function __get($name){
 		switch($name){
-			case 'header': return $this->getTemplate('header');
-			case 'footer': return $this->getTemplate('footer');
-			case 'template': return $this->getTemplate('template');
+			case '_header': return $this->getTemplate('header');
+			case '_footer': return $this->getTemplate('footer');
+			case '_template': return $this->getTemplate('template');
 			default:
 				if(isset($this->vals[$name]))return $this->vals[$name];
 				$trace = debug_backtrace();
@@ -155,11 +155,11 @@ class View {
 		unset($this->vals[$k]);
 	}
 	
-	public function render($template='template'){
+	public function render($_template='template'){
 		extract($this->vals);
 		foreach($this->includePath as $v){
-			if(file_exists($v.$this->templates[$template])){
-				include_once $v.$this->templates[$template];
+			if(file_exists($v.$this->templates[$_template])){
+				include_once $v.$this->templates[$_template];
 				return true;
 			}
 		}

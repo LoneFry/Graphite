@@ -19,14 +19,14 @@ class AAccount extends Actor{
 	protected $action='login';
 	
 	public function do_login($params){
-		G::$V->template='Account.Login.php';
-		G::$V->title=G::$V->siteName.' : Check-in';
+		G::$V->_template='Account.Login.php';
+		G::$V->_title=G::$V->_siteName.' : Check-in';
 		
 		G::$V->msg='';
 		if(isset($_POST['l']) && isset($_POST['p']) && isset($_POST['h'])){
 			G::$V->l=$_POST['l'];
 			if(G::$S->authenticate($_POST['l'],$_POST['p'],$_POST['h'])){
-				G::$V->template='Account.Loggedin.php';
+				G::$V->_template='Account.Loggedin.php';
 			}else{
 				G::$V->msg='Login Failed.';
 			}
@@ -35,23 +35,23 @@ class AAccount extends Actor{
 		}else{
 			G::$V->l='';
 		}
-		if(!isset(G::$V->sURI))G::$V->sURI=isset($_POST['sURI'])?$_POST['sURI']:CONT;
-		if(!isset(G::$V->sLbl))G::$V->sLbl=isset($_POST['sLbl'])?$_POST['sLbl']:'Home';
+		if(!isset(G::$V->_URI))G::$V->_URI=isset($_POST['_URI'])?$_POST['_URI']:CONT;
+		if(!isset(G::$V->_Lbl))G::$V->_Lbl=isset($_POST['_Lbl'])?$_POST['_Lbl']:'Home';
 	}
 
 	public function do_logout($params){
-		G::$V->template='Account.Logout.php';
-		G::$V->title=G::$V->siteName.' : Check-out';
+		G::$V->_template='Account.Logout.php';
+		G::$V->_title=G::$V->_siteName.' : Check-out';
 		
 		G::$S->deauthenticate();
 
-		G::$V->sURI=isset($_POST['sURI'])?$_POST['sURI']:CONT;
-		G::$V->sLbl=isset($_POST['sLbl'])?$_POST['sLbl']:'Home';
+		G::$V->_URI=isset($_POST['_URI'])?$_POST['_URI']:CONT;
+		G::$V->_Lbl=isset($_POST['_Lbl'])?$_POST['_Lbl']:'Home';
 	}
 	
 	public function do_recover($params){
-		G::$V->template='Account.Recover.php';
-		G::$V->title=G::$V->siteName.' : Recover Password';
+		G::$V->_template='Account.Recover.php';
+		G::$V->_title=G::$V->_siteName.' : Recover Password';
 		
 		G::$V->msg='';
 		if(G::$S->Login){
@@ -75,7 +75,7 @@ class AAccount extends Actor{
 					G::$V->msg='No changes detected, not trying to update your account.';
 				}else{
 					$to=$Login->email;
-					$message="\n\nA password reset has been requested for your [".G::$V->siteName."] account.  "
+					$message="\n\nA password reset has been requested for your [".G::$V->_siteName."] account.  "
 						."The temporary password is below.  After you login you will be required to change your password."
 						."\n\nLoginName: ".$Login->loginname
 						."\nPassword: ".$password
@@ -83,7 +83,7 @@ class AAccount extends Actor{
 					$headers=array(
 							'Message-ID'=>date("YmdHis").uniqid().'@'.$_SERVER['SERVER_NAME'],
 							'To'=>$to,
-							'Subject'=>'['.G::$V->siteName.'] Password Reset',
+							'Subject'=>'['.G::$V->_siteName.'] Password Reset',
 							'From'=>G::$G['siteEmail'],
 							'Reply-To'=>G::$G['siteEmail'],
 							'MIME-Version'=>'1.0',
@@ -96,9 +96,9 @@ class AAccount extends Actor{
 					}
 					if(imap_mail($to,$headers['Subject'],$message,$header)){
 						G::$V->msg='A new password has been mailed to you.  When you get it, login below.';
-						G::$V->template='Account.Login.php';
-						G::$V->sURI=CONT;
-						G::$V->sLbl='Home';
+						G::$V->_template='Account.Login.php';
+						G::$V->_URI=CONT;
+						G::$V->_Lbl='Home';
 						G::$V->l=$Login->loginname;
 					}else{
 						G::$V->msg='Mail sending failed, please contact support for your password reset.';
@@ -110,13 +110,13 @@ class AAccount extends Actor{
 	
 	public function do_edit($params){
 		if(!G::$S->Login){
-			G::$V->sURI=CONT.'Account/edit';
-			G::$V->sLbl='Account Settings';
+			G::$V->_URI=CONT.'Account/edit';
+			G::$V->_Lbl='Account Settings';
 			return $this->do_login($params);
 		}
 		
-		G::$V->template='Account.Edit.php';
-		G::$V->title=G::$V->siteName.' : Account Settings';
+		G::$V->_template='Account.Edit.php';
+		G::$V->_title=G::$V->_siteName.' : Account Settings';
 		
 		G::$V->msg='';
 		if (isset($_POST['comment']) && isset($_POST['email']) && 

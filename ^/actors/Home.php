@@ -19,13 +19,13 @@ class AHome extends Actor{
 	protected $action='home';
 	
 	public function do_home($params){
-		G::$V->template='Home.php';
-		G::$V->title=G::$V->siteName;
+		G::$V->_template='Home.php';
+		G::$V->_title=G::$V->_siteName;
 	}
 
 	public function do_contact($params){
-		G::$V->template='Contact.php';
-		G::$V->title=G::$V->siteName.': Contact';
+		G::$V->_template='Contact.php';
+		G::$V->_title=G::$V->_siteName.': Contact';
 		G::$V->_script(CORE.'/js/ajas.Email.js');
 		G::$V->seed   =$seed=(int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
 		G::$V->from   =$from   =substr(md5($seed),-6);
@@ -49,7 +49,7 @@ class AHome extends Actor{
 			} elseif (false!==strpos($_POST[$subject],"\n") || false!==strpos($_POST[$subject],"\r")) {
 				G::msg('The subject submitted contains a newline character.  Your message has not been sent.  We check this to prevent automated mailers.');
 			} else {
-				mail(G::$G['siteEmail'],'['.G::$V->siteName.'] message: '.$_POST[$subject],
+				mail(G::$G['siteEmail'],'['.G::$V->_siteName.'] message: '.$_POST[$subject],
 					'Login Info: '.$loginname.' - '.$login_id."\n"
 					.'Specified Email Address: '.$_POST[$from]."\n"
 					.'Subject: '.$_POST[$subject]."\n"
@@ -75,8 +75,8 @@ class AHome extends Actor{
 		}
 	}
 	public function do_contactLog($params){
-		G::$V->template='ContactLog.php';
-		G::$V->title=G::$V->siteName.': Contact Log';
+		G::$V->_template='ContactLog.php';
+		G::$V->_title=G::$V->_siteName.': Contact Log';
 
 		require_once SITE.CORE.'/models/ContactLog.php';
 		$C=new ContactLog();
