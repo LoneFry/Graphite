@@ -45,34 +45,41 @@ class Security{
 			$_SESSION['ip']='';
 		}
 	
-		if(isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id'])){
+		if(isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id']) && 0 < $_SESSION['login_id']){
 			$Login=new Login(array('login_id'=>$_SESSION['login_id']));
 			$Login->load();
 			
 			//if login disabled, fail
 			if($Login->disabled == 1){
+				G::msg('Your account is currently disabled.','error');
 				$Login=false;
 			}
 			
 			//if login configured so, test UA hash against last request
-			elseif($Login->sessionStrength > 0 && $_SESSION['ua']!=$this->UA){
+			elseif($Login->sessionStrength > 0 && $Login->UA!=$this->UA){
+				G::msg('Your account was authenticated in a different browser, and multiple logins are disabled for your account.','error');
 				$Login=false;
 			}
 			
 			//if login configured so, test IP against last request
-			elseif($Login->sessionStrength > 1 && $_SESSION['ip']!=$this->ip){
+			elseif($Login->sessionStrength > 1 && $Login->lastIP!=$this->ip){
+				G::msg('Your account was authenticated from a different computer/IP-address, and multiple logins are disabled for your account.','error');
 				$Login=false;
 			}
 			
 			//if we got here, we should have a valid login, update usage data
 			elseif(false!==$Login && 'Login'==get_class($Login)){
-				$Login->dateActive="now";
+				$Login->dateActive=NOW;
 				$_SESSION['ua']=$Login->UA=$this->UA;
 				$_SESSION['ip']=$Login->lastIP=$this->ip;
-				//move to $this->close() $Login->save();
+				//move to $this->close()//$Login->save();
 				
 				$this->Login=$Login;
 			}
+		}
+		
+		if(false===$this->Login){
+			$_SESSION['login_id']=0;
 		}
 	}
 	
@@ -90,6 +97,11 @@ class Security{
 		$Login=new Login($Login);
 		$Login->fill();
 		
+		if($Login->disabled){
+			G::msg('Your account is currently disabled.','error');
+			return false;
+		}
+		
 		//Check hashword if passed, compared to DB password
 		if(''!=$hashword){
 			if($hashword!=sha1(session_id().$Login->password)){
@@ -97,8 +109,8 @@ class Security{
 			}
 		}
 
-		$Login->dateLogin="now";
-		$Login->dateActive="now";
+		$Login->dateLogin=NOW;
+		$Login->dateActive=NOW;
 		$_SESSION['ua']=$Login->UA=$this->UA;
 		$_SESSION['ip']=$Login->lastIP=$this->ip;
 		//move to $this->close() $Login->save();
@@ -113,7 +125,7 @@ class Security{
 	}
 	public function deauthenticate(){
 		if(false!==$this->Login && 'Login'==get_class($this->Login)){
-			$this->Login->dateLogout="now";
+			$this->Login->dateLogout=NOW;
 			$this->Login->save();
 			$this->Login=false;
 			session_destroy();
