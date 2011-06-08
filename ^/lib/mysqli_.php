@@ -49,6 +49,7 @@ class mysqli_ extends mysqli {
 		$t=array($t,$query,$s,$this->affected_rows);
 		//if there was an error, log that too
 		if(''!=$this->error)$t[]=$this->error;
+		if($this->errno)$t[]=$this->errno;
 		//append to log
 		self::$aQueries[]=$t;
 		//return result as normal
