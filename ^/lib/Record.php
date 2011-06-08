@@ -228,16 +228,16 @@ abstract class Record {
 				$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
 			}
 		}
-		$query.=(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'');
 		
 		//if no fields were set, return false
-		if(''==$query){
+		if(''==$query && $count==null){
 			return null;
 		}
 
 		$query=static::$query." WHERE 1 "
 			.' GROUP BY `'.static::$pkey.'`'
 			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
 		if(false===$result=G::$m->query($query)){
 			return false;
