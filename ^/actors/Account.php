@@ -118,23 +118,30 @@ class AAccount extends Actor{
 		G::$V->_template='Account.Edit.php';
 		G::$V->_title=G::$V->_siteName.' : Account Settings';
 		
-		G::$V->msg='';
 		if (isset($_POST['comment']) && isset($_POST['email']) && 
 			isset($_POST['password1']) && isset($_POST['password2'])) {
-		
+			
+			$old_password=G::$S->Login->password;
 			G::$S->Login->comment=$_POST['comment'];
 			G::$S->Login->email=$_POST['email'];
 			if($_POST['password1']==$_POST['password2'] && sha1('')!=$_POST['password1'] && strlen($_POST['password1'])>=4) {
 				G::$S->Login->password=$_POST['password1'];
-				G::$S->Login->flagChangePass=0;
-				$pass=true;
+				if($old_password!=G::$S->Login->password){
+					G::$S->Login->flagChangePass=0;
+					$pass=true;
+				}
 			}
 			if (true===G::$S->Login->save()) {
-				G::$V->msg='Your account '.(isset($pass)&&true===$pass?'including':'except').' your password was updated.';
+				if(isset($pass)&&true===$pass){
+					G::msg('Your password was updated.');
+				}elseif(G::$S->Login->flagChangePass==1){
+					G::msg('You cannot re-use your old password!','error');
+				}
+				G::msg('Your account was updated.');
 			} elseif (null===G::$S->Login->save()) {
-				G::$V->msg='No changes detected.  Your account was not updated.';
+				G::msg('No changes detected.  Your account was not updated.');
 			} else {
-				G::$V->msg='Update Failed :(';
+				G::msg('Update Failed :(','error');
 			}
 		}
 		

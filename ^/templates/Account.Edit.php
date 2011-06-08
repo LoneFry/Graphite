@@ -1,6 +1,5 @@
 <?php get_header(); ?>
 			<h2 class="tcenter">Account Settings</h2>
-			<p class="tcenter"><?php echo $msg; ?></p>
 			<div id="bodyLogin">
 				<form action="<?php echo CONT; ?>Account/edit" method="post"
 					onsubmit="if(sha1_vm_test()){this.password1.value=hex_sha1(this.password1.value);this.password2.value=hex_sha1(this.password2.value);return true;}else{return true;}">
