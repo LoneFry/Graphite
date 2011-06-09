@@ -26,13 +26,13 @@ abstract class Actor { //perform action requested of controller
 	
 	public function do_404($params){
 		header("HTTP/1.0 404 File Not Found");
-		G::$V->template='404.php';
-		G::$V->title='Requested Page Not Found';
+		G::$V->_template='404.php';
+		G::$V->_title='Requested Page Not Found';
 	}
 	public function do_403($params){
 		header("HTTP/1.0 403 Forbidden");
-		G::$V->template='403.php';
-		G::$V->title='Permission Denied';
+		G::$V->_template='403.php';
+		G::$V->_title='Permission Denied';
 	}
 	
 	public function action(){
