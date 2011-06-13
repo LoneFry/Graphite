@@ -47,10 +47,13 @@ class Security{
 	
 		if(isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id']) && 0 < $_SESSION['login_id']){
 			$Login=new Login(array('login_id'=>$_SESSION['login_id']));
-			$Login->load();
+			if(false===$Login->load()){
+				G::msg('Failed to load login from session, please login again.','error');
+				$Login=false;
+			}
 			
 			//if login disabled, fail
-			if($Login->disabled == 1){
+			elseif($Login->disabled == 1){
 				G::msg('Your account is currently disabled.','error');
 				$Login=false;
 			}
@@ -95,7 +98,9 @@ class Security{
 			$Login['password']=sha1(substr($password,0,255));
 		}
 		$Login=new Login($Login);
-		$Login->fill();
+		if(false===$Login->fill()){
+			return false;
+		}
 		
 		if($Login->disabled){
 			G::msg('Your account is currently disabled.','error');
