@@ -8,7 +8,7 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Actor.php
+ * File        : /^/actors/Account.php
  *                Account Actor class - performs user account related actions
  ****************************************************************************/
 
