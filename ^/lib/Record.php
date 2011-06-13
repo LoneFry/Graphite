@@ -325,7 +325,7 @@ abstract class Record {
 	public function update(){
 		//refuse to save unload()ed records to protected data integrity
 		if($this->loaded!==true){
-			throw new Exception('Record class refuses to update record which was not loaded');
+			throw new Exception('Record class refuses to update record which was not loaded: '.get_called_class().':'.$this->vals[static::$pkey]);
 		}
 
 		$query='UPDATE `'.static::$table.'` SET ';
@@ -544,6 +544,7 @@ abstract class Record {
 			if(!is_numeric($v)){//don't clobber passed-in typestamps
 				$v=strtotime($v);
 			}
+			$v=(int)$v;
 			if(isset(static::$vars[$k]['min']))$min=strtotime(static::$vars[$k]['min']);
 			if(isset(static::$vars[$k]['max']))$max=strtotime(static::$vars[$k]['max']);
 			if(static::$vars[$k]['strict']){
@@ -573,6 +574,7 @@ abstract class Record {
 			if(!is_numeric($v)){//don't clobber passed-in typestamps
 				$v=strtotime($v);
 			}
+			$v=(int)$v;
 			if(isset(static::$vars[$k]['min']))$min=strtotime(static::$vars[$k]['min']);
 			if(isset(static::$vars[$k]['max']))$max=strtotime(static::$vars[$k]['max']);
 			if(static::$vars[$k]['strict']){
