@@ -75,6 +75,8 @@ class AHome extends Actor{
 		}
 	}
 	public function do_contactLog($params){
+		if(!G::$S->roleTest('Home/ContactLog'))return parent::do_403($params);
+
 		G::$V->_template='ContactLog.php';
 		G::$V->_title=G::$V->_siteName.': Contact Log';
 

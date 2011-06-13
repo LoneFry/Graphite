@@ -46,6 +46,9 @@
 			<p id="links" class="tcenter">
 				<a href="/" title="Home Page">Home</a>
 				<a href="/Home/Contact" title="Contact">Contact</a>
+<?php if(G::$S->Login->roleTest('Admin')){ ?>
+				<a href="<?php echo CONT;?>Admin">Admin</a>
+<?php } ?>
 			</p>
 			<div class="clear"></div>
 		</div>
