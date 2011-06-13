@@ -35,8 +35,13 @@ if(isset(G::$G['timezone'])){
 	date_default_timezone_set(G::$G['timezone']);
 }
 
-//setup DB connection or fail.
 require_once LIB.'/mysqli_.php';
+require_once LIB.'/Security.php';
+
+//if not DB host was specified, don't load DB or DB-based Security
+if(''==G::$G['db']['host']){return;}
+
+//setup DB connection or fail.
 G::$m=G::$M=new mysqli_(G::$G['db']['host'],G::$G['db']['user'],G::$G['db']['pass'],G::$G['db']['name'],null,null,G::$G['db']['tabl'],G::$G['db']['log']);
 if (mysqli_connect_error()) {
 	die("MySQL Connect failed: ".mysqli_connect_error());
@@ -48,7 +53,6 @@ if(isset(G::$G['db']['ro'])){
 	}
 }
 
-require_once LIB.'/Security.php';
 G::$S=new Security();
 if(G::$S->Login && 1==G::$S->Login->flagChangePass){
 	G::msg('You must change your password before you can continue.');

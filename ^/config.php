@@ -26,6 +26,9 @@ G::$G['MODE']='prd';
 //includePath relative to SITE
 //each class will append it's own sub directory to each path
 G::$G['includePath']=CORE.'Tree;'.CORE;
+
+//enable the installer -- reverse this when installed
+G::$G['installer']=true;
 /*****************************************************************************
  * /General settings
  ****************************************************************************/
@@ -60,7 +63,7 @@ G::$G['db']['ro']=array(
 G::$G['CON']['URL']='/';
 
 //Defaults
-G::$G['CON']['actor']='Home';
+G::$G['CON']['actor']='Installer';
 G::$G['CON']['actor404']='404';
 
 //Passed Values

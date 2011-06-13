@@ -81,8 +81,9 @@ class Role extends Record {
 	}
 	public function grant($login_id){
 		if(!is_numeric($login_id))return false;
+		$grantor=G::$S->Login?G::$S->Login->login_id:0;
 		$query="INSERT INTO `".G::$G['db']['tabl']."Roles_Logins` (`role_id`,`login_id`,`grantor_id`,`dateCreated`) "
-			."VALUES (".$this->__get('role_id').",".$login_id.",".G::$S->Login->login_id.",".NOW.")";
+			."VALUES (".$this->__get('role_id').",".$login_id.",".$grantor.",".NOW.")";
 		if(G::$M->query($query)){
 			return true;
 		}
