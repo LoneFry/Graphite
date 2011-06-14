@@ -54,7 +54,7 @@
         <table class="listTable">
             <thead>
                 <tr>
-                    <th>Grant</th>
+                    <th>Grant<input type="hidden" name="grant[]" value="0"></th>
                     <th>To</th>
                     <th>By</th>
                 </tr>

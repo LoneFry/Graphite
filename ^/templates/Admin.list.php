@@ -3,6 +3,7 @@
 <ul>
 <?php if(G::$S->Login->roleTest('Admin/Login')){ ?>
     <li><a href="<?php echo CONT;?>Admin/Login">Manage Logins</a> (<a href="<?php echo CONT;?>Admin/LoginAdd">or Add</a>)</li>
+    <li><a href="<?php echo CONT;?>Admin/LoginLog">View Login Log</a></li>
 <?php } ?>
 <?php if(G::$S->Login->roleTest('Admin/Role')){ ?>
     <li><a href="<?php echo CONT;?>Admin/Role">Manage Roles</a> (<a href="<?php echo CONT;?>Admin/RoleAdd">or Add</a>)</li>

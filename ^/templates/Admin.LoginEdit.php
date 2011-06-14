@@ -103,13 +103,13 @@
         </table>
     </div>
     
-    <div style="border-top:1px solid transparent;"> 
+    <div class="fleft" style="border-top:1px solid transparent;"> 
         <h2>Grant Roles</h2>
 
         <table class="listTable">
             <thead>
                 <tr>
-                    <th>Grant</th>
+                    <th>Grant<input type="hidden" name="grant[]" value="0"></th>
                     <th>Role</th>
                 </tr>
             </thead>
@@ -123,6 +123,29 @@
             </tbody>
         </table>
     </div>
+
+    <div class="fleft" style="border-top:1px solid transparent;"> 
+        <h2>Login Log</h2>
+        <table class="listTable">
+                <thead>
+                        <th>pkey</th>
+                        <th>date</th>
+                        <th>IP</th>
+                        <th>user agent</th>
+                </thead>
+                <tbody>
+<?php if(is_array($log))foreach($log as $k => $v){ ?>
+                        <tr>
+                                <td><?php html($v->pkey);?></td>
+                                <td><?php html($v->iDate);?></td>
+                                <td><?php html($v->ip);?></td>
+                                <td><?php html($v->ua);?></td>
+                        </tr>
+<?php } ?>
+                </tbody>
+        </table>
+    </div>
+
 </form>
 
 

@@ -183,7 +183,7 @@ class AAdmin extends Actor{
 		if(isset($_POST['grant']) && is_array($_POST['grant'])){
 			$i=0;
 			foreach($_POST['grant'] as $k => $v){
-				if(!$L->roleTest($Roles[$k]->label)){
+				if(1==$v && !$L->roleTest($Roles[$k]->label)){
 					$Roles[$k]->grant($L->login_id);
 					$i++;
 				}
@@ -204,7 +204,13 @@ class AAdmin extends Actor{
 		G::$V->Roles=$Roles;
 		G::$V->letters=Login::initials();
 		G::$V->referrer=$L->getReferrer();
+		
+		require_once SITE.CORE.'/models/LoginLog.php';
+		$LL=new LoginLog(array('login_id'=>$L->login_id));
+		G::$V->log=$LL->search(100,0,'pkey',true);
+
 	}
+
 	public function do_Role($params){
 		if(!G::$S->roleTest('Admin/Role'))return parent::do_403($params);
 		
@@ -286,7 +292,7 @@ class AAdmin extends Actor{
 		if(isset($_POST['grant']) && is_array($_POST['grant'])){
 			$i=0;
 			foreach($_POST['grant'] as $k => $v){
-				if(!isset($members[$k])){
+				if(1==$v && !isset($members[$k])){
 					$R->grant($k);
 					$members[$k]=G::$S->Login->login_id;
 					$i++;
@@ -311,5 +317,16 @@ class AAdmin extends Actor{
 		G::$V->members=$members;
 		
 		G::$V->creator=$R->getCreator();
+	}
+
+	public function do_loginLog($params){
+		if(!G::$S->roleTest('Admin/Login'))return parent::do_403($params);
+
+		G::$V->_template='LoginLog.php';
+		G::$V->_title=G::$V->_siteName.': Login Log';
+
+		require_once SITE.CORE.'/models/LoginLog.php';
+		$LL=new LoginLog();
+		G::$V->log=$LL->search(100,0,'pkey',true);
 	}
 }

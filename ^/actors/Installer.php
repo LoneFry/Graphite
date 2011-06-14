@@ -119,38 +119,21 @@ class AInstaller extends Actor{
 				include_once SITE.CORE.'/models/Role.php';
 				Role::prime();
 
-				$R=new Role(array('label'=>'Admin','description'=>'General use admin Role.','creator_id'=>1));
-				if($R->insert()){
-					G::msg('Created Role: '.$R->label);
-					$R->grant($login_id);
-				}else{
-					G::msg('Failed to create Role: '.$R->label,'error');
+				$roles=array(
+					array('label'=>'Admin','description'=>'General use admin Role.','creator_id'=>1),
+					array('label'=>'Admin/Login','description'=>'Can Add/Edit Logins','creator_id'=>1),
+					array('label'=>'Admin/Role','description'=>'Can Add/Edit Roles','creator_id'=>1),
+					array('label'=>'Home/ContactLog','description'=>'Can view Contact Log','creator_id'=>1)
+					);
+				foreach($roles as $v){
+					$R=new Role($v);
+					if($R->insert()){
+						G::msg('Created Role: '.$R->label);
+						$R->grant($login_id);
+					}else{
+						G::msg('Failed to create Role: '.$R->label,'error');
+					}
 				}
-
-				$R=new Role(array('label'=>'Admin/Login','description'=>'Can Add/Edit Logins','creator_id'=>1));
-				if($R->insert()){
-					G::msg('Created Role: '.$R->label);
-					$R->grant($login_id);
-				}else{
-					G::msg('Failed to create Role: '.$R->label,'error');
-				}
-
-				$R=new Role(array('label'=>'Admin/Role','description'=>'Can Add/Edit Roles','creator_id'=>1));
-				if($R->insert()){
-					G::msg('Created Role: '.$R->label);
-					$R->grant($login_id);
-				}else{
-					G::msg('Failed to create Role: '.$R->label,'error');
-				}
-
-				$R=new Role(array('label'=>'Home/ContactLog','description'=>'Can view Contact Log','creator_id'=>1));
-				if($R->insert()){
-					G::msg('Created Role: '.$R->label);
-					$R->grant($login_id);
-				}else{
-					G::msg('Failed to create Role: '.$R->label,'error');
-				}
-
 
 				$config=sprintf($this->config,
 						$_SERVER['SERVER_NAME'],
