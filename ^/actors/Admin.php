@@ -39,11 +39,7 @@ class AAdmin extends Actor{
 				G::$V->list=$l;
 			}elseif($l && 1==count($l)){
 				$L=array_shift($l);
-				$L->load();
-				G::$V->L=$L;
-				G::$V->_template='Admin.LoginEdit.php';
-				G::$V->_title='Edit Login';
-				G::$V->referrer=$L->getReferrer();
+				return $this->do_LoginEdit(array($L->login_id));
 			}
 		}else{
 			$l=new Login();
@@ -94,8 +90,8 @@ class AAdmin extends Actor{
 			
 			if($insert && $result=$L->insert()){
 				G::msg('Login Added');
-				G::$V->_template='Admin.LoginEdit.php';
-				G::$V->referrer=G::$S->Login->loginname;
+				unset($_POST);
+				return $this->do_LoginEdit(array($L->login_id));
 			}elseif(null===$result){
 				G::msg('Nothing to save.  Try making a change this time.');
 			}else{
@@ -235,8 +231,8 @@ class AAdmin extends Actor{
 			
 			if($result=$R->insert()){
 				G::msg('Role Added');
-				G::$V->_template='Admin.RoleEdit.php';
-				G::$V->creator=G::$S->Login->loginname;
+				unset($_POST);
+				return $this->do_RoleEdit(array($R->role_id));
 			}elseif(null===$result){
 				G::msg('Nothing to save.  Try making a change this time.');
 			}else{
