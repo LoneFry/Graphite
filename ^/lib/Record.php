@@ -234,7 +234,7 @@ abstract class Record {
 			return null;
 		}
 
-		$query=static::$query." WHERE 1 "
+		$query=static::$query." WHERE 1 ".$query
 			.' GROUP BY `'.static::$pkey.'`'
 			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
