@@ -75,6 +75,8 @@ class AInstaller extends Actor{
 					G::msg('Unable to connect to Database with Read-Only details, try again.','error');
 					$install=false;
 				}
+			}else{
+				G::$m=G::$M;
 			}
 			G::msg(ob_get_clean());
 			if($install){
