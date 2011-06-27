@@ -72,6 +72,12 @@ abstract class Record {
 		return static::$pkey;
 	}
 	
+	/* return the table, which is a protected static var
+	 */
+	public static function getTable(){
+		return static::$table;
+	}
+	
 	/* return an array of all registered values, checking 
 	 *  1. for a method specific to each var's key (name)
 	 *  2. for a method specific to each var's type
