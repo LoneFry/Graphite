@@ -35,17 +35,29 @@ class mysqli_ extends mysqli {
 		if(false===self::$log){
 			return parent::query($query);
 		}
+
+		//get the last few functions on the call stack
+		$d=debug_backtrace();
+		//assemble call stack
+		$s=$d[0]['file'].':'.$d[0]['line'];
+		if(0 < count($d)){
+			$s.=' - '.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'];
+		}
+		//query as sent to database
+		$q='/* '.$this->escape_string(substr($s,strrpos($s,'/'))).' */ '.$query;
+
 		//start time
 		$t=microtime(true);
-		//Call mysqli's query() method
-		$result=parent::query($query);
+		//Call mysqli's query() method, with call stack in comment
+		$result=parent::query($q);
 		//[0][0] totals the time of all queries
 		self::$aQueries[0][0]+=$t=microtime(true)-$t;
-		//get the last few functions on the call stack
-		$cf=debug_backtrace();
+
+		//finish assembling the call stack
+		for($i=2;$i < count($d);$i++){
+			$s.=' - '.(isset($d[$i]['class'])?$d[$i]['class'].$d[$i]['type']:'').$d[$i]['function'];
+		}
 		//assemble log: query time, query, call stack, rows affected/selected
-		$s=$cf[0]['file'].':'.$cf[0]['line'].':';
-		for($i=1;$i < count($cf);$i++)$s.=$cf[$i]['function'].' - ';
 		$t=array($t,$query,$s,$this->affected_rows);
 		//if there was an error, log that too
 		if(''!=$this->error)$t[]=$this->error;
@@ -60,10 +72,11 @@ class mysqli_ extends mysqli {
 	public function __get($k){
 		switch($k){
 			case 'tabl':return self::$tabl;
+			case 'table':return self::$tabl;
 			case 'log':return self::$log;
 			default:
-				$trace = debug_backtrace();
-				trigger_error('Undefined property via __get(): '.$k.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],E_USER_NOTICE);
+				$d = debug_backtrace();
+				trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'],E_USER_NOTICE);
 				return null;
 		}
 	}
