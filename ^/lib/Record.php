@@ -58,11 +58,18 @@ abstract class Record {
 			if(is_array($a))$this->setAll($a);
 		}
 		
+		static::prime_query();
+	}
+	
+	/* if the subclass has not defined its query, build one from the field list
+	 * but emit an error to the browser to ensure this is caught and corrected
+	 */
+	public static function prime_query(){
 		//Set the query that would be used by load()
 		if(''==static::$query){
 			$keys=array_keys(static::$vars);
 			static::$query='SELECT t.`'.join('`, t.`',$keys).'` FROM `'.static::$table.'` t';
-			G::msg(static::$query);
+			G::croak(static::$query);
 		}
 	}
 	
@@ -128,7 +135,7 @@ abstract class Record {
 	 */
 	public function defaults(){
 		foreach(static::$vars as $k => $v){
-			if(null!=$this->vals[$k] || null==static::$vars[$k]['def']){
+			if(null!==$this->vals[$k] || null===static::$vars[$k]['def']){
 				continue;
 			}
 			if(method_exists($this,$k)){
@@ -173,9 +180,10 @@ abstract class Record {
 		$row=$result->fetch_assoc();
 		$result->close();
 
-		//data from DB should not be filtered with $this->setAll($row);
+		//data from DB should be filtered with setall to ensure specific types
+		$this->setAll($row);
 		foreach(static::$vars as $k => $v){
-			$this->vals[$k]=$this->DBvals[$k]=$row[$k];
+			$this->DBvals[$k]=$row[$k];
 			unset($row[$k]);
 		}
 		$this->onload();
@@ -213,9 +221,10 @@ abstract class Record {
 		$row=$result->fetch_assoc();
 		$result->close();
 
-		//data from DB should not be filtered with $this->setAll($row);
+		//data from DB should be filtered with setall to ensure specific types
+		$this->setAll($row);
 		foreach(static::$vars as $k => $v){
-			$this->vals[$k]=$this->DBvals[$k]=$row[$k];
+			$this->DBvals[$k]=$row[$k];
 			unset($row[$k]);
 		}
 		$this->onload();
@@ -248,9 +257,28 @@ abstract class Record {
 		if(false===$result=G::$m->query($query)){
 			return false;
 		}
-		if(0==$result->num_rows){
-			$result->close();
-			return array();
+		$a=array();
+		while($row=$result->fetch_assoc()){
+			$a[$row[static::$pkey]]=new static($row);
+		}
+		$result->close();
+
+		return $a;
+	}
+	
+	/* SELECT all the records from the database using static::$query 
+	 * add passed WHERE clause, returns collection
+	 */
+	protected static function search_where($where="WHERE 1",$count=null,$start=0,$order=null,$desc=false){
+		static::prime_query();
+
+		$query=static::$query.' '.$where
+			.' GROUP BY `'.static::$pkey.'`'
+			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
+			;
+		if(false===$result=G::$m->query($query)){
+			return false;
 		}
 		$a=array();
 		while($row=$result->fetch_assoc()){
@@ -259,6 +287,31 @@ abstract class Record {
 		$result->close();
 
 		return $a;
+	}
+	/* SELECT all the records from the database using static::$query 
+	 * add passed list of ids, returns collection
+	 */
+	public static function search_ids($ids=array()){
+		if(!is_array($ids)){
+			return false;
+		}
+		$a=array();
+		foreach($ids as $k => $v){
+			if(is_numeric($v))$a[]=$v;
+		}
+		if(1 > count($a)){
+			return array();
+		}
+		return self::search_where("WHERE ".static::$pkey." IN (".implode(',',$a).")");
+	}
+	
+	/* SELECT all the records from the database using static::$query 
+	 * add passed list of ids, returns collection
+	 */
+	public static function byId($id){
+		$R=new static($id);
+		$R->load();
+		return $R;
 	}
 	
 	/* commit object to database
@@ -288,7 +341,11 @@ abstract class Record {
 		$query='INSERT INTO `'.static::$table.'` SET ';
 		$save=false;
 		foreach(static::$vars as $k => $v){
-			if($this->vals[$k]!=$this->DBvals[$k]){
+			if ($this->vals[$k]!=$this->DBvals[$k]
+				|| (null===$this->vals[$k])!=(null===$this->DBvals[$k])
+				|| (true===$this->vals[$k])!=(true===$this->DBvals[$k])
+				|| (false===$this->vals[$k])!=(false===$this->DBvals[$k])
+			){
 				$save=true;
 			}
 		}
@@ -298,11 +355,19 @@ abstract class Record {
 		}
 		$this->oninsert();
 		foreach(static::$vars as $k => $v){
-			if($this->vals[$k]!=$this->DBvals[$k]){
-				$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
+			if ($this->vals[$k]!=$this->DBvals[$k]
+				|| (null===$this->vals[$k])!=(null===$this->DBvals[$k])
+				|| (true===$this->vals[$k])!=(true===$this->DBvals[$k])
+				|| (false===$this->vals[$k])!=(false===$this->DBvals[$k])
+			){
+				//since DBvals is all null at this point, a != val won't be
+				//if(null===$this->vals[$k]){
+				//	$query.='`'.$k."`=NULL,";
+				//}else{
+					$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
+				//}
 			}
 		}
-		
 
 		$query=substr($query,0,-1);
 		if(false===G::$M->query($query)){
@@ -337,7 +402,11 @@ abstract class Record {
 		$query='UPDATE `'.static::$table.'` SET ';
 		$save=false;
 		foreach(static::$vars as $k => $v){
-			if($this->vals[$k]!=$this->DBvals[$k]){
+			if ($this->vals[$k]!=$this->DBvals[$k]
+				|| (null===$this->vals[$k])!=(null===$this->DBvals[$k])
+				|| (true===$this->vals[$k])!=(true===$this->DBvals[$k])
+				|| (false===$this->vals[$k])!=(false===$this->DBvals[$k])
+			){
 				$save=true;
 			}
 		}
@@ -347,8 +416,16 @@ abstract class Record {
 		}
 		$this->onupdate();
 		foreach(static::$vars as $k => $v){
-			if($this->vals[$k]!=$this->DBvals[$k]){
-				$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
+			if ($this->vals[$k]!=$this->DBvals[$k]
+				|| (null===$this->vals[$k])!=(null===$this->DBvals[$k])
+				|| (true===$this->vals[$k])!=(true===$this->DBvals[$k])
+				|| (false===$this->vals[$k])!=(false===$this->DBvals[$k])
+			){
+				if(null===$this->vals[$k]){
+					$query.='`'.$k."`=NULL,";
+				}else{
+					$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
+				}
 			}
 		}
 
@@ -394,6 +471,9 @@ abstract class Record {
 	 *  2. a method specific to the var's type
 	 */
 	public function __set($k,$v){
+		if(null===$v){
+			return $this->vals[$k]=null;
+		}
 		if(method_exists($this,$k)){
 			return $this->$k($v);
 		}
@@ -615,7 +695,7 @@ abstract class Record {
 				}
 			}else{
 				if((!isset(static::$vars[$k]['min']) || !is_numeric(static::$vars[$k]['min']) || strlen($v)>=static::$vars[$k]['min'])){
-					$this->vals[$k]=isset(static::$vars[$k]['max'])?$v=substr($v,0,static::$vars[$k]['max']):$v;
+					$this->vals[$k]=isset(static::$vars[$k]['max'])&&static::$vars[$k]['max']>strlen($v)?$v=substr($v,0,static::$vars[$k]['max']):$v;
 				}
 			}
 		}
