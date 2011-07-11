@@ -183,7 +183,7 @@ abstract class Record {
 		//data from DB should be filtered with setall to ensure specific types
 		$this->setAll($row);
 		foreach(static::$vars as $k => $v){
-			$this->DBvals[$k]=$row[$k];
+			$this->DBvals[$k]=$this->vals[$k];
 			unset($row[$k]);
 		}
 		$this->onload();
@@ -224,7 +224,7 @@ abstract class Record {
 		//data from DB should be filtered with setall to ensure specific types
 		$this->setAll($row);
 		foreach(static::$vars as $k => $v){
-			$this->DBvals[$k]=$row[$k];
+			$this->DBvals[$k]=$this->vals[$k];
 			unset($row[$k]);
 		}
 		$this->onload();
