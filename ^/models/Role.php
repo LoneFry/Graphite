@@ -56,15 +56,19 @@ class Role extends Record {
 		}
 		return '';
 	}
-	public function getMembers(){
-		$query="SELECT l.`login_id`, l.`grantor_id` "
-			."FROM `".G::$G['db']['tabl']."Logins` l, `".G::$G['db']['tabl']."Roles_Logins` rl "
-			."WHERE l.`login_id`=rl.`login_id` AND rl.`role_id`=".$this->__get('role_id')
-		;
-		$query="SELECT rl.`login_id`, rl.`grantor_id` "
-			."FROM `".G::$G['db']['tabl']."Roles_Logins` rl "
-			."WHERE rl.`role_id`=".$this->__get('role_id')
-		;
+	public function getMembers($detail='grantor_id'){
+		if($detail=='loginname'){
+			$query="SELECT l.`login_id`, l.`loginname` "
+				."FROM `".G::$G['db']['tabl']."Logins` l, `".G::$G['db']['tabl']."Roles_Logins` rl "
+				."WHERE l.`login_id`=rl.`login_id` AND rl.`role_id`=".$this->__get('role_id')
+				." ORDER BY l.`loginname`"
+			;
+		}else{
+			$query="SELECT rl.`login_id`, rl.`grantor_id` "
+				."FROM `".G::$G['db']['tabl']."Roles_Logins` rl "
+				."WHERE rl.`role_id`=".$this->__get('role_id')
+			;
+		}
 		if(false===$result=G::$m->query($query)){
 			return false;
 		}
