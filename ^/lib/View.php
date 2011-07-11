@@ -157,9 +157,11 @@ class View {
 	
 	public function render($_template='template'){
 		extract($this->vals);
-		foreach($this->includePath as $v){
-			if(file_exists($v.$this->templates[$_template])){
-				include_once $v.$this->templates[$_template];
+		foreach($this->includePath as $_v){
+			if (isset($this->templates[$_template]) &&
+			    file_exists($_v.$this->templates[$_template]))
+			{
+				include_once $_v.$this->templates[$_template];
 				return true;
 			}
 		}

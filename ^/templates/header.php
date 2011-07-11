@@ -53,7 +53,9 @@
 			<div class="clear"></div>
 		</div>
 
-<?php if(0<count($a=G::msg())){ ?>
+<?php G::$V->render('subheader');
+
+if(0<count($a=G::msg())){ ?>
 		<div id="msg">
 			<span>Messages:</span>
 			<ul>
