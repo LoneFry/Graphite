@@ -39,7 +39,7 @@
 						<input type="hidden" name="_Lbl" value="<?php html($_Lbl); ?>">
 					</p>
 				</form>
-<?
+<?php
 	}
 ?>
 			</div>
