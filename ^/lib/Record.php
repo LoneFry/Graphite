@@ -157,11 +157,21 @@ abstract class Record {
 	 */
 	public function onload(){}
 
+	/* load object from database
+	 *  if pkey is not set, assume fill(), else select()
+	 */
+	public function load(){
+		if(null==$this->vals[static::$pkey]){
+			return $this->fill();
+		}
+		return $this->select();
+	}
+		
 	/* SELECT the record from the database using static::$query 
 	 * use sprintf() to embed the registered pkey
 	 * returns values selected that are not registered variables, typ. array()
 	 */
-	public function load(){
+	public function select(){
 		// Fail if pkey has no value
 		if(null===$this->vals[static::$pkey]){
 			return false;
@@ -251,7 +261,8 @@ abstract class Record {
 
 		$query=static::$query." WHERE 1 ".$query
 			.' GROUP BY `'.static::$pkey.'`'
-			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
+			.(null!=$order && array_key_exists($order,static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
 		if(false===$result=G::$m->query($query)){
@@ -274,7 +285,8 @@ abstract class Record {
 
 		$query=static::$query.' '.$where
 			.' GROUP BY `'.static::$pkey.'`'
-			.(array_key_exists($order,static::$vars) ? ' ORDER BY '.$order.' '.($desc?'desc':'asc'):'')
+			.(null!=$order && array_key_exists($order,static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
 		if(false===$result=G::$m->query($query)){
@@ -302,7 +314,7 @@ abstract class Record {
 		if(1 > count($a)){
 			return array();
 		}
-		return self::search_where("WHERE ".static::$pkey." IN (".implode(',',$a).")");
+		return self::search_where("WHERE t.`".static::$pkey."` IN (".implode(',',$a).")");
 	}
 	
 	/* SELECT all the records from the database using static::$query 
