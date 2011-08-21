@@ -1,8 +1,10 @@
 		</div>
 		<div id="footer">
+<?php if(G::$S->Login){ ?>
 			<p>
 				<a href="<?php echo CONT; ?>Account/edit">Account Settings</a>
 			</p>
+<?php } ?>
 			<a href="http://validator.w3.org/check?uri=referer"><img
 				src="<?php echo CORE; ?>/images/valid-html401" 
 				alt="Valid HTML 4.01" class="webButton"></a>
