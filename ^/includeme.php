@@ -46,7 +46,7 @@ G::$m=G::$M=new mysqli_(G::$G['db']['host'],G::$G['db']['user'],G::$G['db']['pas
 if (mysqli_connect_error()) {
 	die("MySQL Connect failed: ".mysqli_connect_error());
 }
-if(isset(G::$G['db']['ro'])){
+if(isset(G::$G['db']['ro']) && isset(G::$G['db']['ro']['user']) && ''!=G::$G['db']['ro']['user']){
 	G::$m=new mysqli_(G::$G['db']['ro']['host'],G::$G['db']['ro']['user'],G::$G['db']['ro']['pass'],G::$G['db']['ro']['name'],null,null,G::$G['db']['tabl'],G::$G['db']['log']);
 	if (mysqli_connect_error()){
 		G::$m=G::$M;

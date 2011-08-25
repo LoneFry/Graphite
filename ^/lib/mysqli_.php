@@ -25,12 +25,30 @@ class mysqli_ extends mysqli {
 	private static $tabl='';
 	//whether to log
 	private static $log=false;
+	//whether connection succeeded
+	private $open=false;
 	
 	public function __construct($host,$user,$pass,$db,$port=null,$sock=null,$tabl='',$log=false){
 		parent::__construct($host,$user,$pass,$db,$port,$sock);
-		self::$tabl=$this->escape_string($tabl);
+		if (!mysqli_connect_error()){
+			$this->open=true;
+			self::$tabl=$this->escape_string($tabl);
+		}
 		self::$log=(bool)$log;
 	}
+	
+	//Destructor that closes connection
+	public function __destruct(){
+		if($this->open){
+			parent::close();
+			$this->open=false;
+		}
+		//mysql::__destruct does not exist, yet...
+		if(method_exists(parent,'__destruct')){
+			parent::__destruct();
+		}
+	}
+
 	public function query($query){
 		if(false===self::$log){
 			return parent::query($query);
