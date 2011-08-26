@@ -23,7 +23,7 @@ class AInstaller extends Actor{
 			G::msg('Installer Disabled','error');
 			return parent::do_403($params);
 		}
-		
+	
 		G::$V->_template='Installer.php';
 		G::$V->_title=G::$V->_siteName.' : Install';
 
@@ -81,7 +81,7 @@ class AInstaller extends Actor{
 			G::msg(ob_get_clean());
 			if($install){
 				G::$G['db']['tabl']=G::$M->escape_string($_POST['Tabl']);
-				if(false===G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` (`login_id` int(11) NOT NULL AUTO_INCREMENT,`loginname` varchar(255) NOT NULL,`password` varchar(40) NOT NULL,`realname` varchar(255) NOT NULL DEFAULT '',`email` varchar(255) NOT NULL DEFAULT '',`comment` varchar(255) NOT NULL DEFAULT '',`sessionStrength` tinyint(1) NOT NULL DEFAULT '2',`lastIP` int(11) NOT NULL DEFAULT '0',`UA` varchar(40) NOT NULL DEFAULT '',`dateModified` int(11) NOT NULL DEFAULT '0',`dateActive` int(11) NOT NULL DEFAULT '0',`dateLogin` int(11) NOT NULL DEFAULT '0',`dateLogout` int(11) NOT NULL DEFAULT '0',`dateCreated` int(11) NOT NULL DEFAULT '0',`referrer_id` int(11) NOT NULL DEFAULT '0',`disabled` bit NOT NULL DEFAULT 0,`flagChangePass` bit NOT NULL DEFAULT 0,PRIMARY KEY (`login_id`),UNIQUE KEY `loginname` (`loginname`))")){
+				if(false===G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` (`login_id` int(11) NOT NULL AUTO_INCREMENT,`loginname` varchar(255) NOT NULL,`password` varchar(40) NOT NULL,`realname` varchar(255) NOT NULL DEFAULT '',`email` varchar(255) NOT NULL DEFAULT '',`comment` varchar(255) NOT NULL DEFAULT '',`sessionStrength` tinyint(1) NOT NULL DEFAULT '2',`lastIP` int(11) UNSIGNED NOT NULL DEFAULT '0',`UA` varchar(40) NOT NULL DEFAULT '',`dateModified` int(11) NOT NULL DEFAULT '0',`dateActive` int(11) NOT NULL DEFAULT '0',`dateLogin` int(11) NOT NULL DEFAULT '0',`dateLogout` int(11) NOT NULL DEFAULT '0',`dateCreated` int(11) NOT NULL DEFAULT '0',`referrer_id` int(11) NOT NULL DEFAULT '0',`disabled` bit NOT NULL DEFAULT 0,`flagChangePass` bit NOT NULL DEFAULT 0,PRIMARY KEY (`login_id`),UNIQUE KEY `loginname` (`loginname`))")){
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'Logins','error');
 				}else{
 					G::msg('Created table '.G::$G['db']['tabl'].'Logins');
@@ -96,7 +96,7 @@ class AInstaller extends Actor{
 				}else{
 					G::msg('Created table '.G::$G['db']['tabl'].'Roles');
 				}
-				if(false===G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."LoginLog` (`pkey` int(11) NOT NULL AUTO_INCREMENT,`login_id` int(11) NOT NULL,`ip` int(11) NOT NULL,`ua` varchar(255) NOT NULL,`iDate` int(11) NOT NULL,PRIMARY KEY (`pkey`))")){
+				if(false===G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."LoginLog` (`pkey` int(11) NOT NULL AUTO_INCREMENT,`login_id` int(11) NOT NULL,`ip` int(11) UNSIGNED NOT NULL,`ua` varchar(255) NOT NULL,`iDate` int(11) NOT NULL,PRIMARY KEY (`pkey`))")){
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'LoginLog','error');
 				}else{
 					G::msg('Created table '.G::$G['db']['tabl'].'LoginLog');
@@ -112,6 +112,12 @@ class AInstaller extends Actor{
 				$L=new Login(array('loginname'=>$_POST['loginname'],'password'=>$_POST['password1'],'email'=>$_POST['siteEmail'],'referrer_id'=>1));
 				if($login_id=$L->insert()){
 					G::msg('Created root user: '.$L->loginname);
+					
+					//clear any open session
+					session_start();
+					$_SESSION=array();
+					session_destroy();
+					
 					G::$S=new Security();
 					G::$S->authenticate($L->loginname,'',sha1(session_id().$L->password));
 				}else{
@@ -210,8 +216,14 @@ if(!isset(G::$G)){header("Location: /");exit;}
 /*****************************************************************************
  * General settings
  ****************************************************************************/
-G::$G['MODE']='prd';
+G::$G['MODE']='prd'; //prd,tst,dev... used to flag debug behaviors
 G::$G['siteEmail']='%2$s';
+
+//Include Path: a list of paths under the webroot to check for included
+//actors, models, templates
+//list in priority order, first found is used
+//for example: G::$G['includePath']='/^MyApp;'.CORE;
+G::$G['includePath']=CORE;
 
 //disable the installer
 G::$G['installer']=false;
@@ -231,6 +243,7 @@ G::$G['db']=array(
 	'tabl'=>'%7$s',
 	'log'=>false
 );
+//leave ['ro']['user'] blank to indicate only RW credentials used
 G::$G['db']['ro']=array(
 	'host'=>G::$G['db']['host'],
 	'user'=>'%8$s',

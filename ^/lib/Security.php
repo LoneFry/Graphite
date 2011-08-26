@@ -137,10 +137,18 @@ class Security{
 			$this->Login->dateLogout=NOW;
 			$this->Login->save();
 			$this->Login=false;
+			$_SESSION=array();
+		
+			// Be thorough, also delete the session cookie
+			if(ini_get("session.use_cookies")){
+				$params=session_get_cookie_params();
+				setcookie(session_name(), '', NOW-86400, $params["path"],
+					$params["domain"], $params["secure"], $params["httponly"]);
+			}
 			session_destroy();
 		}
 	}
-	
+
 	public function close(){
 		session_write_close();
 		if($this->Login)$this->Login->save();
