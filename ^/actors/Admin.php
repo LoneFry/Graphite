@@ -90,7 +90,6 @@ class AAdmin extends Actor{
 			
 			if($insert && $result=$L->insert()){
 				G::msg('Login Added');
-				unset($_POST);
 				return $this->do_LoginEdit(array($L->login_id));
 			}elseif(null===$result){
 				G::msg('Nothing to save.  Try making a change this time.');
@@ -121,7 +120,8 @@ class AAdmin extends Actor{
 		$L->load();
 		
 		//handle changes to the Login
-		if (isset($_POST['loginname']) && isset($_POST['realname']) &&
+		if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id &&
+			isset($_POST['loginname']) && isset($_POST['realname']) &&
 		    isset($_POST['pass1']) && isset($_POST['pass2']) &&
 		    isset($_POST['email1']) && isset($_POST['email2']) &&
 		    isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
@@ -231,7 +231,6 @@ class AAdmin extends Actor{
 			
 			if($result=$R->insert()){
 				G::msg('Role Added');
-				unset($_POST);
 				return $this->do_RoleEdit(array($R->role_id));
 			}elseif(null===$result){
 				G::msg('Nothing to save.  Try making a change this time.');
@@ -262,7 +261,8 @@ class AAdmin extends Actor{
 		$R->load();
 		
 		// handle changes to the role
-		if (isset($_POST['label']) && isset($_POST['description']) &&
+		if (isset($_POST['role_id']) && $_POST['role_id']==$L->role_id &&
+			isset($_POST['label']) && isset($_POST['description']) &&
 			isset($_POST['disabled'])
 		){
 			$R->label=$_POST['label'];

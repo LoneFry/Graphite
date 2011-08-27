@@ -43,6 +43,7 @@
             <tr>
                 <td colspan="2" align="center">
                     <input type="submit" value="Submit">
+                    <input type="hidden" name="role_id" value="<?php echo $R->role_id;?>">
                 </td>
             </tr>
         </table>

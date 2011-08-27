@@ -28,7 +28,7 @@
 		//--></script>
 <?php
 if(MODE=='dev'){
-	G::croak($_POST,false);
+	if(isset($_POST))G::croak($_POST,false);
 	G::croak(G::$M->getQueries(),false);
 }
 ?>
