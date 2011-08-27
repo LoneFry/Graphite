@@ -18,7 +18,9 @@ define('SITE',dirname(dirname(__FILE__)));
 //the RELATIVE path of the core files
 define('CORE',substr(dirname(__FILE__),strlen(SITE)));
 //the ABSOLUTE path of the lib includes
-define('LIB' ,SITE.CORE.'/lib');   
+define('LIB' ,SITE.CORE.'/lib');
+//Graphite Version indicator, for scripts interacting herewith
+define('GVER',5);
 
 //to save from having to work around magic quotes, just refuse to work with it
 if(get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
