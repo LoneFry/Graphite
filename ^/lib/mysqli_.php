@@ -39,16 +39,18 @@ class mysqli_ extends mysqli {
 	
 	//Destructor that closes connection
 	public function __destruct(){
+		$this->close();
+		//mysqli::__destruct does not exist, yet...
+		method_exists('mysqli','__destruct') && parent::__destruct();
+	}
+
+	public function close(){
 		if($this->open){
 			parent::close();
 			$this->open=false;
 		}
-		//mysql::__destruct does not exist, yet...
-		if(method_exists(parent,'__destruct')){
-			parent::__destruct();
-		}
 	}
-
+	
 	public function query($query){
 		if(false===self::$log){
 			return parent::query($query);
