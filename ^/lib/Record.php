@@ -209,7 +209,11 @@ abstract class Record {
 		$query='';
 		foreach(static::$vars as $k => $v){
 			if(null!==$this->vals[$k]){
-				$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+				if('b'==static::$vars[$k]['type']){
+					$query.=" AND t.`$k`=".($this->vals[$k]?'1':'0');
+				}else{
+					$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+				}
 			}
 		}
 		
@@ -250,7 +254,11 @@ abstract class Record {
 		$query='';
 		foreach(static::$vars as $k => $v){
 			if(null!==$this->vals[$k]){
-				$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+				if('b'==static::$vars[$k]['type']){
+					$query.=" AND t.`$k`=".($this->vals[$k]?'1':'0');
+				}else{
+					$query.=" AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+				}
 			}
 		}
 		
@@ -372,12 +380,11 @@ abstract class Record {
 				|| (true===$this->vals[$k])!=(true===$this->DBvals[$k])
 				|| (false===$this->vals[$k])!=(false===$this->DBvals[$k])
 			){
-				//since DBvals is all null at this point, a != val won't be
-				//if(null===$this->vals[$k]){
-				//	$query.='`'.$k."`=NULL,";
-				//}else{
-					$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
-				//}
+				if('b'==static::$vars[$k]['type']){
+					$query.=" `$k`=".($this->vals[$k]?'1':'0').',';
+				}else{
+					$query.=" `$k`='".G::$M->escape_string($this->vals[$k])."',";
+				}
 			}
 		}
 
@@ -435,6 +442,8 @@ abstract class Record {
 			){
 				if(null===$this->vals[$k]){
 					$query.='`'.$k."`=NULL,";
+				}elseif('b'==static::$vars[$k]['type']){
+					$query.='`'.$k.'`='.($this->vals[$k]?'1':'0').',';
 				}else{
 					$query.='`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
 				}
