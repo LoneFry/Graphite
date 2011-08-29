@@ -9,13 +9,13 @@
 		<div class="fright" style="width:50%;">
 <?php } ?>
 			<h2 class="tcenter">Check In Below</h2> 
-			<p class="tcenter"><?php echo $msg; ?></p>
+			<p class="tcenter"><?php echo isset($msg)?$msg:''; ?></p>
 			<div class="loginForm" id="bodyLogin">
 				<form action="<?php echo $_loginURL; ?>" method="post"
 					onsubmit="if(sha1_vm_test()){this.h.value=hex_sha1(this.s.value+hex_sha1(this.p.value));this.p.value='';return true;}else{return true;}">
 					<div>
 						<label for="loginU2">Username</label>
-						<input id="loginU2" type="text" name="l" value="<?php html($l); ?>">
+						<input id="loginU2" type="text" name="l" value="<?php html(isset($l)?$l:''); ?>">
 					</div>
 					<div>
 						<label for="loginP2">Password</label>
