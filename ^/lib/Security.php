@@ -121,6 +121,7 @@ class Security{
 		//move to $this->close() $Login->save();
 		
 		$_SESSION['login_id']=$Login->login_id;
+		$_SESSION['loginname']=$Login->loginname;
 
 		$this->Login=$Login;
 
