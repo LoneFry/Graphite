@@ -34,7 +34,7 @@ class mysqli_ extends mysqli {
 			$this->open=true;
 			self::$tabl=$this->escape_string($tabl);
 		}
-		self::$log=(bool)$log;
+		self::$log=$log;
 	}
 	
 	//Destructor that closes connection
@@ -52,7 +52,7 @@ class mysqli_ extends mysqli {
 	}
 	
 	public function query($query){
-		if(false===self::$log){
+		if(!self::$log){
 			return parent::query($query);
 		}
 
@@ -80,8 +80,14 @@ class mysqli_ extends mysqli {
 		//assemble log: query time, query, call stack, rows affected/selected
 		$t=array($t,$query,$s,$this->affected_rows);
 		//if there was an error, log that too
-		if(''!=$this->error)$t[]=$this->error;
-		if($this->errno)$t[]=$this->errno;
+		if($this->errno){
+			$t[]=$this->error;
+			$t[]=$this->errno;
+			//report error on PHP error log
+			if(self::$log >= 2){
+				trigger_error(print_r($t,1));
+			}
+		}
 		//append to log
 		self::$aQueries[]=$t;
 		//return result as normal
@@ -95,7 +101,7 @@ class mysqli_ extends mysqli {
 			case 'table':return self::$tabl;
 			case 'log':return self::$log;
 			default:
-				$d = debug_backtrace();
+				$d=debug_backtrace();
 				trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'],E_USER_NOTICE);
 				return null;
 		}
