@@ -82,4 +82,17 @@ final class G{
 		echo '</div></pre>';
 		if($die)exit;
 	}
+	
+	/*
+	 * close Security and mysqli objects in proper order
+	 * This should be called before PHP cleanup to close things in order
+	 * register_shutdown_function() is one way to do this.
+	 */
+	public static function close(){
+		if(G::$S)G::$S->close();
+		if(G::$M)G::$M->close();
+		if(G::$m)G::$m->close();
+	}
 }
+//register G::close() to be called at shutdown
+register_shutdown_function('G::close');
