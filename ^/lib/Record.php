@@ -23,7 +23,7 @@ require_once LIB.'/DataModel.php';
  */
 abstract class Record extends DataModel{
 	protected $DBvals=array();//instance DB values of vars defined in $vars
-	protected $loaded=false;//update() won't run unless this is set by load()
+	
 	//Should be defined in subclasses
 	//protected static $table;//name of table
 	//protected static $pkey;//name of primary key column
@@ -126,7 +126,6 @@ abstract class Record extends DataModel{
 			unset($row[$k]);
 		}
 		$this->onload();
-		$this->loaded=true;
 		return $row;
 	}
 	
@@ -171,7 +170,6 @@ abstract class Record extends DataModel{
 			unset($row[$k]);
 		}
 		$this->onload();
-		$this->loaded=true;
 		return $row;
 	}
 	
@@ -342,11 +340,6 @@ abstract class Record extends DataModel{
 	 * $save flag set if any field changed
 	 */
 	public function update(){
-		//refuse to save unload()ed records to protected data integrity
-		if($this->loaded!==true){
-			throw new Exception('Record class refuses to update record which was not loaded: '.get_called_class().':'.$this->vals[static::$pkey]);
-		}
-
 		$query='UPDATE `'.static::$table.'` SET ';
 		$save=false;
 		foreach(static::$vars as $k => $v){
