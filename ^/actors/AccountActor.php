@@ -8,14 +8,14 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Account.php
+ * File        : /^/actors/AccountActor.php
  *                Account Actor class - performs user account related actions
  ****************************************************************************/
 
 //CORE should be defined as evidence we are not requested directly
 if(!defined('CORE')){header("Location: /");exit;}
 
-class AAccount extends Actor{
+class AccountActor extends Actor{
 	protected $action='login';
 	
 	public function do_login($params){

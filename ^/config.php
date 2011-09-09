@@ -64,7 +64,7 @@ G::$G['CON']['URL']='/';
 
 //Defaults
 G::$G['CON']['actor']='Installer';
-G::$G['CON']['actor404']='404';
+G::$G['CON']['actor404']='Default';
 
 //Passed Values
     if(isset($_GET['actor']))        G::$G['CON']['actor']=$_GET['actor'];

@@ -8,14 +8,14 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Admin.php
+ * File        : /^/actors/AdminActor.php
  *                Admin Actor class - performs Administrative actions
  ****************************************************************************/
 
 //CORE should be defined as evidence we are not requested directly
 if(!defined('CORE')){header("Location: /");exit;}
 
-class AAdmin extends Actor{
+class AdminActor extends Actor{
 	protected $action='list';
 
 	public function do_list($params){
