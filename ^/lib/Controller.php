@@ -17,9 +17,9 @@
 if(!defined('CORE')){header("Location: /");exit;}
 
 class Controller {
-	protected $actor='404';
+	protected $actor='Default';
 	protected $actorPath='';
-	protected $actor404='404';
+	protected $actor404='Default';
 	protected $actor404Path='';
 	protected $action='';
 	protected $includePath=array();
@@ -69,7 +69,7 @@ class Controller {
 	public function actor404(){
 		if(0<count($a=func_get_args())){
 			foreach($this->includePath as $v){
-				$s=realpath($v.$a[0].'.php');
+				$s=realpath($v.$a[0].'Actor.php');
 				if(false!==strpos($s,$v) && file_exists($s)){
 					$this->actor404=$a[0];
 					$this->actor404Path=$v;
@@ -85,7 +85,7 @@ class Controller {
 	public function actor(){
 		if(0<count($a=func_get_args())){
 			foreach($this->includePath as $v){
-				$s=realpath($v.$a[0].'.php');
+				$s=realpath($v.$a[0].'Actor.php');
 				if(false!==strpos($s,$v) && file_exists($s)){
 					$this->actor=$a[0];
 					$this->actorPath=$v;
@@ -102,8 +102,8 @@ class Controller {
 	//Perform specified action in specified Actor
 	public function Act(){
 		require_once LIB.'/Actor.php';
-		require_once $this->actorPath.$this->actor.'.php';
-		$Actor='A'.$this->actor;
+		require_once $this->actorPath.$this->actor.'Actor.php';
+		$Actor=$this->actor.'Actor';
 		$Actor=new $Actor($this->params);
 		if(''!=$this->action)$Actor->action=$this->action;
 		$Actor->act($this->params);

@@ -8,14 +8,14 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Home.php
+ * File        : /^/actors/HomeActor.php
  *                A default Actor class
  ****************************************************************************/
 
 //CORE should be defined as evidence we are not requested directly
 if(!defined('CORE')){header("Location: /");exit;}
 
-class AHome extends Actor{
+class HomeActor extends Actor{
 	protected $action='home';
 	
 	public function do_home($params){

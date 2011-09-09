@@ -8,14 +8,14 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Installer.php
+ * File        : /^/actors/InstallerActor.php
  *                Account Actor class - performs user account related actions
  ****************************************************************************/
 
 //CORE should be defined as evidence we are not requested directly
 if(!defined('CORE')){header("Location: /");exit;}
 
-class AInstaller extends Actor{
+class InstallerActor extends Actor{
 	protected $action='install';
 	
 	public function do_install($params){
