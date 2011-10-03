@@ -344,7 +344,7 @@ abstract class DataModel {
 				}
 			}else{
 				if((!isset(static::$vars[$k]['min']) || !is_numeric(static::$vars[$k]['min']) || strlen($v)>=static::$vars[$k]['min'])){
-					$this->vals[$k]=isset(static::$vars[$k]['max'])&&static::$vars[$k]['max']>strlen($v)?$v=substr($v,0,static::$vars[$k]['max']):$v;
+					$this->vals[$k]=isset(static::$vars[$k]['max'])&&static::$vars[$k]['max']<strlen($v)?$v=substr($v,0,static::$vars[$k]['max']):$v;
 				}
 			}
 		}
