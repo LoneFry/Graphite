@@ -612,6 +612,60 @@ abstract class DataModel {
 		return $this->vals[$k];
 	}
 
+	/**
+	 * Objects
+	 * stores a php object with serialize()
+	 * does not verify value is an object, will serialize anything
+	 * verifies serialized string does not exceed specified max length
+	 */
+	protected function _o($k) {
+		//$k is a valid var?
+		if (!isset(static::$vars[$k])) {
+			$trace = debug_backtrace();
+			trigger_error('Undefined property via __set(): '.$k
+				.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
+				E_USER_NOTICE);
+			return null;
+		}
+		if (1 < count($a = func_get_args())) {
+			$v = serialize($a[1]);
+			if (!isset(static::$vars[$k]['max'])
+				|| !is_numeric(static::$vars[$k]['max'])
+				|| strlen($v) <= static::$vars[$k]['max']
+			) {
+				$this->vals[$k] = $v;
+			}
+		}
+		return unserialize($this->vals[$k]);
+	}
+
+	/**
+	 * JSON
+	 * stores a value with json_encode()
+	 * does not verify value, encode anything, not suitable for objects
+	 * verifies encoded string does not exceed specified max length
+	 */
+	protected function _j($k) {
+		//$k is a valid var?
+		if (!isset(static::$vars[$k])) {
+			$trace = debug_backtrace();
+			trigger_error('Undefined property via __set(): '.$k
+				.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
+				E_USER_NOTICE);
+			return null;
+		}
+		if (1 < count($a = func_get_args())) {
+			$v = json_encode($a[1]);
+			if (!isset(static::$vars[$k]['max'])
+				|| !is_numeric(static::$vars[$k]['max'])
+				|| strlen($v) <= static::$vars[$k]['max']
+			) {
+				$this->vals[$k] = $v;
+			}
+		}
+		return json_decode($this->vals[$k]);
+	}
+
 	/** **********************************************************************
 	 * END Type specific combined Getter/Setter functions
 	 ************************************************************************/
