@@ -326,6 +326,9 @@ abstract class DataModel {
 		}
 		if (1 < count($a = func_get_args())) {
 			$v = $a[1];
+			$strict = isset(static::$vars[$k]['strict'])
+				&& static::$vars[$k]['strict'];
+
 			if (!isset(static::$vars[$k]['values'])
 				|| !is_array(static::$vars[$k]['values'])
 			) {
@@ -333,11 +336,11 @@ abstract class DataModel {
 				trigger_error('Enum values not found for var: '.$k
 					.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
 					E_USER_NOTICE);
-			} elseif (in_array($v, static::$vars[$k]['values'])) {
-				$this->vals[$k] = $v;
-			} elseif (!isset(static::$vars[$k]['strict'])
-				|| !static::$vars[$k]['strict']
+			} elseif (false !== $i = array_search($v,
+										static::$vars[$k]['values'], $strict)
 			) {
+				$this->vals[$k] = static::$vars[$k]['values'][$i];
+			} elseif (!$strict) {
 				$this->vals[$k] = static::$vars[$k]['values'][0];
 			}
 		}
