@@ -71,13 +71,13 @@ abstract class Report extends DataModel {
     }
     public function __set($k,$v){
     	if('_start'==$k && is_numeric($v)){
-    		return $this->$_start=(int)$v;
+    		return $this->_start=(int)$v;
     	}
     	if('_count'==$k && is_numeric($v)){
-    		return $this->$_count=(int)$v;
+    		return $this->_count=(int)$v;
     	}
     	if('_order'==$k && in_array($v,$this->_orders)){
-    		return $this->$_count=$v;
+    		return $this->_count=$v;
     	}
 		
 		return parent::__set($k,$v);
