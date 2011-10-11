@@ -628,7 +628,14 @@ abstract class DataModel {
 			return null;
 		}
 		if (1 < count($a = func_get_args())) {
-			$v = serialize($a[1]);
+			// Do not serialize serialized strings
+			if (is_string($a[1]) 
+				&& ($a[1] == serialize(false) || false !== @unserialize($a[1]))
+			) {
+				$v = $a[1];
+			} else {
+				$v = serialize($a[1]);
+			}
 			if (!isset(static::$vars[$k]['max'])
 				|| !is_numeric(static::$vars[$k]['max'])
 				|| strlen($v) <= static::$vars[$k]['max']
@@ -655,7 +662,14 @@ abstract class DataModel {
 			return null;
 		}
 		if (1 < count($a = func_get_args())) {
-			$v = json_encode($a[1]);
+			// Do not serialize serialized strings
+			if (is_string($a[1]) 
+				&& ($a[1] == json_encode(null) || null !== @json_decode($a[1]))
+			) {
+				$v = $a[1];
+			} else {
+				$v = json_encode($a[1]);
+			}
 			if (!isset(static::$vars[$k]['max'])
 				|| !is_numeric(static::$vars[$k]['max'])
 				|| strlen($v) <= static::$vars[$k]['max']
