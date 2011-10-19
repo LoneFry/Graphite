@@ -104,8 +104,7 @@ class Controller {
 		require_once LIB.'/Actor.php';
 		require_once $this->actorPath.$this->actor.'Actor.php';
 		$Actor=$this->actor.'Actor';
-		$Actor=new $Actor($this->params);
-		if(''!=$this->action)$Actor->action=$this->action;
+		$Actor=new $Actor($this->action, $this->params);
 		$Actor->act($this->params);
 	}
 }
