@@ -24,7 +24,11 @@ if(!defined('CORE')){header("Location: /");exit;}
 abstract class Actor { //perform action requested of controller
 	protected $action='404';
 	
-	public function __construct(){}
+	public function __construct($action='', $params=array()){
+		if ('' != $action) {
+			$this->action($action);
+		}
+	}
 	
 	public function do_404($params){
 		header("HTTP/1.0 404 File Not Found");
