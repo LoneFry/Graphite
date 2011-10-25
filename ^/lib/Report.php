@@ -84,10 +84,6 @@ abstract class Report extends DataModel {
 		if (false === $result = G::$m->query($query)) {
 			return false;
 		}
-		if (0 == $result->num_rows) {
-			$result->close();
-			return $this->_data;
-		}
 		while ($row=$result->fetch_assoc()) {
 			$this->_data[] = $row;
 		}
