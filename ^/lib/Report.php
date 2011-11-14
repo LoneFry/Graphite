@@ -62,7 +62,7 @@ abstract class Report extends DataModel {
 		$this->_data = array();
 		$query = array();
 		foreach (static::$vars as $k =>$v) {
-			if (isset($this->vals[$k]) && null != $this->vals[$k]) {
+			if (isset($this->vals[$k]) && null !== $this->vals[$k]) {
 				$query[] = sprintf($v['sql'],
 									G::$m->escape_string($this->vals[$k]));
 			}
