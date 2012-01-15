@@ -45,22 +45,22 @@ class Controller {
 		if(isset($cfg['path'])){
 			$a=explode('/',trim($cfg['path'],'/'));
 			if(count($a) > 0){$this->actor(urldecode(array_shift($a)));}
-			if(count($a) > 0){$this->action=urldecode(array_shift($a));}
+			if(count($a) > 0){$this->action(urldecode(array_shift($a)));}
 			$this->params=$a;//what's left of the request path
+			
+			//If we have other params, pair them up and add them to the _GET array
+			//Yes, this will result in redundancy: paired and unpaired; intentional
+			//I wonder if this belongs elsewhere
+			if(0<count($this->params)){
+				$a=$this->params;
+				while(count($a) > 0){$this->params[urldecode(array_shift($a))]=urldecode(array_shift($a));}
+				$_GET=$_GET+$this->params;//add params to _GET array without overriding
+			}
 		}else{
 			//If Path was not passed, check for individual configs
 			if(isset($cfg['actor'])){$this->actor($cfg['actor']);}
-			if(isset($cfg['action'])){$this->action=$cfg['action'];}
-			if(isset($cfg['params'])){$this->params=explode('/',trim($cfg['params'],'/'));}
-		}
-		
-		//If we have other params, pair them up and add them to the _GET array
-		//Yes, this will result in redundancy: paired and unpaired; intentional
-		//I wonder if this belongs elsewhere
-		if(0<count($this->params)){
-			$a=$this->params;
-			while(count($a) > 0){$this->params[urldecode(array_shift($a))]=urldecode(array_shift($a));}
-			$_GET=$_GET+$this->params;//add params to _GET array without overriding
+			if(isset($cfg['action'])){$this->action($cfg['action']);}
+			if(isset($cfg['params'])){$this->params=$cfg['params'];}
 		}
 	}
 	
@@ -97,6 +97,20 @@ class Controller {
 			}
 		}
 		return $this->actor;
+	}
+
+	//Set action if exists in chosen actor, else set actor to 404
+	public function action() {
+		if (0 < count($a = func_get_args())) {
+			require_once LIB.'/Actor.php';
+			require_once $this->actorPath.$this->actor.'Actor.php';
+			if (method_exists($this->actor.'Actor', 'do_'.$a[0])) {
+				$this->action = $a[0];
+			} else {
+				$this->actor = $this->actor404;
+				$this->actorPath = $this->actor404Path;
+			}
+		}
 	}
 	
 	//Perform specified action in specified Actor
