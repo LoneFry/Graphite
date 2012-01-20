@@ -30,7 +30,7 @@
 					</div>
 				</form>
 			</div>
-			<p class="tcenter"><a href="/index.php/Account/recover">Forgot Password?</a></p>
+			<p class="tcenter"><a href="<?php echo CONT; ?>Account/recover">Forgot Password?</a></p>
 <?php if($_login_id){ ?>
 		</div>
 <?php } ?>
