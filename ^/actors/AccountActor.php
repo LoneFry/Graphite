@@ -69,9 +69,10 @@ class AccountActor extends Actor{
 			}else{
 				$Login->password=$password='resetMe'.floor(rand(100,999));
 				$Login->flagChangePass=1;
-				if(false===$Login->save()){
+				$r = $Login->save();
+				if(false === $r){
 					G::$V->msg='An Error occured trying to update your account.';
-				}elseif(null===$Login->save()){
+				}elseif(null === $r){
 					G::$V->msg='No changes detected, not trying to update your account.';
 				}else{
 					$to=$Login->email;
