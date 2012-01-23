@@ -25,7 +25,7 @@ G::$G['siteEmail']='apache@localhost';
 G::$G['MODE']='prd';
 //includePath relative to SITE
 //each class will append it's own sub directory to each path
-G::$G['includePath']=CORE.'Tree;'.CORE;
+G::$G['includePath']=CORE.'CLI;'.CORE;
 
 //enable the installer -- reverse this when installed
 G::$G['installer']=true;
@@ -113,6 +113,25 @@ G::$G['VIEW']['_Lbl']=isset($_POST['_Lbl'])?$_POST['_Lbl']:'to the page you requ
 
 
 /*****************************************************************************
+ * Per-Application Default Settings
+ *  Check each ^directory/ for a config
+ *  Each application config should limit itself to G::$G[APPNAME]
+ ****************************************************************************/
+if ($_dir = opendir(SITE)) {
+	while (false !== $_file = readdir($_dir)) {
+		if ('^' == $_file[0] && '^' != $_file) {
+			if (file_exists(SITE.'/'.$_file.'/config.php')) {
+				include_once SITE.'/'.$_file.'/config.php';
+			}
+		}
+	}
+}
+/*****************************************************************************
+ * /Per-Application Settings
+ ****************************************************************************/
+
+
+/*****************************************************************************
  * Per-Domain Settings for multi-domain sites
  *  If you are not hosting a site on multiple domains, you can safely
  *  use this file as your only configuration file
@@ -125,4 +144,3 @@ if(file_exists(dirname(SITE).'/siteConfigs/config.'.$_SERVER['SERVER_NAME'].'.ph
 /*****************************************************************************
  * /Per-Domain Settings for multi-domain sites
  ****************************************************************************/
-
