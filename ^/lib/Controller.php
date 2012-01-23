@@ -26,6 +26,9 @@ class Controller {
 	protected $params=array();
 
 	function __construct($cfg){
+		//set hard default for actor paths
+		$this->actorPath = $this->actor404Path = SITE.CORE.'/actors/';
+
 		//Check for and validate location of Actors
 		if(isset(G::$G['includePath'])){
 			foreach(explode(';',G::$G['includePath']) as $v){
