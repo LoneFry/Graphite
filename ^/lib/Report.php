@@ -110,14 +110,23 @@ abstract class Report extends DataModel {
 	 * handle start,count,order, pass the rest upwards
 	 */
 	public function __set($k, $v) {
-		if ('_start' == $k && is_numeric($v)) {
-			return $this->_start = (int)$v;
+		if ('_start' == $k) {
+			if (is_numeric($v)) {
+				$this->_start = (int)$v;
+			}
+			return $this->_start;
 		}
-		if ('_count' == $k && is_numeric($v)) {
-			return $this->_count = (int)$v;
+		if ('_count' == $k) {
+			if (is_numeric($v)) {
+				$this->_count = (int)$v;
+			}
+			return $this->_count;
 		}
-		if ('_order' == $k && in_array($v, $this->_orders)) {
-			return $this->_order = $v;
+		if ('_order' == $k) {
+			if (in_array($v, $this->_orders)) {
+				$this->_order = $v;
+			}
+			return $this->_order;
 		}
 
 		return parent::__set($k, $v);
