@@ -43,6 +43,12 @@ abstract class Report extends DataModel {
 	protected $_orders = array();
 
 	/**
+	 * ASC/DESC specifier of ORDER BY
+	 * true is ASC, false is DESC
+	 */
+	protected $_asc = true;
+
+	/**
 	 * constructor accepts three prototypes:
 	 * __construct(true) will create an instance with default values
 	 * __construct(array()) will create an instance with supplied values
@@ -75,7 +81,8 @@ abstract class Report extends DataModel {
 
 		//if an order has been set, add it to the query
 		if (null!==$this->_order) {
-			$query .= ' ORDER BY `'.$this->_order.'`';
+			$query .= ' ORDER BY `'.$this->_order.'` '
+				.($this->_asc ? 'ASC' : 'DESC');
 		}
 
 		//add limits also
@@ -127,6 +134,9 @@ abstract class Report extends DataModel {
 				$this->_order = $v;
 			}
 			return $this->_order;
+		}
+		if ('_asc' == $k) {
+			return $this->_asc = ('asc' == $v || true === $v || 1 == $v);
 		}
 
 		return parent::__set($k, $v);
