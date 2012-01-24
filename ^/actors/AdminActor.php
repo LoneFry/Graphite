@@ -261,7 +261,7 @@ class AdminActor extends Actor{
 		$R->load();
 		
 		// handle changes to the role
-		if (isset($_POST['role_id']) && $_POST['role_id']==$L->role_id &&
+		if (isset($_POST['role_id']) && $_POST['role_id']==$R->role_id &&
 			isset($_POST['label']) && isset($_POST['description']) &&
 			isset($_POST['disabled'])
 		){
