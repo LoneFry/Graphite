@@ -86,6 +86,12 @@ abstract class Record extends DataModel{
 		return static::$table;
 	}
 
+	/**
+	 * Override this function to perform custom actions AFTER load
+	 * $row will be an array with unregistered values selected in load()
+	 */
+	public function onload($row = array()) {}
+
 	/* load object from database
 	 *  if pkey is not set, assume fill(), else select()
 	 */
@@ -125,7 +131,7 @@ abstract class Record extends DataModel{
 			$this->DBvals[$k]=$this->vals[$k];
 			unset($row[$k]);
 		}
-		$this->onload();
+		$this->onload($row);
 		return $row;
 	}
 	
@@ -169,7 +175,7 @@ abstract class Record extends DataModel{
 			$this->DBvals[$k]=$this->vals[$k];
 			unset($row[$k]);
 		}
-		$this->onload();
+		$this->onload($row);
 		return $row;
 	}
 	
