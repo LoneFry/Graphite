@@ -60,11 +60,6 @@ abstract class DataModel {
 	}
 
 	/**
-	 * Override this function to perform custom actions AFTER load
-	 */
-	public function onload() {}
-
-	/**
 	 * load object from database
 	 */
 	public abstract function load();

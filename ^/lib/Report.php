@@ -62,6 +62,11 @@ abstract class Report extends DataModel {
 	}
 
 	/**
+	 * Override this function to perform custom actions AFTER load
+	 */
+	public function onload() {}
+
+	/**
 	 * run the report query with defined params and set results in $this->_data
 	 */
 	public function load() {
