@@ -14,9 +14,6 @@
  * Actors are dispatched by the Controller
  ****************************************************************************/
 
-//CORE should be defined as evidence we are not requested directly
-if(!defined('CORE')){header("Location: /");exit;}
-
 /* 
  * Actor class - used as a base class for MVC Actor classes
  * a trivial example extension is in 404.php

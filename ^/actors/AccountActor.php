@@ -12,9 +12,6 @@
  *                Account Actor class - performs user account related actions
  ****************************************************************************/
 
-//CORE should be defined as evidence we are not requested directly
-if(!defined('CORE')){header("Location: /");exit;}
-
 class AccountActor extends Actor{
 	protected $action='login';
 	

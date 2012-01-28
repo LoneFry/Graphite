@@ -13,9 +13,6 @@
  *                dispatches Actors to perform requested Actions
  ****************************************************************************/
 
-//CORE should be defined as evidence we are not requested directly
-if(!defined('CORE')){header("Location: /");exit;}
-
 class Controller {
 	protected $actor='Default';
 	protected $actorPath='';

@@ -4,3 +4,7 @@ RewriteEngine on
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+) /^/index.php?path=$1 [QSA,L]
+
+##for preventing direct access to core files
+RewriteRule ^(\^/lib|\^/models|\^/actors|\^/templates|\^/config\.php|\^/includeme.php) /^/index.php?path=$1 [QSA,L]
+

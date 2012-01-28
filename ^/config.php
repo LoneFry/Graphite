@@ -12,9 +12,6 @@
  *                website core configuration file
  ****************************************************************************/
 
-//CORE should be defined as evidence we are not requested directly
-if(!defined('CORE')){header("Location: /");exit;}
-
 if(!isset(G::$G))G::$G=array('startTime'=>NOW);
 
 /*****************************************************************************
