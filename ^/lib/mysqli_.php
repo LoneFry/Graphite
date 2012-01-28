@@ -12,9 +12,6 @@
  *                mysqli query-logging wrapper
  ****************************************************************************/
 
-//CORE should be defined as evidence we are not requested directly
-if(!defined('CORE')){header("Location: /");exit;}
-
 /* 
  * mysqli_ class - extend mysqli to add querylogging
  */
