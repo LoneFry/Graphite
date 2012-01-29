@@ -13,10 +13,10 @@
  ****************************************************************************/
 
 require_once __DIR__.'/includeme.php';
-require_once LIB.'/Controller.php';
+require_once LIB.'/Dispatcher.php';
 require_once LIB.'/View.php';
 
-G::$C = new Controller(G::$G['CON']);
+G::$C = new Dispatcher(G::$G['CON']);
 G::$V = new View(G::$G['VIEW']);
 G::$C->Act();
 G::$V->_login_id  = G::$S && G::$S->Login ? G::$S->Login->login_id  : 0;

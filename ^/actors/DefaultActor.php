@@ -8,9 +8,9 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/DefaultActor.php
- *                default actor, leans on Actor's defaults
+ * File        : /^/controllers/DefaultController.php
+ *                default controller, leans on Controller's defaults
  ****************************************************************************/
 
-class DefaultActor extends Actor {
+class DefaultController extends Controller {
 }

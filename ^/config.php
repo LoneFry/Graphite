@@ -56,18 +56,18 @@ G::$G['db']['ro'] = array(
 
 
 /** **************************************************************************
- * Settings for the Controller
+ * Settings for the Dispatcher
  ****************************************************************************/
 //Paths
 G::$G['CON']['URL'] = '/';
 
 //Defaults
-G::$G['CON']['actor'] = 'Installer';
-G::$G['CON']['actor404'] = 'Default';
+G::$G['CON']['controller'] = 'Installer';
+G::$G['CON']['controller404'] = 'Default';
 
 //Passed Values
-if (isset($_GET['actor'])) {
-	G::$G['CON']['actor']=$_GET['actor'];
+if (isset($_GET['controller'])) {
+	G::$G['CON']['controller']=$_GET['controller'];
 }
 if (isset($_GET['action'])) {
 	G::$G['CON']['action']=$_GET['action'];
@@ -83,7 +83,7 @@ if (isset($_SERVER['PATH_INFO'])) {
 	G::$G['CON']['path']=$_GET['path'];
 }
 /** **************************************************************************
- * /Settings for the Controller
+ * /Settings for the Dispatcher
  ****************************************************************************/
 
 

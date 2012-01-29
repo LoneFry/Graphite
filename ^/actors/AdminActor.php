@@ -8,11 +8,11 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/AdminActor.php
- *                Admin Actor class - performs Administrative actions
+ * File        : /^/controllers/AdminController.php
+ *                Admin Controller class - performs Administrative actions
  ****************************************************************************/
 
-class AdminActor extends Actor {
+class AdminController extends Controller {
 	protected $action = 'list';
 
 	/**
