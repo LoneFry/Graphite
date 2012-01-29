@@ -18,11 +18,11 @@ class AccountController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_login($params) {
+	public function do_login($argv) {
 		G::$V->_template = 'Account.Login.php';
 		G::$V->_title    = G::$V->_siteName.' : Check-in';
 
@@ -50,11 +50,11 @@ class AccountController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_logout($params) {
+	public function do_logout($argv) {
 		G::$V->_template = 'Account.Logout.php';
 		G::$V->_title    = G::$V->_siteName.' : Check-out';
 
@@ -67,11 +67,11 @@ class AccountController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_recover($params) {
+	public function do_recover($argv) {
 		G::$V->_template = 'Account.Recover.php';
 		G::$V->_title    = G::$V->_siteName.' : Recover Password';
 
@@ -137,15 +137,15 @@ class AccountController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_edit($params) {
+	public function do_edit($argv) {
 		if (!G::$S->Login) {
 			G::$V->_URI = CONT.'Account/edit';
 			G::$V->_Lbl = 'Account Settings';
-			return $this->do_login($params);
+			return $this->do_login($argv);
 		}
 
 		G::$V->_template = 'Account.Edit.php';

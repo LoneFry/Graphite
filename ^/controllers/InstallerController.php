@@ -19,14 +19,14 @@ class InstallerController extends Controller {
 	 * install action - receives configuration details from user and writes
 	 * out configuration file
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_install($params) {
+	public function do_install($argv) {
 		if (true !== G::$G['installer']) {
 			G::msg('Installer Disabled', 'error');
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Installer.php';

@@ -75,6 +75,9 @@ if (isset($_GET['action'])) {
 if (isset($_GET['params'])) {
 	G::$G['CON']['params']=$_GET['params'];
 }
+if (isset($_GET['argv'])) {
+	G::$G['CON']['argv']=$_GET['argv'];
+}
 if (isset($_SERVER['PATH_INFO'])) {
 	G::$G['CON']['path']=$_SERVER['PATH_INFO'];
 } elseif (isset($_POST['path'])) {
