@@ -18,7 +18,7 @@ final class G {
 		$M,            // mysqli object
 		$m,            // mysqli object with read-only connection
 		$V,            // View object
-		$C,            // Controller object
+		$C,            // Dispatcher object
 		$S,            // Security / Session object
 		$G = array();  // Gonfiguration array
 

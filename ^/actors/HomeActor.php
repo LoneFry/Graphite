@@ -8,11 +8,11 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/HomeActor.php
- *                A default Actor class
+ * File        : /^/controllers/HomeController.php
+ *                A default Controller class
  ****************************************************************************/
 
-class HomeActor extends Actor {
+class HomeController extends Controller {
 	protected $action = 'home';
 
 	/**

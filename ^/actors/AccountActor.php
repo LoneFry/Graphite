@@ -8,11 +8,11 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/AccountActor.php
- *                Account Actor class - performs user account related actions
+ * File        : /^/controllers/AccountController.php
+ *                Account Controller class - performs user account related actions
  ****************************************************************************/
 
-class AccountActor extends Actor {
+class AccountController extends Controller {
 	protected $action = 'login';
 
 	/**

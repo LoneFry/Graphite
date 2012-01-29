@@ -8,11 +8,11 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/InstallerActor.php
- *                Account Actor class - performs user account related actions
+ * File        : /^/controllers/InstallerController.php
+ *                Account Controller class - performs user account related actions
  ****************************************************************************/
 
-class InstallerActor extends Actor {
+class InstallerController extends Controller {
 	protected $action = 'install';
 
 	/**
@@ -293,7 +293,7 @@ G::$G['MODE'] = 'prd'; //prd,tst,dev... used to flag debug behaviors
 G::$G['siteEmail'] = '%2$s';
 
 //Include Path: a list of paths under the webroot to check for included
-//actors, models, templates
+//controllers, models, templates
 //list in priority order, first found is used
 //for example: G::$G['includePath'] = '/^MyApp;'.CORE;
 G::$G['includePath'] = CORE;
@@ -329,11 +329,11 @@ G::$G['db']['ro'] = array(
 
 
 /** **************************************************************************
- * Settings for the Controller
+ * Settings for the Dispatcher
  ****************************************************************************/
-G::$G['CON']['actor'] = 'Home';
+G::$G['CON']['controller'] = 'Home';
 /** **************************************************************************
- * /Settings for the Controller
+ * /Settings for the Dispatcher
  ****************************************************************************/
 
 

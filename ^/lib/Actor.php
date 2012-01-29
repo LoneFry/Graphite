@@ -8,21 +8,21 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/actors/Actor.php
- *                Actor base class
+ * File        : /^/controllers/Controller.php
+ *                Controller base class
  *
- * Actors are dispatched by the Controller
+ * Controllers are dispatched by the Dispatcher
  ****************************************************************************/
 
 /**
- * Actor class - used as a base class for MVC Actor classes
+ * Controller class - used as a base class for MVC Controller classes
  * a trivial example extension is in 404.php
  */
-abstract class Actor {
+abstract class Controller {
 	protected $action = '404';
 
 	/**
-	 * Actor constructor
+	 * Controller constructor
 	 *
 	 * @param string $action Action to be performed
 	 * @param array  $params request parameters

@@ -33,7 +33,7 @@ class View {
 	 * @param array $cfg Configuration array
 	 */
 	function __construct($cfg) {
-		//Check for and validate location of Actors
+		//Check for and validate location of Controllers
 		if (isset(G::$G['includePath'])) {
 			foreach (explode(';', G::$G['includePath']) as $v) {
 				$s = realpath(SITE.$v.'/templates');

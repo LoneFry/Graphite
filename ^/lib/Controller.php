@@ -8,51 +8,51 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/lib/Controller.php
- *                core Controller
- *                dispatches Actors to perform requested Actions
+ * File        : /^/lib/Dispatcher.php
+ *                core Dispatcher
+ *                dispatches Controllers to perform requested Actions
  ****************************************************************************/
 
-class Controller {
-	protected $actor        = 'Default';
-	protected $actorPath    = '';
-	protected $actor404     = 'Default';
-	protected $actor404Path = '';
+class Dispatcher {
+	protected $controller        = 'Default';
+	protected $controllerPath    = '';
+	protected $controller404     = 'Default';
+	protected $controller404Path = '';
 	protected $action       = '';
 	protected $includePath  = array();
 	protected $params       = array();
 
 	/**
-	 * Controller Constructor
+	 * Dispatcher Constructor
 	 *
 	 * @param array $cfg Configuration array
 	 */
 	function __construct($cfg) {
-		//set hard default for actor paths
-		$this->actorPath = $this->actor404Path = SITE.CORE.'/actors/';
+		//set hard default for controller paths
+		$this->controllerPath = $this->controller404Path = SITE.CORE.'/controllers/';
 
-		//Check for and validate location of Actors
+		//Check for and validate location of Controllers
 		if (isset(G::$G['includePath'])) {
 			foreach (explode(';', G::$G['includePath']) as $v) {
-				$s = realpath(SITE.$v.'/actors');
+				$s = realpath(SITE.$v.'/controllers');
 				if (file_exists($s)) {
 					$this->includePath[] = $s.'/';
 				}
 			}
 		}
 		if (0 == count($this->includePath)) {
-			$this->includePath[] = SITE.CORE.'/actors/';
+			$this->includePath[] = SITE.CORE.'/controllers/';
 		}
 
 		//set config default first, incase passed path is not found
-		if (isset($cfg['actor404'])) {
-			$this->actor404($cfg['actor404']);
+		if (isset($cfg['controller404'])) {
+			$this->controller404($cfg['controller404']);
 		}
 		//Path based requests take priority, check for path and parse
 		if (isset($cfg['path'])) {
 			$a = explode('/', trim($cfg['path'], '/'));
 			if (count($a) > 0) {
-				$this->actor(urldecode(array_shift($a)));
+				$this->controller(urldecode(array_shift($a)));
 			}
 			if (count($a) > 0) {
 				$this->action(urldecode(array_shift($a)));
@@ -72,8 +72,8 @@ class Controller {
 			}
 		} else {
 			//If Path was not passed, check for individual configs
-			if (isset($cfg['actor'])) {
-				$this->actor($cfg['actor']);
+			if (isset($cfg['controller'])) {
+				$this->controller($cfg['controller']);
 			}
 			if (isset($cfg['action'])) {
 				$this->action($cfg['action']);
@@ -85,76 +85,76 @@ class Controller {
 	}
 
 	/**
-	 * Set and return 404 actor name
-	 * Verifies Actor file exists in configured location
+	 * Set and return 404 controller name
+	 * Verifies Controller file exists in configured location
 	 *
-	 * @return string name of 404 actor
+	 * @return string name of 404 controller
 	 */
-	public function actor404() {
+	public function controller404() {
 		if (0 < count($a = func_get_args())) {
 			foreach ($this->includePath as $v) {
-				$s = realpath($v.$a[0].'Actor.php');
+				$s = realpath($v.$a[0].'Controller.php');
 				if (false !== strpos($s, $v) && file_exists($s)) {
-					$this->actor404 = $a[0];
-					$this->actor404Path = $v;
+					$this->controller404 = $a[0];
+					$this->controller404Path = $v;
 					break;
 				}
 			}
 		}
-		return $this->actor404;
+		return $this->controller404;
 	}
 
 	/**
-	 * Set and return actor name
-	 * Verifies Actor file exists in configured location
+	 * Set and return controller name
+	 * Verifies Controller file exists in configured location
 	 *
-	 * @return string name of requested actor
+	 * @return string name of requested controller
 	 */
-	public function actor() {
+	public function controller() {
 		if (0 < count($a = func_get_args())) {
 			foreach ($this->includePath as $v) {
-				$s = realpath($v.$a[0].'Actor.php');
+				$s = realpath($v.$a[0].'Controller.php');
 				if (false !== strpos($s, $v) && file_exists($s)) {
-					$this->actor = $a[0];
-					$this->actorPath = $v;
+					$this->controller = $a[0];
+					$this->controllerPath = $v;
 					break;
 				} else {
-					$this->actor = $this->actor404;
-					$this->actorPath = $this->actor404Path;
+					$this->controller = $this->controller404;
+					$this->controllerPath = $this->controller404Path;
 				}
 			}
 		}
-		return $this->actor;
+		return $this->controller;
 	}
 
 	/**
-	 * Set action if exists in chosen actor, else set actor to 404
+	 * Set action if exists in chosen controller, else set controller to 404
 	 *
 	 * @return void
 	 */
 	public function action() {
 		if (0 < count($a = func_get_args())) {
-			require_once LIB.'/Actor.php';
-			require_once $this->actorPath.$this->actor.'Actor.php';
-			if (method_exists($this->actor.'Actor', 'do_'.$a[0])) {
+			require_once LIB.'/Controller.php';
+			require_once $this->controllerPath.$this->controller.'Controller.php';
+			if (method_exists($this->controller.'Controller', 'do_'.$a[0])) {
 				$this->action = $a[0];
 			} else {
-				$this->actor = $this->actor404;
-				$this->actorPath = $this->actor404Path;
+				$this->controller = $this->controller404;
+				$this->controllerPath = $this->controller404Path;
 			}
 		}
 	}
 
 	/**
-	 * Perform specified action in specified Actor
+	 * Perform specified action in specified Controller
 	 *
 	 * @return void
 	 */
 	public function Act() {
-		require_once LIB.'/Actor.php';
-		require_once $this->actorPath.$this->actor.'Actor.php';
-		$Actor = $this->actor.'Actor';
-		$Actor = new $Actor($this->action, $this->params);
-		$Actor->act($this->params);
+		require_once LIB.'/Controller.php';
+		require_once $this->controllerPath.$this->controller.'Controller.php';
+		$Controller = $this->controller.'Controller';
+		$Controller = new $Controller($this->action, $this->params);
+		$Controller->act($this->params);
 	}
 }
