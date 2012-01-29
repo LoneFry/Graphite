@@ -9,7 +9,7 @@
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
  * File        : /^/controllers/HomeController.php
- *                A default Controller class
+ *                A default Home and Contact page Controller class
  ****************************************************************************/
 
 class HomeController extends Controller {
@@ -18,11 +18,11 @@ class HomeController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_home($params) {
+	public function do_home($argv) {
 		G::$V->_template = 'Home.php';
 		G::$V->_title    = G::$V->_siteName;
 	}
@@ -30,11 +30,11 @@ class HomeController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_contact($params) {
+	public function do_contact($argv) {
 		G::$V->_template = 'Contact.php';
 		G::$V->_title    = G::$V->_siteName.': Contact';
 		G::$V->_script(CORE.'/js/ajas.Email.js');
@@ -95,13 +95,13 @@ class HomeController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_contactLog($params) {
+	public function do_contactLog($argv) {
 		if (!G::$S->roleTest('Home/ContactLog')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'ContactLog.php';

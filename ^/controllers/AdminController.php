@@ -18,13 +18,13 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_list($params) {
+	public function do_list($argv) {
 		if (!G::$S->roleTest('Admin/Login') && !G::$S->roleTest('Admin/Role')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.list.php';
@@ -34,20 +34,20 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_Login($params) {
+	public function do_Login($argv) {
 		if (!G::$S->roleTest('Admin/Login')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.Login.php';
 		G::$V->_title    = 'Select Login';
 
-		if (isset($params[0])) {
-			$l = Login::forInitial($params[0]);
+		if (isset($argv[1])) {
+			$l = Login::forInitial($argv[1]);
 			if ($l && 1<count($l)) {
 				G::$V->list = $l;
 			} elseif ($l && 1 == count($l)) {
@@ -64,13 +64,13 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_LoginAdd($params) {
+	public function do_LoginAdd($argv) {
 		if (!G::$S->roleTest('Admin/Login')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.LoginAdd.php';
@@ -132,24 +132,24 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_LoginEdit($params) {
+	public function do_LoginEdit($argv) {
 		if (!G::$S->roleTest('Admin/Login')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.LoginEdit.php';
 		G::$V->_title    = 'Edit Login';
 
 		//If not passed a number, defer to search/list
-		if (!isset($params[0]) || !is_numeric($params[0])) {
-			return $this->do_Login($params);
+		if (!isset($argv[1]) || !is_numeric($argv[1])) {
+			return $this->do_Login($argv);
 		}
 
-		$L = new Login($params[0]);
+		$L = new Login($argv[1]);
 		$L->load();
 
 		//handle changes to the Login
@@ -245,13 +245,13 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_Role($params) {
+	public function do_Role($argv) {
 		if (!G::$S->roleTest('Admin/Role')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.Role.php';
@@ -265,13 +265,13 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_RoleAdd($params) {
+	public function do_RoleAdd($argv) {
 		if (!G::$S->roleTest('Admin/Role')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.RoleAdd.php';
@@ -303,25 +303,25 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_RoleEdit($params) {
+	public function do_RoleEdit($argv) {
 		if (!G::$S->roleTest('Admin/Role')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'Admin.RoleEdit.php';
 		G::$V->_title    = 'Edit Role';
 
 		//If not passed a number, defer to search/list
-		if (!isset($params[0]) || !is_numeric($params[0])) {
-			return $this->do_Role($params);
+		if (!isset($argv[1]) || !is_numeric($argv[1])) {
+			return $this->do_Role($argv);
 		}
 
 		require_once SITE.CORE.'/models/Role.php';
-		$R = new Role($params[0]);
+		$R = new Role($argv[1]);
 		$R->load();
 
 		// handle changes to the role
@@ -383,13 +383,13 @@ class AdminController extends Controller {
 	/**
 	 * action
 	 *
-	 * @param array $params web request parameters
+	 * @param array $argv web request parameters
 	 *
 	 * @return mixed
 	 */
-	public function do_loginLog($params) {
+	public function do_loginLog($argv) {
 		if (!G::$S->roleTest('Admin/Login')) {
-			return parent::do_403($params);
+			return parent::do_403($argv);
 		}
 
 		G::$V->_template = 'LoginLog.php';
