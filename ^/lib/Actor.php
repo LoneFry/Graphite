@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -10,66 +10,119 @@
  *
  * File        : /^/actors/Actor.php
  *                Actor base class
- *                
+ *
  * Actors are dispatched by the Controller
  ****************************************************************************/
 
-/* 
+/**
  * Actor class - used as a base class for MVC Actor classes
  * a trivial example extension is in 404.php
  */
-abstract class Actor { //perform action requested of controller
-	protected $action='404';
-	
-	public function __construct($action='', $params=array()){
+abstract class Actor {
+	protected $action = '404';
+
+	/**
+	 * Actor constructor
+	 *
+	 * @param string $action Action to be performed
+	 * @param array  $params request parameters
+	 *
+	 * @return void
+	 */
+	public function __construct($action = '', $params=array()) {
 		if ('' != $action) {
 			$this->action($action);
 		}
 	}
-	
-	public function do_404($params){
+
+	/**
+	 * default action for handling 404 errors
+	 *
+	 * @param array $params request parameters
+	 *
+	 * @return void
+	 */
+	public function do_404($params) {
 		header("HTTP/1.0 404 File Not Found");
-		G::$V->_template='404.php';
-		G::$V->_title='Requested Page Not Found';
+		G::$V->_template = '404.php';
+		G::$V->_title    = 'Requested Page Not Found';
 	}
-	public function do_403($params){
+
+	/**
+	 * default action for handling 403 errors
+	 *
+	 * @param array $params request parameters
+	 *
+	 * @return void
+	 */
+	public function do_403($params) {
 		header("HTTP/1.0 403 Forbidden");
-		G::$V->_template='403.php';
-		G::$V->_title='Permission Denied';
+		G::$V->_template = '403.php';
+		G::$V->_title    = 'Permission Denied';
 	}
-	
-	public function action(){
-		if(0<count($a=func_get_args())){
-			if(method_exists($this,'do_'.$a[0])){
-				$this->action=$a[0];
-			}else{
-				$this->action='404';
+
+	/**
+	 * Getter/Setter for assigning action
+	 *
+	 * @return string The current value of $this->action
+	 */
+	public function action() {
+		if (0 < count($a = func_get_args())) {
+			if (method_exists($this, 'do_'.$a[0])) {
+				$this->action = $a[0];
+			} else {
+				$this->action = '404';
 			}
 		}
 		return $this->action;
 	}
-	
-	public function act($a){
-		$func='do_'.$this->action;
+
+	/**
+	 * perform previously specified action
+	 *
+	 * @param array $a request parameters
+	 *
+	 * @return void
+	 */
+	public function act($a) {
+		$func = 'do_'.$this->action;
 		$this->$func($a);
 	}
-	
-	function __set($name,$value){
-		switch($name){
+
+	/**
+	 * __set magic method
+	 *
+	 * @param string $name  property to set
+	 * @param string $value value to use
+	 *
+	 * @return void
+	 */
+	function __set($name, $value) {
+		switch ($name) {
 			case 'action': return $this->action($value);
 			default:
 				$trace = debug_backtrace();
-				trigger_error('Undefined property via __set(): '.$name.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],E_USER_NOTICE);
+				trigger_error('Undefined property via __set(): '.$name.' in '
+							  .$trace[0]['file'].' on line '.$trace[0]['line'],
+							  E_USER_NOTICE);
 		}
 	}
-	function __get($name){
-		switch($name){
+
+	/**
+	 * __get magic method
+	 *
+	 * @param string $name property to get
+	 *
+	 * @return void
+	 */
+	function __get($name) {
+		switch ($name) {
 			case 'action': return $this->action;
 			default:
 				$trace = debug_backtrace();
-				trigger_error('Undefined property via __get(): '.$name.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],E_USER_NOTICE);
+				trigger_error('Undefined property via __get(): '.$name.' in '
+							  .$trace[0]['file'].' on line '.$trace[0]['line'],
+							  E_USER_NOTICE);
 		}
 	}
-
 }
-

@@ -65,7 +65,7 @@
                     </select>
                 </td>
             </tr>
-            
+
             <tr>
                 <th>Referring Login</th>
                 <td><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $L->referrer_id;?>"><?php html($referrer);?></a></td>
@@ -103,8 +103,8 @@
             </tr>
         </table>
     </div>
-    
-    <div class="fleft" style="border-top:1px solid transparent;"> 
+
+    <div class="fleft" style="border-top:1px solid transparent;">
         <h2>Grant Roles</h2>
 
         <table class="listTable">
@@ -125,7 +125,7 @@
         </table>
     </div>
 
-    <div class="fleft" style="border-top:1px solid transparent;"> 
+    <div class="fleft" style="border-top:1px solid transparent;">
         <h2>Login Log</h2>
         <table class="listTable">
                 <thead>

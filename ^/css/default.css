@@ -22,7 +22,7 @@ code.block {display:block;white-space:pre;border:1px inset gray;background-color
 a img {border:0;}
 a {color:#0076fd;}
 a.incognito {font-size:inherit;font-family:inherit;text-decoration:inherit;color:inherit;}
-a[rel~="external"]{background: url(/^/images/url_icon.gif) no-repeat left center;padding-left:15px;} 
+a[rel~="external"]{background: url(/^/images/url_icon.gif) no-repeat left center;padding-left:15px;}
 
 .del{text-decoration:line-through;}
 .subtle{color:#80a080;font:italic 0.8em sans-serif;}

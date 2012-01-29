@@ -27,7 +27,7 @@
                     </select>
                 </td>
             </tr>
-          
+
             <tr>
                 <th>Creator Login</th>
                 <td><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $R->creator_id;?>"><?php html($creator);?></a></td>
@@ -49,7 +49,7 @@
         </table>
     </div>
 
-    <div style="border-top:1px solid transparent;"> 
+    <div style="border-top:1px solid transparent;">
         <h2>Grant Role</h2>
 
         <table class="listTable">

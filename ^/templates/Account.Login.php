@@ -8,7 +8,7 @@
 			</div>
 		<div class="fright" style="width:50%;">
 <?php } ?>
-			<h2 class="tcenter">Check In Below</h2> 
+			<h2 class="tcenter">Check In Below</h2>
 			<p class="tcenter"><?php echo isset($msg)?$msg:''; ?></p>
 			<div class="loginForm" id="bodyLogin">
 				<form action="<?php echo $_loginURL; ?>" method="post"

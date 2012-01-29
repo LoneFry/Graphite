@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : OverNightBDC 2
  *                Automotive Lead Response
  * Created By  : Tyler Uebele, OvernightBDC, LLC
@@ -53,6 +53,9 @@ abstract class Report extends DataModel {
 	 * __construct(true) will create an instance with default values
 	 * __construct(array()) will create an instance with supplied values
 	 * __construct(array(),true) will create a instance with supplied values
+	 *
+	 * @param bool|int|array $a pkey value|set defaults|set values
+	 * @param bool           $b set defaults
 	 */
 	public function __construct($a=null, $b=null) {
 		if (!isset(static::$query) || '' == static::$query) {
@@ -63,16 +66,21 @@ abstract class Report extends DataModel {
 
 	/**
 	 * Override this function to perform custom actions AFTER load
+	 *
+	 * @return void
 	 */
-	public function onload() {}
+	public function onload() {
+	}
 
 	/**
 	 * run the report query with defined params and set results in $this->_data
+	 *
+	 * @return bool false on failure
 	 */
 	public function load() {
 		$this->_data = array();
 		$query = array();
-		foreach (static::$vars as $k =>$v) {
+		foreach (static::$vars as $k  => $v) {
 			if (isset($this->vals[$k]) && null !== $this->vals[$k]) {
 				$query[] = sprintf($v['sql'],
 									G::$m->escape_string($this->vals[$k]));
@@ -85,7 +93,7 @@ abstract class Report extends DataModel {
 		}
 
 		//if an order has been set, add it to the query
-		if (null!==$this->_order) {
+		if (null !== $this->_order) {
 			$query .= ' ORDER BY `'.$this->_order.'` '
 				.($this->_asc ? 'ASC' : 'DESC');
 		}
@@ -96,15 +104,18 @@ abstract class Report extends DataModel {
 		if (false === $result = G::$m->query($query)) {
 			return false;
 		}
-		while ($row=$result->fetch_assoc()) {
+		while ($row = $result->fetch_assoc()) {
 			$this->_data[] = $row;
 		}
 		$result->close();
 		$this->onload();
+		return true;
 	}
 
 	/**
 	 * return the report results stored in $this->_data
+	 *
+	 * @return array report result data
 	 */
 	public function toArray() {
 		return $this->_data;
@@ -112,6 +123,8 @@ abstract class Report extends DataModel {
 
 	/**
 	 * return the report results stored in $this->_data, as a JSON packet
+	 *
+	 * @return string JSON encoded report result data
 	 */
 	public function toJSON() {
 		return json_encode($this->_data);
@@ -120,6 +133,11 @@ abstract class Report extends DataModel {
 	/**
 	 * filter and set query params.
 	 * handle start,count,order, pass the rest upwards
+	 *
+	 *  @param string $k parameter to set
+	 *  @param mixed  $v value to use
+	 *
+	 *  @return mixed set value on success, null on failure
 	 */
 	public function __set($k, $v) {
 		if ('_start' == $k) {

@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -14,87 +14,141 @@
 
 require_once LIB.'/Record.php';
 
-/*
+/**
  * Role class - for managing site roles/responsiblities
  * see Record.php for details.
  */
 class Role extends Record {
-	protected static $table='Roles';
-	protected static $pkey='role_id';
-	protected static $query='SELECT t.`role_id`, t.`label`, t.`description`, t.`creator_id`, t.`disabled`, t.`dateModified`, t.`dateCreated` FROM `Roles` t';
+	protected static $table = 'Roles';
+	protected static $pkey  = 'role_id';
+	protected static $query = '';
 
-	public static function prime(){
-		self::$table=G::$G['db']['tabl'].'Roles';
-		self::$query='SELECT t.`role_id`, t.`label`, t.`description`, t.`creator_id`, t.`disabled`, t.`dateModified`, t.`dateCreated` FROM `'.static::$table.'` t';
-	}
 	protected static $vars=array(
-		'role_id'=>        array('type'=>'i' ,'strict'=>false,'def'=>null,'min'=>1),
-		'label'=>          array('type'=>'s' ,'strict'=>true ,'def'=>null,'min'=>3,'max'=>255),
-		'description'=>    array('type'=>'s' ,'strict'=>true ,'def'=>null,'min'=>3,'max'=>255),
-		'creator_id'=>     array('type'=>'i' ,'strict'=>true ,'def'=>0   ,'min'=>1),
-		'disabled'=>       array('type'=>'b' ,'strict'=>false,'def'=>0   ),
-		'dateModified'=>   array('type'=>'ts','strict'=>false,'def'=>null,'min'=>0),
-		'dateCreated'=>    array('type'=>'ts','strict'=>false,'def'=>null,'min'=>0)
+		'role_id' =>         array('type' => 'i', 'min' => 1),
+		'label' =>           array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
+		'description' =>     array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
+		'creator_id' =>      array('type' => 'i', 'strict' => true, 'def' => 0, 'min' => 1),
+		'disabled' =>        array('type' => 'b', 'def' => 0),
+		'dateModified' =>    array('type' => 'ts', 'min' => 0),
+		'dateCreated' =>     array('type' => 'ts', 'min' => 0),
 	);
 
-	public function oninsert(){
-		$this->__set('dateCreated',NOW);
-		if($this->__get('creator_id')<1)$this->__set('creator_id',G::$S->Login->login_id);
+	/**
+	 * prime() initialized static values, call below class definition
+	 *
+	 * @return void
+	 */
+	public static function prime() {
+		self::$table = G::$G['db']['tabl'].'Roles';
+		self::$query = 'SELECT t.`role_id`, t.`label`, t.`description`,'
+			.' t.`creator_id`, t.`disabled`, t.`dateModified`, t.`dateCreated`'
+			.' FROM `'.static::$table.'` t';
 	}
 
-	public function onupdate(){
-		$this->__set('dateModified',NOW);
+	/**
+	 * called by Record::insert() BEFORE running INSERT query
+	 *
+	 * @return void
+	 */
+	public function oninsert() {
+		$this->__set('dateCreated', NOW);
+		if ($this->__get('creator_id')<1) {
+			$this->__set('creator_id', G::$S->Login->login_id);
+		}
 	}
-	public function getCreator(){
-		if($this->__get('creator_id') > 0){
-			$creator=new Login($this->__get('creator_id'));
+
+	/**
+	 * called by Record::update() BEFORE running UPDATE query
+	 *
+	 * @return void
+	 */
+	public function onupdate() {
+		$this->__set('dateModified', NOW);
+	}
+
+	/**
+	 * Get the Role's Creator
+	 *
+	 * @return string the loginname of the creator of the Role
+	 */
+	public function getCreator() {
+		if ($this->__get('creator_id') > 0) {
+			$creator = new Login($this->__get('creator_id'));
 			$creator->load();
 			return $creator->loginname;
 		}
 		return '';
 	}
-	public function getMembers($detail='grantor_id'){
-		if($detail=='loginname'){
-			$query="SELECT l.`login_id`, l.`loginname` "
+
+	/**
+	 * Get the Role's Members
+	 *
+	 * @param string $detail Which field to return from the Logins
+	 *
+	 * @return array|false Array of login_id:detail key:value pairs
+	 */
+	public function getMembers($detail = 'grantor_id') {
+		if ($detail == 'loginname') {
+			$query = "SELECT l.`login_id`, l.`loginname` "
 				."FROM `".G::$G['db']['tabl']."Logins` l, `".G::$G['db']['tabl']."Roles_Logins` rl "
 				."WHERE l.`login_id`=rl.`login_id` AND rl.`role_id`=".$this->__get('role_id')
 				." ORDER BY l.`loginname`"
 			;
-		}else{
-			$query="SELECT rl.`login_id`, rl.`grantor_id` "
+		} else {
+			$query = "SELECT rl.`login_id`, rl.`grantor_id` "
 				."FROM `".G::$G['db']['tabl']."Roles_Logins` rl "
 				."WHERE rl.`role_id`=".$this->__get('role_id')
 			;
 		}
-		if(false===$result=G::$m->query($query)){
+		if (false === $result = G::$m->query($query)) {
 			return false;
 		}
-		if(0==$result->num_rows){
+		if (0 == $result->num_rows) {
 			$result->close();
 			return array();
 		}
-		$a=array();
-		while($row=$result->fetch_array()){
-			$a[$row[0]]=$row[1];
+		$a = array();
+		while ($row = $result->fetch_array()) {
+			$a[$row[0]] = $row[1];
 		}
 		$result->close();
 		return $a;
 	}
-	public function grant($login_id){
-		if(!is_numeric($login_id))return false;
-		$grantor=G::$S->Login?G::$S->Login->login_id:0;
-		$query="INSERT INTO `".G::$G['db']['tabl']."Roles_Logins` (`role_id`,`login_id`,`grantor_id`,`dateCreated`) "
+
+	/**
+	 * Grant Role to specified Login
+	 *
+	 * @param int $login_id The login to grant to
+	 *
+	 * @return bool true on success, false on failure
+	 */
+	public function grant($login_id) {
+		if (!is_numeric($login_id)) {
+			return false;
+		}
+		$grantor = G::$S->Login?G::$S->Login->login_id:0;
+		$query = "INSERT INTO `".G::$G['db']['tabl']."Roles_Logins` (`role_id`,`login_id`,`grantor_id`,`dateCreated`) "
 			."VALUES (".$this->__get('role_id').",".$login_id.",".$grantor.",".NOW.")";
-		if(G::$M->query($query)){
+		if (G::$M->query($query)) {
 			return true;
 		}
 		return false;
 	}
-	public function revoke($login_id){
-		if(!is_numeric($login_id))return false;
-		$query="DELETE FROM `".G::$G['db']['tabl']."Roles_Logins` "
+
+	/**
+	 * Revoke Role from specified Login
+	 *
+	 * @param int $login_id The login to revoke from
+	 *
+	 * @return bool true on success, false on failure
+	 */
+	public function revoke($login_id) {
+		if (!is_numeric($login_id)) {
+			return false;
+		}
+		$query = "DELETE FROM `".G::$G['db']['tabl']."Roles_Logins` "
 			."WHERE `role_id`=".$this->__get('role_id')." AND `login_id`=".$login_id;
-		if(G::$M->query($query)){
+		if (G::$M->query($query)) {
 			return true;
 		}
 		return false;
