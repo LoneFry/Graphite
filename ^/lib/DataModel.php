@@ -37,6 +37,9 @@ abstract class DataModel {
 	 * __construct(int) will create an instance with the pkey set to the int
 	 * __construct(array()) will create an instance with supplied values
 	 * __construct(array(),true) will create a instance with supplied values
+	 *
+	 * @param bool|int|array $a pkey value|set defaults|set values
+	 * @param bool           $b set defaults
 	 */
 	public function __construct($a = null, $b = null) {
 		//initialize the values array with null values as some tests depend
@@ -61,6 +64,8 @@ abstract class DataModel {
 
 	/**
 	 * load object from database
+	 *
+	 * @return void
 	 */
 	public abstract function load();
 
@@ -70,6 +75,8 @@ abstract class DataModel {
 	 *  1. for a method specific to each var's key (name)
 	 *  2. for a method specific to each var's type
 	 *  3. the raw value
+	 *
+	 *  @return array Record values
 	 */
 	public function getAll() {
 		$a=array();
@@ -91,6 +98,11 @@ abstract class DataModel {
 	 *  1. for a method specific to each var's key (name)
 	 *  2. for a method specific to each var's type
 	 * and failing otherwise
+	 *
+	 * @param array $a     associative array of values to set
+	 * @param book  $guard Whether to obey configured guard restrictions
+	 *
+	 * @return void
 	 */
 	public function setAll($a, $guard = false) {
 		foreach (static::$vars as $k => $v) {
@@ -107,6 +119,8 @@ abstract class DataModel {
 
 	/**
 	 * set each null registered value to its registered default
+	 *
+	 * @return void
 	 */
 	public function defaults() {
 		foreach (static::$vars as $k => $v) {
@@ -135,6 +149,11 @@ abstract class DataModel {
 	 * this will passoff the set to
 	 *  1. a method specific to the var's key (name)
 	 *  2. a method specific to the var's type
+	 *
+	 *  @param string $k property to set
+	 *  @param mixed  $v value to use
+	 *
+	 *  @return mixed set value on success, null on failure
 	 */
 	public function __set($k, $v) {
 		if (null === $v) {
@@ -160,7 +179,7 @@ abstract class DataModel {
 			return null;
 		}
 		$func = '_'.static::$vars[$k]['type'];
-		$this->$func($k, $v);
+		return $this->$func($k, $v);
 	}
 
 	/**
@@ -168,6 +187,10 @@ abstract class DataModel {
 	 * this will passoff the get to
 	 *  1. a method specific to the var's key (name)
 	 *  2. a method specific to the var's type
+	 *
+	 *  @param string $k property to get
+	 *
+	 *  @return mixed requested value if found, null on failure
 	 */
 	public function __get($k) {
 		if (method_exists($this, $k)) {
@@ -191,6 +214,10 @@ abstract class DataModel {
 
 	/**
 	 * __isset magic method restores the normal operation of isset()
+	 *
+	 * @param string $k property to test
+	 *
+	 * @return bool Return true if set, false otherwise
 	 */
 	public function __isset($k) {
 		return array_key_exists($k, static::$vars)
@@ -200,6 +227,10 @@ abstract class DataModel {
 
 	/**
 	 * __unset magic method restores the normal operation of unset()
+	 *
+	 * @param string $k property to unset
+	 *
+	 * @return void
 	 */
 	public function __unset($k) {
 		$this->vals[$k] = null;
@@ -219,6 +250,10 @@ abstract class DataModel {
 	/**
 	 * Integers
 	 * other numeric types rejected in strict mode, casted otherwise
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _i($k) {
 		//$k is a valid var?
@@ -264,6 +299,10 @@ abstract class DataModel {
 	/**
 	 * Floats
 	 * other numeric types rejected in strict mode, casted otherwise
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _f($k) {
 		//$k is a valid var?
@@ -309,6 +348,10 @@ abstract class DataModel {
 	/**
 	 * Enumerations
 	 * Unregistered values fail in strict mode, defaulted to first otherwise
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _e($k) {
 		//$k is a valid var?
@@ -346,6 +389,10 @@ abstract class DataModel {
 	 * DateTimes
 	 * processed as a timestamp, stored as a datestring
 	 * format based on registered format, defaults to static::$dateFormat
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _dt($k) {
 		if (!isset(static::$vars[$k])) {//$k is a valid var?
@@ -400,6 +447,10 @@ abstract class DataModel {
 	 * Timestamps
 	 * min/max treated numericly
 	 * Use this type when storing dates in int columns
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _ts($k) {
 		//$k is a valid var?
@@ -450,6 +501,10 @@ abstract class DataModel {
 	 * Strings
 	 * min/max applies to string length
 	 *  violations rejected in strict mode, clipped otherwise
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _s($k) {
 		//$k is a valid var?
@@ -495,6 +550,10 @@ abstract class DataModel {
 	/**
 	 * Emails
 	 * treated like strings, but added filter for email validation
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _em($k) {
 		//$k is a valid var?
@@ -545,6 +604,10 @@ abstract class DataModel {
 	 * IP addresses
 	 * for storing IPv4 addresses in 32bit int columns
 	 * stored as UNSIGNED int, converted on return
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _ip($k) {
 		//$k is a valid var?
@@ -573,6 +636,10 @@ abstract class DataModel {
 	 * for storing simple yes/no // true/false values
 	 * compatible with either int or bit MySQL types
 	 * stored as and returned as PHP boolean
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _b($k) {
 		//$k is a valid var?
@@ -612,6 +679,10 @@ abstract class DataModel {
 	 * stores a php object with serialize()
 	 * does not verify value is an object, will serialize anything
 	 * verifies serialized string does not exceed specified max length
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _o($k) {
 		//$k is a valid var?
@@ -624,7 +695,7 @@ abstract class DataModel {
 		}
 		if (1 < count($a = func_get_args())) {
 			// Do not serialize serialized strings
-			if (is_string($a[1]) 
+			if (is_string($a[1])
 				&& ($a[1] == serialize(false) || false !== @unserialize($a[1]))
 			) {
 				$v = $a[1];
@@ -646,6 +717,10 @@ abstract class DataModel {
 	 * stores a value with json_encode()
 	 * does not verify value, encode anything, not suitable for objects
 	 * verifies encoded string does not exceed specified max length
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
 	 */
 	protected function _j($k) {
 		//$k is a valid var?
@@ -658,7 +733,7 @@ abstract class DataModel {
 		}
 		if (1 < count($a = func_get_args())) {
 			// Do not serialize serialized strings
-			if (is_string($a[1]) 
+			if (is_string($a[1])
 				&& ($a[1] == json_encode(null) || null !== @json_decode($a[1]))
 			) {
 				$v = $a[1];

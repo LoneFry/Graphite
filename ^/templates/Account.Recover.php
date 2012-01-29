@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 			<h2 class="tcenter">Password Recovery</h2>
 			<p class="tcenter"><?php echo $msg; ?></p>
-			<p class="tcenter">Enter your username, or the email associated with 
+			<p class="tcenter">Enter your username, or the email associated with
 				your username, and a new password will be sent to you.</p>
 			<div class="loginForm" id="bodyLogin">
 				<form action="<?php echo CONT; ?>Account/recover" method="post">

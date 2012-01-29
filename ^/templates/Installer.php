@@ -24,7 +24,7 @@ form#installer input[type=text],form#installer input[type=password]{margin-botto
 		<input id="acctP2" type="password" name="password2">
 		<label for="siteEmail">Site Email</label>
 		<input id="siteEmail" type="text" name="siteEmail" value="<?php html($siteEmail);?>">
-	
+
 	<h3>Database Details</h3>
 		<label for="Host">Database Host</label>
 		<input id="Host" type="text" name="Host" value="<?php html($Host);?>">
@@ -38,7 +38,7 @@ form#installer input[type=text],form#installer input[type=password]{margin-botto
 		<input id="Name" type="text" name="Name" value="<?php html($Name);?>">
 		<label for="Tabl">Table Prefix</label>
 		<input id="Tabl" type="text" name="Tabl" value="<?php html($Tabl);?>">
-	
+
 	<h3>Read-Only Database Details</h3>
 		<label for="User2">Read-Only User</label>
 		<input id="User2" type="text" name="User2" value="<?php html($User2);?>">

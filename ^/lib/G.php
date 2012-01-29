@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -13,62 +13,72 @@
  *                static class for scoping core Graphite objects & functions
  ****************************************************************************/
 
-final class G{
-	static 
-		$M,          // mysqli object
-		$m,          // mysqli object with read-only connection
-		$V,          // View object
-		$C,          // Controller object
-		$S,          // Security / Session object
-		$G=array();  // Gonfiguration array
+final class G {
+	static
+		$M,            // mysqli object
+		$m,            // mysqli object with read-only connection
+		$V,            // View object
+		$C,            // Controller object
+		$S,            // Security / Session object
+		$G = array();  // Gonfiguration array
 
-	private static $msg=array();
-	
-	/*
+	private static $_msg = array();
+
+	/**
 	 * private constructor to prevent instanciation
 	 */
-	private function __construct(){}
-	
-	
-	/*
-	 * log messages for output later
-	 * $s = the message
-	 * $c = class, arbitrary, used at will by template on output
-	 */
-	public static function msg($s=null,$c=''){
-		if(null==$s){
-			return self::$msg;
-		}
-		self::$msg[]=array($s,$c);
+	private function __construct() {
+
 	}
 
-	/*
-	 * replace special characters with their common counterparts
-	 * $s = the string to alter
+
+	/**
+	 * log messages for output later
+	 *
+	 * @param string $s the message
+	 * @param string $c class, arbitrary, used at will by template on output
+	 *
+	 * @return void
 	 */
-	public static function normalize_special_characters($s){
+	public static function msg($s = null, $c = '') {
+		if (null == $s) {
+			return self::$_msg;
+		}
+		self::$_msg[] = array($s, $c);
+	}
+
+	/**
+	 * replace special characters with their common counterparts
+	 *
+	 * @param string $s the string to alter
+	 *
+	 * @return void
+	 */
+	public static function normalize_special_characters($s) {
 		//‘single’ and “double” quot’s yeah.
-		$s=str_replace(array(
+		$s = str_replace(array(
 			'â€œ',  // left side double smart quote
 			'â€',  // right side double smart quote
 			'â€˜',  // left side single smart quote
 			'â€™',  // right side single smart quote
 			'â€¦',  // elipsis
 			'â€”',  // em dash
-			'â€“')  // en dash
-			,array('"','"',"'","'","...","-","-")
-			,$s)
-		;
+			'â€“'), // en dash
+			array('"', '"', "'", "'", "...", "-", "-"),
+			$s);
 		return $s;
 	}
-	
-	/*
+
+	/**
 	 * emit invokation info, and passed value
-	 * $v = value to var_dump
-	 * $die = whether to exit when done
+	 *
+	 * @param string $v   value to var_dump
+	 * @param bool   $die whether to exit when done
+	 *
+	 * @return void
 	 */
-	public static function croak($v=null,$die=true){
-		$d=debug_backtrace();
+	public static function croak($v = null, $die = true) {
+		$d = debug_backtrace();
 		echo '<pre class="G__croak">'
 			.'<div class="G__croak_info"><b>'.__METHOD__.'()</b> called'
 			.(isset($d[1])?' in <b>'.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'].'()</b>':'')
@@ -76,18 +86,28 @@ final class G{
 			.'<hr><div class="G__croak_value">';
 		var_dump($v);
 		echo '</div></pre>';
-		if($die)exit;
+		if ($die) {
+			exit;
+		}
 	}
-	
-	/*
+
+	/**
 	 * close Security and mysqli objects in proper order
 	 * This should be called before PHP cleanup to close things in order
 	 * register_shutdown_function() is one way to do this.
+	 *
+	 * @return void
 	 */
-	public static function close(){
-		if(G::$S)G::$S->close();
-		if(G::$M)G::$M->close();
-		if(G::$m)G::$m->close();
+	public static function close() {
+		if (G::$S) {
+			G::$S->close();
+		}
+		if (G::$M) {
+			G::$M->close();
+		}
+		if (G::$m) {
+			G::$m->close();
+		}
 	}
 }
 //register G::close() to be called at shutdown

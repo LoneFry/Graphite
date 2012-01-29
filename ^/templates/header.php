@@ -18,14 +18,14 @@
 		<div id="header">
 			<h1 class="tleft fleft"><?php html($_siteName)?></h1>
 			<div id="loginForm" class="tright fright">
-<?php 
+<?php
 	if ($_login_id) {
 		echo 'Hello, '.$_loginname
 			.'. (<a href="'.$_logoutURL.'">Logout</a>)'
 			;
 	} else {
 ?>
-				<form action="<?php echo $_loginURL; ?>" method="post" 
+				<form action="<?php echo $_loginURL; ?>" method="post"
 					onsubmit="if(sha1_vm_test()){this.h.value=hex_sha1(this.s.value+hex_sha1(this.p.value));this.p.value='';return true;}else{return true;}">
 					<p>
 						<label for="loginU">U</label>

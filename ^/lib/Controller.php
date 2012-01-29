@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -14,92 +14,124 @@
  ****************************************************************************/
 
 class Controller {
-	protected $actor='Default';
-	protected $actorPath='';
-	protected $actor404='Default';
-	protected $actor404Path='';
-	protected $action='';
-	protected $includePath=array();
-	protected $params=array();
+	protected $actor        = 'Default';
+	protected $actorPath    = '';
+	protected $actor404     = 'Default';
+	protected $actor404Path = '';
+	protected $action       = '';
+	protected $includePath  = array();
+	protected $params       = array();
 
-	function __construct($cfg){
+	/**
+	 * Controller Constructor
+	 *
+	 * @param array $cfg Configuration array
+	 */
+	function __construct($cfg) {
 		//set hard default for actor paths
 		$this->actorPath = $this->actor404Path = SITE.CORE.'/actors/';
 
 		//Check for and validate location of Actors
-		if(isset(G::$G['includePath'])){
-			foreach(explode(';',G::$G['includePath']) as $v){
-				$s=realpath(SITE.$v.'/actors');
-				if(file_exists($s)){
-					$this->includePath[]=$s.'/';
+		if (isset(G::$G['includePath'])) {
+			foreach (explode(';', G::$G['includePath']) as $v) {
+				$s = realpath(SITE.$v.'/actors');
+				if (file_exists($s)) {
+					$this->includePath[] = $s.'/';
 				}
 			}
 		}
-		if(0==count($this->includePath)){
-			$this->includePath[]=SITE.CORE.'/actors/';
+		if (0 == count($this->includePath)) {
+			$this->includePath[] = SITE.CORE.'/actors/';
 		}
-		
+
 		//set config default first, incase passed path is not found
-		if(isset($cfg['actor404'])){$this->actor404($cfg['actor404']);}
+		if (isset($cfg['actor404'])) {
+			$this->actor404($cfg['actor404']);
+		}
 		//Path based requests take priority, check for path and parse
-		if(isset($cfg['path'])){
-			$a=explode('/',trim($cfg['path'],'/'));
-			if(count($a) > 0){$this->actor(urldecode(array_shift($a)));}
-			if(count($a) > 0){$this->action(urldecode(array_shift($a)));}
-			$this->params=$a;//what's left of the request path
-			
+		if (isset($cfg['path'])) {
+			$a = explode('/', trim($cfg['path'], '/'));
+			if (count($a) > 0) {
+				$this->actor(urldecode(array_shift($a)));
+			}
+			if (count($a) > 0) {
+				$this->action(urldecode(array_shift($a)));
+			}
+			$this->params = $a;//what's left of the request path
+
 			//If we have other params, pair them up and add them to the _GET array
 			//Yes, this will result in redundancy: paired and unpaired; intentional
 			//I wonder if this belongs elsewhere
-			if(0<count($this->params)){
-				$a=$this->params;
-				while(count($a) > 0){$this->params[urldecode(array_shift($a))]=urldecode(array_shift($a));}
-				$_GET=$_GET+$this->params;//add params to _GET array without overriding
+			if (0 < count($this->params)) {
+				$a = $this->params;
+				while (count($a) > 0) {
+					$this->params[urldecode(array_shift($a))] = urldecode(array_shift($a));
+				}
+				//add params to _GET array without overriding
+				$_GET = $_GET + $this->params;
 			}
-		}else{
+		} else {
 			//If Path was not passed, check for individual configs
-			if(isset($cfg['actor'])){$this->actor($cfg['actor']);}
-			if(isset($cfg['action'])){$this->action($cfg['action']);}
-			if(isset($cfg['params'])){$this->params=$cfg['params'];}
+			if (isset($cfg['actor'])) {
+				$this->actor($cfg['actor']);
+			}
+			if (isset($cfg['action'])) {
+				$this->action($cfg['action']);
+			}
+			if (isset($cfg['params'])) {
+				$this->params=$cfg['params'];
+			}
 		}
 	}
-	
-	//Set and return actor name
-	//Verifies Actor file exists in configured location
-	public function actor404(){
-		if(0<count($a=func_get_args())){
-			foreach($this->includePath as $v){
-				$s=realpath($v.$a[0].'Actor.php');
-				if(false!==strpos($s,$v) && file_exists($s)){
-					$this->actor404=$a[0];
-					$this->actor404Path=$v;
+
+	/**
+	 * Set and return 404 actor name
+	 * Verifies Actor file exists in configured location
+	 *
+	 * @return string name of 404 actor
+	 */
+	public function actor404() {
+		if (0 < count($a = func_get_args())) {
+			foreach ($this->includePath as $v) {
+				$s = realpath($v.$a[0].'Actor.php');
+				if (false !== strpos($s, $v) && file_exists($s)) {
+					$this->actor404 = $a[0];
+					$this->actor404Path = $v;
 					break;
 				}
 			}
 		}
 		return $this->actor404;
 	}
-	
-	//Set and return actor name
-	//Verifies Actor file exists in configured location
-	public function actor(){
-		if(0<count($a=func_get_args())){
-			foreach($this->includePath as $v){
-				$s=realpath($v.$a[0].'Actor.php');
-				if(false!==strpos($s,$v) && file_exists($s)){
-					$this->actor=$a[0];
-					$this->actorPath=$v;
+
+	/**
+	 * Set and return actor name
+	 * Verifies Actor file exists in configured location
+	 *
+	 * @return string name of requested actor
+	 */
+	public function actor() {
+		if (0 < count($a = func_get_args())) {
+			foreach ($this->includePath as $v) {
+				$s = realpath($v.$a[0].'Actor.php');
+				if (false !== strpos($s, $v) && file_exists($s)) {
+					$this->actor = $a[0];
+					$this->actorPath = $v;
 					break;
-				}else{
-					$this->actor=$this->actor404;
-					$this->actorPath=$this->actor404Path;
+				} else {
+					$this->actor = $this->actor404;
+					$this->actorPath = $this->actor404Path;
 				}
 			}
 		}
 		return $this->actor;
 	}
 
-	//Set action if exists in chosen actor, else set actor to 404
+	/**
+	 * Set action if exists in chosen actor, else set actor to 404
+	 *
+	 * @return void
+	 */
 	public function action() {
 		if (0 < count($a = func_get_args())) {
 			require_once LIB.'/Actor.php';
@@ -112,13 +144,17 @@ class Controller {
 			}
 		}
 	}
-	
-	//Perform specified action in specified Actor
-	public function Act(){
+
+	/**
+	 * Perform specified action in specified Actor
+	 *
+	 * @return void
+	 */
+	public function Act() {
 		require_once LIB.'/Actor.php';
 		require_once $this->actorPath.$this->actor.'Actor.php';
-		$Actor=$this->actor.'Actor';
-		$Actor=new $Actor($this->action, $this->params);
+		$Actor = $this->actor.'Actor';
+		$Actor = new $Actor($this->action, $this->params);
 		$Actor->act($this->params);
 	}
 }

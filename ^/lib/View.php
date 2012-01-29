@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -15,55 +15,63 @@
  ****************************************************************************/
 
 class View {
-	protected $templates=array(
-		'header'=>'header.php',
-		'footer'=>'footer.php',
-		'template'=>'404.php'
+	protected $templates = array(
+		'header'   => 'header.php',
+		'footer'   => 'footer.php',
+		'template' => '404.php',
 		);
-	protected $includePath=null;
+	protected $includePath = null;
 
-	public $vals=array('_meta'=>array(),'_script'=>array(),'_link'=>array());
+	public $vals = array('_meta'   => array(),
+						 '_script' => array(),
+						 '_link'   => array(),
+						 );
 
-	function __construct($cfg){
+	/**
+	 * View Constructor
+	 *
+	 * @param array $cfg Configuration array
+	 */
+	function __construct($cfg) {
 		//Check for and validate location of Actors
-		if(isset(G::$G['includePath'])){
-			foreach(explode(';',G::$G['includePath']) as $v){
-				$s=realpath(SITE.$v.'/templates');
-				if(file_exists($s)){
-					$this->includePath[]=$s.'/';
+		if (isset(G::$G['includePath'])) {
+			foreach (explode(';', G::$G['includePath']) as $v) {
+				$s = realpath(SITE.$v.'/templates');
+				if (file_exists($s)) {
+					$this->includePath[] = $s.'/';
 				}
 			}
 		}
-		if(0==count($this->includePath)){
-			$this->includePath[]=SITE.CORE.'/templates/';
+		if (0 == count($this->includePath)) {
+			$this->includePath[] = SITE.CORE.'/templates/';
 		}
-		
-		if(isset($cfg['_header'])){
-			$this->setTemplate('header',$cfg['header']);
+
+		if (isset($cfg['_header'])) {
+			$this->setTemplate('header', $cfg['header']);
 			unset($cfg['_header']);
 		}
-		if(isset($cfg['_footer'])){
-			$this->setTemplate('footer',$cfg['footer']);
+		if (isset($cfg['_footer'])) {
+			$this->setTemplate('footer', $cfg['footer']);
 			unset($cfg['_footer']);
 		}
-		if(isset($cfg['_template'])){
-			$this->setTemplate('template',$cfg['template']);
+		if (isset($cfg['_template'])) {
+			$this->setTemplate('template', $cfg['template']);
 			unset($cfg['_template']);
 		}
-		if(isset($cfg['_meta']) && is_array($cfg['_meta']) && 0 < count($cfg['_meta'])){
-			foreach($cfg['_meta'] as $name => $content){
-				$this->_meta($name,$content);
+		if (isset($cfg['_meta']) && is_array($cfg['_meta']) && 0 < count($cfg['_meta'])) {
+			foreach ($cfg['_meta'] as $name => $content) {
+				$this->_meta($name, $content);
 			}
 			unset($cfg['_meta']);
 		}
-		if(isset($cfg['_script']) && is_array($cfg['_script']) && 0 < count($cfg['_script'])){
-			foreach($cfg['_script'] as $src){
+		if (isset($cfg['_script']) && is_array($cfg['_script']) && 0 < count($cfg['_script'])) {
+			foreach ($cfg['_script'] as $src) {
 				$this->_script($src);
 			}
 			unset($cfg['_script']);
 		}
-		if(isset($cfg['_link']) && is_array($cfg['_link']) && 0 < count($cfg['_link'])){
-			foreach($cfg['_link'] as $a){
+		if (isset($cfg['_link']) && is_array($cfg['_link']) && 0 < count($cfg['_link'])) {
+			foreach ($cfg['_link'] as $a) {
 				$this->_link(
 					isset($a['rel']  )?$a['rel']  :'',
 					isset($a['type'] )?$a['type'] :'',
@@ -73,91 +81,189 @@ class View {
 			}
 			unset($cfg['_link']);
 		}
-		$this->vals=$this->vals+$cfg;
+		$this->vals = $this->vals + $cfg;
 	}
 
-	public function _meta($name=null,$content=null){
-		if(null==$name){
+	/**
+	 * add values for a META tag to be written to document <HEAD>
+	 *
+	 * @param string $name    META name=
+	 * @param string $content META content=
+	 *
+	 * @return void
+	 */
+	public function _meta($name = null, $content = null) {
+		if (null == $name) {
 			return $this->vals['_meta'];
 		}
-		$this->vals['_meta'][$name]=$content;
+		$this->vals['_meta'][$name] = $content;
 	}
 
-	public function _script($src=null){
-		if(null==$src){
+	/**
+	 * add values for a SCRIPT tag to be written to document <HEAD>
+	 *
+	 * @param string $src Javascript Source URL
+	 *
+	 * @return void
+	 */
+	public function _script($src = null) {
+		if (null == $src) {
 			return $this->vals['_script'];
 		}
-		$this->vals['_script'][]=$src;
+		$this->vals['_script'][] = $src;
 	}
 
-	public function _link($rel=null,$type='',$href='',$title=''){
-		if(null==$rel){
+	/**
+	 * add values for a LINK tag to be written to document <HEAD>
+	 *
+	 * @param string $rel   LINK rel=
+	 * @param string $type  LINK type=
+	 * @param string $href  LINK href=
+	 * @param string $title LINK title=
+	 *
+	 * @return void
+	 */
+	public function _link($rel = null, $type = '', $href = '', $title = '') {
+		if (null == $rel) {
 			return $this->vals['_link'];
 		}
-		$this->vals['_link'][]=array('rel'=>$rel,'type'=>$type,'href'=>$href,'title'=>$title);
+		$this->vals['_link'][] = array('rel' => $rel, 'type' => $type, 'href' => $href, 'title' => $title);
 	}
-	
-	public function in_realpath($path,$file){
-		if(''==$file)return '';
+
+	/**
+	 * Test whether a file exists in a path sanity checking with realpath
+	 *
+	 * @param string $path filesystem path to check
+	 * @param string $file filename to check for
+	 *
+	 * @return string|bool corrected filename relative to path if found,
+	 *                     false if not found
+	 */
+	public function in_realpath($path, $file) {
+		if ('' == $file) {
+			return '';
+		}
 		//Get the realpath of the file, then verify it exists in passed path
-		$s=realpath($path.'/'.$file);
-		if(false!==strpos($s,$path) && file_exists($s)){
-			return substr($s,strlen($path));
+		$s = realpath($path.'/'.$file);
+		if (false !== strpos($s, $path) && file_exists($s)) {
+			return substr($s, strlen($path));
 		}
 		return false;
 	}
 
-	public function setTemplate($template,$file){
-		foreach($this->includePath as $dir){
-			if(false!==$s=$this->in_realpath($dir,$file)){
-				$this->templates[$template]=$s;
+	/**
+	 * set view template for rendering request
+	 *
+	 * @param string $template template part, eg: 'header', 'footer',
+	 *                         for main template use 'template'
+	 * @param string $file     filename of template, relative to template path
+	 *
+	 * @return string set template, or prior set template on failure
+	 */
+	public function setTemplate($template, $file) {
+		foreach ($this->includePath as $dir) {
+			if (false !== $s=$this->in_realpath($dir, $file)) {
+				$this->templates[$template] = $s;
 				break;
 			}
 		}
 		return $this->templates[$template];
 	}
-	public function getTemplate($template){
+
+	/**
+	 * get view template for rendering request
+	 *
+	 * @param string $template template part, eg: 'header', 'footer',
+	 *                         for main template use 'template'
+	 *
+	 * @return string prior set template
+	 */
+	public function getTemplate($template) {
 		return $this->templates[$template];
 	}
 
-	function __set($name,$value){
-		switch($name){
-			case '_header': return $this->setTemplate('header',$value);
-			case '_footer': return $this->setTemplate('footer',$value);
-			case '_template': return $this->setTemplate('template',$value);
+
+	/**
+	 * __set magic method called when trying to set a var which is not available
+	 * If name is of a template this will passoff the set to setTemplate()
+	 * All other names will be added to unrestricted vals array
+	 *
+	 *  @param string $name  property to set
+	 *  @param mixed  $value value to use
+	 *
+	 *  @return void
+	 */
+	function __set($name, $value) {
+		switch ($name) {
+			case '_header': return $this->setTemplate('header', $value);
+			case '_footer': return $this->setTemplate('footer', $value);
+			case '_template': return $this->setTemplate('template', $value);
 			default:
-				$this->vals[$name]=$value;
+				$this->vals[$name] = $value;
 		}
 	}
-	function __get($name){
-		switch($name){
+
+	/**
+	 * __get magic method called when trying to get a var which is not available
+	 * If name is of a template this will passoff the get to getTemplate()
+	 * All other names will be pulled from unrestricted vals array
+	 *
+	 * @param string $name property to set
+	 *
+	 * @return mixed found value
+	 */
+	function __get($name) {
+		switch ($name) {
 			case '_header': return $this->getTemplate('header');
 			case '_footer': return $this->getTemplate('footer');
 			case '_template': return $this->getTemplate('template');
 			default:
-				if(isset($this->vals[$name]))return $this->vals[$name];
+				if (isset($this->vals[$name])) {
+					return $this->vals[$name];
+				}
 				$trace = debug_backtrace();
-				trigger_error('Undefined property via __get(): '.$name.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],E_USER_NOTICE);
+				trigger_error('Undefined property via __get(): '.$name.' in '
+							  .$trace[0]['file'].' on line '.$trace[0]['line'],
+							  E_USER_NOTICE);
 		}
 	}
-	/* __isset magic method restores the normal operation of isset()
+
+	/**
+	 * __isset magic method restores the normal operation of isset()
+	 *
+	 * @param string $k property to test
+	 *
+	 * @return bool Return true if set, false otherwise
 	 */
-	public function __isset($k){
-		return array_key_exists($k,$this->vals);
+	public function __isset($k) {
+		return array_key_exists($k, $this->vals);
 	}
-	
-	/* __unset magic method restores the normal operation of unset()
+
+	/**
+	 * __unset magic method restores the normal operation of unset()
+	 *
+	 * @param string $k property to unset
+	 *
+	 * @return void
 	 */
-	public function __unset($k){
+	public function __unset($k) {
 		unset($this->vals[$k]);
 	}
-	
-	public function render($_template='template'){
+
+	/**
+	 * Render requested template by bringing $this->vals into scope and
+	 * including template file
+	 *
+	 * @param string $_template Template to render
+	 *
+	 * @return bool true on success, false otherwise
+	 */
+	public function render($_template = 'template') {
 		extract($this->vals);
-		foreach($this->includePath as $_v){
+		foreach ($this->includePath as $_v) {
 			if (isset($this->templates[$_template]) &&
-			    file_exists($_v.$this->templates[$_template]))
-			{
+				file_exists($_v.$this->templates[$_template])
+			) {
 				include_once $_v.$this->templates[$_template];
 				return true;
 			}
@@ -165,7 +271,41 @@ class View {
 		return false;
 	}
 }
-function html($s){echo htmlspecialchars($s);}
-function get_header(){G::$V->render('header');}
-function get_footer(){G::$V->render('footer');}
-function get_template(){G::$V->render();}
+
+/**
+ * Helper for brevity in templates - echo html escaped string
+ *
+ * @param string $s string to output
+ *
+ * @return void
+ */
+function html($s) {
+	echo htmlspecialchars($s);
+}
+
+/**
+ * Helper for brevity in templates render configured header template
+ *
+ * @return void
+ */
+function get_header() {
+	G::$V->render('header');
+}
+
+/**
+ * Helper for brevity in templates render configured footer template
+ *
+ * @return void
+ */
+function get_footer() {
+	G::$V->render('footer');
+}
+
+/**
+ * Helper for brevity in templates render configured main template
+ *
+ * @return void
+ */
+function get_template() {
+	G::$V->render();
+}

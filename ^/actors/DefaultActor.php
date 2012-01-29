@@ -1,5 +1,5 @@
 <?php
-/*****************************************************************************
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -12,4 +12,5 @@
  *                default actor, leans on Actor's defaults
  ****************************************************************************/
 
-class DefaultActor extends Actor{}
+class DefaultActor extends Actor {
+}
