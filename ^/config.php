@@ -67,23 +67,23 @@ G::$G['CON']['controller404'] = 'Default';
 
 //Passed Values
 if (isset($_GET['controller'])) {
-	G::$G['CON']['controller']=$_GET['controller'];
+	G::$G['CON']['controller'] = $_GET['_controller'];
 }
 if (isset($_GET['action'])) {
-	G::$G['CON']['action']=$_GET['action'];
+	G::$G['CON']['action'] = $_GET['_action'];
 }
 if (isset($_GET['params'])) {
-	G::$G['CON']['params']=$_GET['params'];
+	G::$G['CON']['params'] = $_GET['_params'];
 }
 if (isset($_GET['argv'])) {
-	G::$G['CON']['argv']=$_GET['argv'];
+	G::$G['CON']['argv'] = $_GET['_argv'];
 }
 if (isset($_SERVER['PATH_INFO'])) {
-	G::$G['CON']['path']=$_SERVER['PATH_INFO'];
-} elseif (isset($_POST['path'])) {
-	G::$G['CON']['path']=$_POST['path'];
-} elseif (isset($_GET['path'])) {
-	G::$G['CON']['path']=$_GET['path'];
+	G::$G['CON']['path'] = $_SERVER['PATH_INFO'];
+} elseif (isset($_POST['_path'])) {
+	G::$G['CON']['path'] = $_POST['_path'];
+} elseif (isset($_GET['_path'])) {
+	G::$G['CON']['path'] = $_GET['_path'];
 }
 /** **************************************************************************
  * /Settings for the Dispatcher
