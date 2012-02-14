@@ -30,8 +30,11 @@ abstract class Controller {
 	 * @return void
 	 */
 	public function __construct($argv = array()) {
-		if (isset($argv[0]) && '' != $argv[0]) {
-			$this->action($argv[0]);
+		if (is_array($argv)) {
+			$this->argv = $argv;
+			if (isset($argv[0]) && '' != $argv[0]) {
+				$this->action($argv[0]);
+			}
 		}
 	}
 
