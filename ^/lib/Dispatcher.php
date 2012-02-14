@@ -156,11 +156,14 @@ class Dispatcher {
 	 *
 	 * @return void
 	 */
-	public function Act() {
+	public function Act($argv = null) {
+		if (null === $argv) {
+			$argv = $this->argv;
+		}
 		require_once LIB.'/Controller.php';
 		require_once $this->controllerPath.$this->controller.'Controller.php';
 		$Controller = $this->controller.'Controller';
-		$Controller = new $Controller($this->argv);
+		$Controller = new $Controller($argv);
 		$Controller->act();
 	}
 }
