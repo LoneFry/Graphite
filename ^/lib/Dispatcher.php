@@ -65,7 +65,12 @@ class Dispatcher {
 			//I wonder if this belongs elsewhere
 			if (0 < count($this->argv)) {
 				while (count($a) > 0) {
-					$this->argv[urldecode(array_shift($a))] = urldecode(array_shift($a));
+					$k = urldecode(array_shift($a));
+					$v = urldecode(array_shift($a));
+					//Don't let pairings overwrite existing (numeric) indexes
+					if (!isset($this->argv[$k])) {
+						$this->argv[$k] = $v;
+					}
 				}
 				//add argv to _GET array without overriding
 				$_GET = $_GET + $this->argv;
