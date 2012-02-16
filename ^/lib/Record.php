@@ -287,6 +287,49 @@ abstract class Record extends DataModel{
 	}
 
 	/**
+	 * SELECT $count of the records from the database using static::$query
+	 *
+	 * @param int $count LIMIT - number of rows to SELECT
+	 * @param int $start OFFSET - number of rows to skip
+	 * @param int $order ORDER BY - column to sort query by
+	 * @param int $desc  DESC/ASC - true for DESC ordering
+	 *
+	 * @return array collection of objects found in search
+	 */
+	public static function some($count = null, $start = 0, $order = null, $desc = false) {
+		static::prime_query();
+
+		$query = static::$query
+			.' GROUP BY `'.static::$pkey.'`'
+			.(null!=$order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
+			;
+		if (false === $result = G::$m->query($query)) {
+			return false;
+		}
+		$a = array();
+		while ($row = $result->fetch_assoc()) {
+			$a[$row[static::$pkey]] = new static($row);
+		}
+		$result->close();
+
+		return $a;
+	}
+
+	/**
+	 * SELECT all the records from the database using static::$query
+	 *
+	 * @param int $order ORDER BY - column to sort query by
+	 * @param int $desc  DESC/ASC - true for DESC ordering
+	 *
+	 * @return array collection of objects found in search
+	 */
+	public static function all($order = null, $desc = false) {
+		return static::some(null, 0, $order, $desc);
+	}
+
+	/**
 	 * SELECT all the records from the database using static::$query
 	 * add passed list of ids, returns collection
 	 *
