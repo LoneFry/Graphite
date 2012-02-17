@@ -41,7 +41,7 @@ final class G {
 	 * @return void
 	 */
 	public static function msg($s = null, $c = '') {
-		if (null == $s) {
+		if (null === $s) {
 			return self::$_msg;
 		}
 		self::$_msg[] = array($s, $c);

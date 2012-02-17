@@ -117,7 +117,7 @@ abstract class Record extends DataModel{
 	 * @return mixed array of unregistered values on success, false on failure
 	 */
 	public function load() {
-		if (null==$this->vals[static::$pkey]) {
+		if (null === $this->vals[static::$pkey]) {
 			return $this->fill();
 		}
 		return $this->select();
@@ -237,7 +237,7 @@ abstract class Record extends DataModel{
 
 		$query = static::$query." WHERE 1 ".$query
 			.' GROUP BY `'.static::$pkey.'`'
-			.(null!=$order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
@@ -270,7 +270,7 @@ abstract class Record extends DataModel{
 
 		$query = static::$query.' '.$where
 			.' GROUP BY `'.static::$pkey.'`'
-			.(null!=$order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
@@ -301,7 +301,7 @@ abstract class Record extends DataModel{
 
 		$query = static::$query
 			.' GROUP BY `'.static::$pkey.'`'
-			.(null!=$order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
+			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
 			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
 			;
@@ -374,7 +374,7 @@ abstract class Record extends DataModel{
 	 * @return mixed value returned by delegated method
 	 */
 	public function save() {
-		if (null == $this->vals[static::$pkey]) {
+		if (null === $this->vals[static::$pkey]) {
 			return $this->insert();
 		}
 		return $this->update();
