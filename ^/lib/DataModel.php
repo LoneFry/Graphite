@@ -222,7 +222,7 @@ abstract class DataModel {
 	public function __isset($k) {
 		return array_key_exists($k, static::$vars)
 			&& array_key_exists($k, $this->vals)
-			&& null != $this->vals[$k];
+			&& null !== $this->vals[$k];
 	}
 
 	/**

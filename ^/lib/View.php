@@ -93,7 +93,7 @@ class View {
 	 * @return void
 	 */
 	public function _meta($name = null, $content = null) {
-		if (null == $name) {
+		if (null === $name) {
 			return $this->vals['_meta'];
 		}
 		$this->vals['_meta'][$name] = $content;
@@ -107,7 +107,7 @@ class View {
 	 * @return void
 	 */
 	public function _script($src = null) {
-		if (null == $src) {
+		if (null === $src) {
 			return $this->vals['_script'];
 		}
 		$this->vals['_script'][] = $src;
@@ -124,7 +124,7 @@ class View {
 	 * @return void
 	 */
 	public function _link($rel = null, $type = '', $href = '', $title = '') {
-		if (null == $rel) {
+		if (null === $rel) {
 			return $this->vals['_link'];
 		}
 		$this->vals['_link'][] = array('rel' => $rel, 'type' => $type, 'href' => $href, 'title' => $title);
