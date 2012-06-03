@@ -159,6 +159,8 @@ class Dispatcher {
 	/**
 	 * Perform specified action in specified Controller
 	 *
+	 * @param array $argv Arguments list to pass to action
+	 *
 	 * @return void
 	 */
 	public function Act($argv = null) {
