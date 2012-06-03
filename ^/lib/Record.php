@@ -63,22 +63,23 @@ abstract class Record extends DataModel{
 				$this->setAll($a);
 			}
 		}
-
-		static::prime_query();
 	}
 
 	/**
+	 * A suitable default static prime() function to prime the $table & $query
 	 * if the subclass has not defined its query, build one from the field list
-	 * but emit an error to the browser to ensure this is caught and corrected
+	 * ::prime() should be called immediately after extending class definition
 	 *
 	 * @return void
 	 */
-	public static function prime_query() {
+	public static function prime() {
+		//Set the class table name by prepending the configured prefix
+		static::$table = G::$M->tabl.static::$table;
+
 		//Set the query that would be used by load()
 		if ('' == static::$query) {
 			$keys = array_keys(static::$vars);
 			static::$query = 'SELECT t.`'.join('`, t.`', $keys).'` FROM `'.static::$table.'` t';
-			G::croak(static::$query);
 		}
 	}
 
@@ -266,8 +267,6 @@ abstract class Record extends DataModel{
 	 * @return array collection of objects found in search
 	 */
 	protected static function search_where($where = "WHERE 1", $count = null, $start = 0, $order = null, $desc = false) {
-		static::prime_query();
-
 		$query = static::$query.' '.$where
 			.' GROUP BY `'.static::$pkey.'`'
 			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
@@ -297,8 +296,6 @@ abstract class Record extends DataModel{
 	 * @return array collection of objects found in search
 	 */
 	public static function some($count = null, $start = 0, $order = null, $desc = false) {
-		static::prime_query();
-
 		$query = static::$query
 			.' GROUP BY `'.static::$pkey.'`'
 			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
