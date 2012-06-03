@@ -83,7 +83,7 @@ abstract class Controller {
 	/**
 	 * perform previously specified action
 	 *
-	 * @param array $a request parameters
+	 * @param array $argv Arguments list to pass to action
 	 *
 	 * @return void
 	 */
