@@ -95,7 +95,7 @@ class mysqli_ extends mysqli {
 		$d = debug_backtrace();
 		//assemble call stack
 		$s = $d[0]['file'].':'.$d[0]['line'];
-		if (0 < count($d)) {
+		if (isset($d[1])) {
 			$s .= ' - '.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'];
 		}
 		//query as sent to database
