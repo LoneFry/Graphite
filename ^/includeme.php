@@ -77,7 +77,12 @@ if (isset(G::$G['db']['ro'])
 }
 
 G::$S = new Security();
-if (G::$S->Login && 1 == G::$S->Login->flagChangePass) {
+if (G::$S->Login && 1 == G::$S->Login->flagChangePass
+	&& (!isset(G::$G['CON']['path'])
+		|| 'account/logout' != strtolower(trim(G::$G['CON']['path'], '/'))
+	)
+) {
 	G::msg('You must change your password before you can continue.');
 	G::$G['CON']['path'] = 'Account/edit';
 }
+
