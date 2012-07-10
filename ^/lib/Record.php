@@ -330,11 +330,15 @@ abstract class Record extends DataModel{
 	 * SELECT all the records from the database using static::$query
 	 * add passed list of ids, returns collection
 	 *
-	 * @param array $ids array of numeric ids to SELECT records for
+	 * @param array $ids   array of numeric ids to SELECT records for
+	 * @param int   $count LIMIT - number of rows to SELECT
+	 * @param int   $start OFFSET - number of rows to skip
+	 * @param int   $order ORDER BY - column to sort query by
+	 * @param int   $desc  DESC/ASC - true for DESC ordering
 	 *
 	 * @return array collection of objects found in search
 	 */
-	public static function search_ids($ids = array()) {
+	public static function search_ids($ids = array(), $count = null, $start = 0, $order = null, $desc = false) {
 		if (!is_array($ids)) {
 			return false;
 		}
@@ -347,7 +351,7 @@ abstract class Record extends DataModel{
 		if (1 > count($a)) {
 			return array();
 		}
-		return static::search_where("WHERE t.`".static::$pkey."` IN (".implode(',', $a).")");
+		return static::search_where("WHERE t.`".static::$pkey."` IN (".implode(',', $a).")", $count, $start, $order, $desc);
 	}
 
 	/**
