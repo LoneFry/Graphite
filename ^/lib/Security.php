@@ -104,7 +104,7 @@ class Security{
 			return false;
 		}
 
-		if (sha1($password) != $Login->password) {
+		if (!$Login->test_password($password)) {
 			return false;
 		}
 

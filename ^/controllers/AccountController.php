@@ -155,27 +155,28 @@ class AccountController extends Controller {
 			isset($_POST['password1']) && isset($_POST['password2'])
 		) {
 
-			$old_password = G::$S->Login->password;
 			G::$S->Login->comment = $_POST['comment'];
 			G::$S->Login->email = $_POST['email'];
 			if ($_POST['password1'] == $_POST['password2']
 				&& sha1('')!=$_POST['password1']
 				&& strlen($_POST['password1'])>=4
 			) {
-				G::$S->Login->password = $_POST['password1'];
-				if ($old_password != G::$S->Login->password) {
+				if (G::$S->Login->test_password($_POST['password1'])) {
+					G::msg('You cannot re-use your old password!', 'error');
+				} else {
+					G::$S->Login->password = $_POST['password1'];
 					G::$S->Login->flagChangePass = 0;
 					$pass = true;
 				}
 			}
-			if (true === G::$S->Login->save()) {
+			if (true === $saved = G::$S->Login->save()) {
 				if (isset($pass) && true === $pass) {
 					G::msg('Your password was updated.');
-				} elseif (G::$S->Login->flagChangePass == 1) {
-					G::msg('You cannot re-use your old password!', 'error');
+				} else {
+					G::msg('Your password was NOT updated.');
 				}
 				G::msg('Your account was updated.');
-			} elseif (null === G::$S->Login->save()) {
+			} elseif (null === $saved) {
 				G::msg('No changes detected.  Your account was not updated.');
 			} else {
 				G::msg('Update Failed :(', 'error');

@@ -13,6 +13,8 @@
  ****************************************************************************/
 
 require_once LIB.'/Record.php';
+require_once LIB.'/PasswordHasher.php';
+require_once LIB.'/SHA1PasswordHasher.php';
 
 /**
  * Login class - for managing site users, including current user.
@@ -159,13 +161,24 @@ class Login extends Record {
 	 */
 	public function password() {
 		if (0 < count($a = func_get_args())) {
-			if (preg_match('/[0-9a-f]{40}/i', $a[0]) && sha1('') != $a[0]) {
+			if (PasswordHasher::is_hash($a[0])) {
 				$this->vals['password'] = $a[0];
 			} elseif (strlen($a[0]) >= static::$vars['password']['min']) {
-				$this->vals['password'] = sha1(substr($a[0], 0, static::$vars['password']['max']));
+				$this->vals['password'] = PasswordHasher::hash_password($a[0]);
 			}
 		}
 		return $this->vals['password'];
+	}
+
+	/**
+	 * Verify supplied password using configured PasswordHasher
+	 *
+	 * @param string $password the password to verify
+	 *
+	 * @return bool true if password verified, false if not
+	 */
+	public function test_password($password) {
+		return PasswordHasher::test_password($password, $this->password);
 	}
 
 	/**
