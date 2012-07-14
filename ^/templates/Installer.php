@@ -6,8 +6,7 @@ form#installer h3{margin:0 -10px 20px -10px;border-bottom:3px solid #2e2e2e;}
 form#installer label{display:block;font:bold 10pt Georgia}
 form#installer input[type=text],form#installer input[type=password]{margin-bottom:20px;width:400px;font:bold 16pt Tahoma;}
 </style>
-<form action="<?php echo CONT; ?>Installer/install" method="post" id="installer"
-	onsubmit="if(sha1_vm_test()){this.password1.value=hex_sha1(this.password1.value);this.password2.value=hex_sha1(this.password2.value);}">
+<form action="<?php echo CONT; ?>Installer/install" method="post" id="installer">
 <div>
 <?php if(isset($config)){ ?>
 	<h3>Config</h3>

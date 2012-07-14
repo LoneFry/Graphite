@@ -67,7 +67,6 @@
             <tr>
                 <td colspan="2" align="center">
                     <input type="submit" value="Submit">
-                    <input type="hidden" name="hashword">
                 </td>
             </tr>
         </table>

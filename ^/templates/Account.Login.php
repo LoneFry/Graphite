@@ -11,8 +11,7 @@
 			<h2 class="tcenter">Check In Below</h2>
 			<p class="tcenter"><?php echo isset($msg)?$msg:''; ?></p>
 			<div class="loginForm" id="bodyLogin">
-				<form action="<?php echo $_loginURL; ?>" method="post"
-					onsubmit="if(sha1_vm_test()){this.h.value=hex_sha1(this.s.value+hex_sha1(this.p.value));this.p.value='';return true;}else{return true;}">
+				<form action="<?php echo $_loginURL; ?>" method="post">
 					<div>
 						<label for="loginU2">Username</label>
 						<input id="loginU2" type="text" name="l" value="<?php html(isset($l)?$l:''); ?>">
@@ -20,11 +19,9 @@
 					<div>
 						<label for="loginP2">Password</label>
 						<input id="loginP2" type="password" name="p">
-						<input id="loginH2" type="hidden" name="h">
 					</div>
 					<div>
 						<input id="loginS2" type="submit" value="Check-in">
-						<input type="hidden" name="s" value="<?php echo session_id(); ?>">
 						<input type="hidden" name="_URI" value="<?php html($_URI); ?>">
 						<input type="hidden" name="_Lbl" value="<?php html($_Lbl); ?>">
 					</div>

@@ -97,7 +97,6 @@
             <tr>
                 <td colspan="2" align="center">
                     <input type="submit" value="Submit">
-                    <input type="hidden" name="hashword">
                     <input type="hidden" name="login_id" value="<?php echo $L->login_id;?>">
                 </td>
             </tr>
