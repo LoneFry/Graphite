@@ -27,9 +27,9 @@ class AccountController extends Controller {
 		G::$V->_title    = G::$V->_siteName.' : Check-in';
 
 		G::$V->msg='';
-		if (isset($_POST['l']) && isset($_POST['p']) && isset($_POST['h'])) {
+		if (isset($_POST['l']) && isset($_POST['p'])) {
 			G::$V->l = $_POST['l'];
-			if (G::$S->authenticate($_POST['l'], $_POST['p'], $_POST['h'])) {
+			if (G::$S->authenticate($_POST['l'], $_POST['p'])) {
 				G::$V->_template = 'Account.Loggedin.php';
 			} else {
 				G::$V->msg = 'Login Failed.';

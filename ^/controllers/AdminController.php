@@ -80,7 +80,7 @@ class AdminController extends Controller {
 			isset($_POST['pass1']) && isset($_POST['pass2']) &&
 			isset($_POST['email1']) && isset($_POST['email2']) &&
 			isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-			isset($_POST['disabled']) && isset($_POST['hashword'])
+			isset($_POST['disabled'])
 		) {
 			$insert = true;
 			if ($_POST['email1'] != $_POST['email2']) {
@@ -89,9 +89,7 @@ class AdminController extends Controller {
 			}
 			$_POST['email'] = $_POST['email1'];
 
-			if ($_POST['hashword'] != '') {
-				$_POST['password'] = $_POST['hashword'];
-			} elseif ('' == $_POST['pass1']) {
+			if ('' == $_POST['pass1']) {
 				G::msg('While Adding: You must specify a password.', 'error');
 				$insert = false;
 			} elseif ($_POST['pass1'] == $_POST['pass2']) {
@@ -158,7 +156,7 @@ class AdminController extends Controller {
 			isset($_POST['pass1']) && isset($_POST['pass2']) &&
 			isset($_POST['email1']) && isset($_POST['email2']) &&
 			isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-			isset($_POST['disabled']) && isset($_POST['hashword'])
+			isset($_POST['disabled'])
 		) {
 			$update = true;
 			$old_loginname = $L->loginname;
@@ -174,9 +172,7 @@ class AdminController extends Controller {
 				G::msg('While Editing: Invalid loginname supplied: '.htmlspecialchars($_POST['loginname']), 'error');
 				$update = false;
 			}
-			if ($_POST['hashword'] != '') {
-				$L->password = $_POST['hashword'];
-			} elseif ($_POST['pass1'] == $_POST['pass2']) {
+			if ($_POST['pass1'] == $_POST['pass2']) {
 				//blank means don't change password
 				if ($_POST['pass1'] != '') {
 					$L->password = $_POST['pass1'];

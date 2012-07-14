@@ -25,16 +25,13 @@
 			;
 	} else {
 ?>
-				<form action="<?php echo $_loginURL; ?>" method="post"
-					onsubmit="if(sha1_vm_test()){this.h.value=hex_sha1(this.s.value+hex_sha1(this.p.value));this.p.value='';return true;}else{return true;}">
+				<form action="<?php echo $_loginURL; ?>" method="post">
 					<p>
 						<label for="loginU">U</label>
 						<input id="loginU" type="text" name="l" class="text">
 						<label for="loginP">P</label>
 						<input id="loginP" type="password" name="p" class="text">
-						<input id="loginH" type="hidden" name="h">
 						<input id="loginS" type="submit" value="Check-in" class="submit">
-						<input type="hidden" name="s" value="<?php echo session_id(); ?>">
 						<input type="hidden" name="_URI" value="<?php html($_URI); ?>">
 						<input type="hidden" name="_Lbl" value="<?php html($_Lbl); ?>">
 					</p>

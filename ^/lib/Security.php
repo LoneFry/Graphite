@@ -90,22 +90,11 @@ class Security{
 	 *
 	 * @param string $loginname loginname attempting to login
 	 * @param string $password  provided password
-	 * @param string $hashword  provided hashed password
 	 *
 	 * @return bool true on success, false on failure
 	 */
-	public function authenticate($loginname, $password, $hashword = '') {
-		//Ensure at least one password form was submitted
-		if (null == $password && '' == $hashword) {
-			return false;
-		}
-
-		//Search criteria starts with loginname, add password if passed
-		$Login = array('loginname' => $loginname);
-		if (null != $password) {
-			$Login['password'] = sha1(substr($password, 0, 255));
-		}
-		$Login = new Login($Login);
+	public function authenticate($loginname, $password) {
+		$Login = new Login(array('loginname' => $loginname));
 		if (false === $Login->fill()) {
 			return false;
 		}
@@ -115,11 +104,8 @@ class Security{
 			return false;
 		}
 
-		//Check hashword if passed, compared to DB password
-		if ('' != $hashword) {
-			if ($hashword != sha1(session_id().$Login->password)) {
-				return false;
-			}
+		if (sha1($password) != $Login->password) {
+			return false;
 		}
 
 		$Login->dateLogin = NOW;

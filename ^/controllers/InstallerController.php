@@ -195,7 +195,7 @@ class InstallerController extends Controller {
 					session_destroy();
 
 					G::$S = new Security();
-					G::$S->authenticate($L->loginname, '', sha1(session_id().$L->password));
+					G::$S->authenticate($L->loginname, $L->password);
 				} else {
 					G::msg('Failed to create root user: '.$L->loginname, 'error');
 				}

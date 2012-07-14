@@ -109,7 +109,7 @@ G::$G['VIEW']['_meta'] = array(
 	"copyright" => "Creative Commons (CC BY-NC-SA) LoneFry."
 );
 G::$G['VIEW']['_script'] = array(
-	CORE.'/js/sha1.js'//sha1 is used by the login forms to salt passwords
+	// '/path/to/script.js',
 );
 G::$G['VIEW']['_link'] = array(
 	array('rel' => 'shortcut icon','type' => 'image/vnd.microsoft.icon','href' => '/favicon.ico'),
