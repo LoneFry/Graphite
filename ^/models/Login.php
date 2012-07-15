@@ -15,6 +15,7 @@
 require_once LIB.'/Record.php';
 require_once LIB.'/PasswordHasher.php';
 require_once LIB.'/SHA1PasswordHasher.php';
+require_once LIB.'/PBKDF2PasswordHasher.php';
 
 /**
  * Login class - for managing site users, including current user.

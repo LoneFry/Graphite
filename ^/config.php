@@ -60,7 +60,19 @@ G::$G['db']['ro'] = array(
  ****************************************************************************/
 //Classes to use to produce and test password hash
 G::$G['SEC']['hash_class'] = array(
+	'PBKDF2PasswordHasher',
 	'SHA1PasswordHasher',
+);
+
+//parameters for the PBKDF2 hashword generation method
+G::$G['SEC']['PBKDF2'] = array(
+	'algo'       => 'sha256',
+	'iterations' => 1024,
+	'salt_len'   => 32,
+	'hash_len'   => 32,
+	'sections'   => array(
+		'algo', 'iterations', 'salt', 'PBKDF2',
+	),
 );
 /** **************************************************************************
  * Settings for Security
