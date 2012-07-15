@@ -112,7 +112,7 @@ class AdminController extends Controller {
 			if ($insert && $result=$L->insert()) {
 				G::msg('Login Added');
 				return $this->do_LoginEdit(array($L->login_id));
-			} elseif (null === $result) {
+			} elseif ($insert && (null === $result)) {
 				G::msg('Nothing to save.  Try making a change this time.');
 			} else {
 				if (G::$M->errno == 1062) {
@@ -192,7 +192,7 @@ class AdminController extends Controller {
 
 			if ($update && $result = $L->update()) {
 				G::msg('Login Edited');
-			} elseif (null === $result) {
+			} elseif ($update && (null === $result)) {
 				G::msg('No changes to Login detected.');
 			} else {
 				if (G::$M->errno == 1062) {
