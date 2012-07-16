@@ -30,7 +30,11 @@ class PBKDF2PasswordHasher implements IPasswordHasher {
 	 */
 	public static function hash_password($password) {
 		extract(G::$G['SEC']['PBKDF2']);
-		$salt = mcrypt_create_iv($salt_len, MCRYPT_DEV_URANDOM);
+		if (function_exists('mcrypt_create_iv')) {
+			$salt = mcrypt_create_iv($salt_len, MCRYPT_DEV_URANDOM);
+		} else {
+			$salt = openssl_random_pseudo_bytes($salt_len);
+		}
 		$salt = base64_encode($salt);
 		$hash = self::PBKDF2($algo, $password, $salt, $iterations, $hash_len);
 		$hash = $algo.':'.$iterations.':'.$salt.':'.base64_encode($hash);
