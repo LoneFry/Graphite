@@ -74,6 +74,36 @@ G::$G['SEC']['PBKDF2'] = array(
 		'algo', 'iterations', 'salt', 'PBKDF2',
 	),
 );
+
+//password policies for use by Security::validate_password()
+//Security::validate_password() should be called when users change passwords
+G::$G['SEC']['passwords'] = array(
+	// valid passwords must match these regular expressions
+	// If they do not match, the error is returned
+	'require' => array(
+		array('/^.{6,}$/',
+			'Password must be at least six characters long.'),
+	),
+
+	// valid passwords must NOT match these regular expressions
+	// If they do match, the error and $matches array are passed to vsprintf
+	'deny' => array(
+		array('/password|12345/',
+			'Password must not contain "%s".'),
+	),
+
+	// whether to enforce policies in the admin forms
+	'enforce_in_admin' => !true,
+);
+// Examples of useful patterns
+//G::$G['SEC']['passwords']['require'][] = array(
+//	'/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/',
+//	'Password must be at least eight characters long and contain digits and letters.'
+//	);
+//G::$G['SEC']['passwords']['require'][] = array(
+//	'/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/',
+//	'Password must be at least eight characters long and contain digits, lower and upper letters, and symbols.'
+//	);
 /** **************************************************************************
  * Settings for Security
  ****************************************************************************/

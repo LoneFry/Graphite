@@ -206,4 +206,41 @@ class Security{
 	function __destruct() {
 		$this->close();
 	}
+
+	/**
+	 * Test password against policies
+	 *
+	 * @param $password password to test
+	 *
+	 * @return bool|string true if passed|error text if failed
+	 */
+	public static function validate_password($password) {
+		//if there are no policies, everything passes!
+		if (!isset(G::$G['SEC']['passwords'])) {
+			return true;
+		}
+
+		extract(G::$G['SEC']['passwords']);
+
+		//test what a password must be
+		if (isset($require) && is_array($require)) {
+			foreach ($require as $v) {
+				if (!preg_match($v[0], $password)) {
+					return $v[1];
+				}
+			}
+		}
+
+		//test what a password must not be
+		if (isset($deny) && is_array($deny)) {
+			foreach ($deny as $v) {
+				$matches = array();
+				if (preg_match($v[0], $password, $matches)) {
+					return vsprintf($v[1], $matches);
+				}
+			}
+		}
+
+		return true;
+	}
 }
