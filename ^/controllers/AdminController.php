@@ -92,11 +92,17 @@ class AdminController extends Controller {
 			if ('' == $_POST['pass1']) {
 				G::msg('While Adding: You must specify a password.', 'error');
 				$insert = false;
-			} elseif ($_POST['pass1'] == $_POST['pass2']) {
-				$_POST['password'] = $_POST['pass1'];
-			} else {
+			} elseif ($_POST['pass1'] != $_POST['pass2']) {
 				G::msg('While Adding: The two password fields do not match, which one is correct?', 'error');
 				$insert = false;
+			} elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
+				&& G::$G['SEC']['passwords']['enforce_in_admin']
+				&& true !== $error = Security::validate_password($_POST['pass1'])
+			) {
+				G::msg($error, 'error');
+				$insert = false;
+			} else {
+				$_POST['password'] = $_POST['pass1'];
 			}
 
 			$L = new Login($_POST, true);
@@ -172,15 +178,22 @@ class AdminController extends Controller {
 				G::msg('While Editing: Invalid loginname supplied: '.htmlspecialchars($_POST['loginname']), 'error');
 				$update = false;
 			}
-			if ($_POST['pass1'] == $_POST['pass2']) {
+			if ($_POST['pass1'] != $_POST['pass2']) {
+				G::msg('While Editing: The two password fields do not match, which one is correct?', 'error');
+				$update = false;
+			} elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
+				&& G::$G['SEC']['passwords']['enforce_in_admin']
+				&& true !== $error = Security::validate_password($_POST['pass1'])
+			) {
+				G::msg($error, 'error');
+				$update = false;
+			} else {
 				//blank means don't change password
 				if ($_POST['pass1'] != '') {
 					$L->password = $_POST['pass1'];
 				}
-			} else {
-				G::msg('While Editing: The two password fields do not match, which one is correct?', 'error');
-				$update = false;
 			}
+
 			if ($_POST['email1'] != $_POST['email2']) {
 				G::msg('While Editing: The two email address fields do not match, which one is correct?', 'error');
 				$update = false;

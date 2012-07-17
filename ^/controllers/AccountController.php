@@ -157,12 +157,14 @@ class AccountController extends Controller {
 
 			G::$S->Login->comment = $_POST['comment'];
 			G::$S->Login->email = $_POST['email'];
-			if ($_POST['password1'] == $_POST['password2']
-				&& sha1('')!=$_POST['password1']
-				&& strlen($_POST['password1'])>=4
-			) {
-				if (G::$S->Login->test_password($_POST['password1'])) {
+			if ('' != $_POST['password1']) {
+				$error = Security::validate_password($_POST['password1']);
+				if ($_POST['password1'] != $_POST['password2']) {
+					G::msg('Passwords do not match, please try again.', 'error');
+				} elseif (G::$S->Login->test_password($_POST['password1'])) {
 					G::msg('You cannot re-use your old password!', 'error');
+				} elseif (true !== $error) {
+					G::msg($error, 'error');
 				} else {
 					G::$S->Login->password = $_POST['password1'];
 					G::$S->Login->flagChangePass = 0;

@@ -13,6 +13,7 @@
 					<div>
 						<label for="acctP1">Reset Password</label>
 						<input id="acctP1" type="password" name="password1">
+						<p id="password_policy"><?php html(Security::validate_password('')); ?></p>
 					</div>
 					<div>
 						<label for="acctP2">Confirm Password</label>
