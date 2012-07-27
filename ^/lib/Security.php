@@ -141,7 +141,7 @@ class Security{
 			$_SESSION = array();
 
 			// Be thorough, also delete the session cookie
-			if (ini_get("session.use_cookies")) {
+			if (ini_get("session.use_cookies") && !headers_sent()) {
 				$params = session_get_cookie_params();
 				setcookie(session_name(), '', NOW-86400, $params["path"],
 					$params["domain"], $params["secure"], $params["httponly"]);
