@@ -210,7 +210,7 @@ class Security{
 	/**
 	 * Test password against policies
 	 *
-	 * @param $password password to test
+	 * @param string $password password to test
 	 *
 	 * @return bool|string true if passed|error text if failed
 	 */
