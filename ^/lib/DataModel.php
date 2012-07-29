@@ -100,9 +100,9 @@ abstract class DataModel {
 	 * and failing otherwise
 	 *
 	 * @param array $a     associative array of values to set
-	 * @param book  $guard Whether to obey configured guard restrictions
+	 * @param bool  $guard Whether to obey configured guard restrictions
 	 *
-	 * @return void
+	 * @return array elements which were not used
 	 */
 	public function setAll($a, $guard = false) {
 		foreach (static::$vars as $k => $v) {
@@ -114,7 +114,9 @@ abstract class DataModel {
 				continue;
 			}
 			$this->__set($k, $a[$k]);
+			unset($a[$k]);
 		}
+		return $a;
 	}
 
 	/**

@@ -112,6 +112,26 @@ abstract class Record extends DataModel{
 	}
 
 	/**
+	 * "load" object from array, sets DBvals as if loaded from database
+	 *  if pkey is not passed, fail
+	 *
+	 * @param array $row values
+	 *
+	 * @return mixed array of unregistered values on success, false on failure
+	 */
+	public function load_array($row) {
+		if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
+			return false;
+		}
+		$row = $this->setAll($row, false);
+		foreach (static::$vars as $k => $v) {
+			$this->DBvals[$k] = $this->vals[$k];
+		}
+		$this->onload($row);
+		return $row;
+	}
+
+	/**
 	 * load object from database
 	 *  if pkey is not set, assume fill(), else select()
 	 *
@@ -247,7 +267,8 @@ abstract class Record extends DataModel{
 		}
 		$a = array();
 		while ($row = $result->fetch_assoc()) {
-			$a[$row[static::$pkey]] = new static($row);
+			$a[$row[static::$pkey]] = new static();
+			$a[$row[static::$pkey]]->load_array($row);
 		}
 		$result->close();
 
@@ -278,7 +299,8 @@ abstract class Record extends DataModel{
 		}
 		$a = array();
 		while ($row = $result->fetch_assoc()) {
-			$a[$row[static::$pkey]] = new static($row);
+			$a[$row[static::$pkey]] = new static();
+			$a[$row[static::$pkey]]->load_array($row);
 		}
 		$result->close();
 
@@ -307,7 +329,8 @@ abstract class Record extends DataModel{
 		}
 		$a = array();
 		while ($row = $result->fetch_assoc()) {
-			$a[$row[static::$pkey]] = new static($row);
+			$a[$row[static::$pkey]] = new static();
+			$a[$row[static::$pkey]]->load_array($row);
 		}
 		$result->close();
 
