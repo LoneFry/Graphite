@@ -65,6 +65,19 @@ abstract class Controller {
 	}
 
 	/**
+	 * default action for handling 500 errors
+	 *
+	 * @param array $argv request parameters
+	 *
+	 * @return void
+	 */
+	public function do_500($argv) {
+		header("HTTP/1.0 500 Internal Server Error");
+		G::$V->_template = '500.php';
+		G::$V->_title    = 'Internal Server Error';
+	}
+
+	/**
 	 * Getter/Setter for assigning action
 	 *
 	 * @return string The current value of $this->action

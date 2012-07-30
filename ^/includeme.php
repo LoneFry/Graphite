@@ -56,9 +56,6 @@ G::$m = G::$M = new mysqli_(G::$G['db']['host'],
 							null,
 							G::$G['db']['tabl'],
 							G::$G['db']['log']);
-if (mysqli_connect_error()) {
-	die("MySQL Connect failed: ".mysqli_connect_error());
-}
 if (isset(G::$G['db']['ro'])
 	&& isset(G::$G['db']['ro']['user'])
 	&& '' != G::$G['db']['ro']['user']
@@ -73,6 +70,18 @@ if (isset(G::$G['db']['ro'])
 						G::$G['db']['log']);
 	if (mysqli_connect_error()) {
 		G::$m = G::$M;
+	}
+}
+//If we could not connect to database, display appropriate error
+if (!G::$M->open) {
+	G::msg('Could not connect to read/write database!', 'error');
+	if (!G::$m->open) {
+		G::msg('Could not connect to read-only database!', 'error');
+		G::$G['CON']['path'] = G::$G['CON']['controller500'].'/500';
+		return;
+	} else {
+		G::msg('Site operating in read-only mode.', 'error');
+		G::$M = G::$m;
 	}
 }
 
