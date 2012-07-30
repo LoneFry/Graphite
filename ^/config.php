@@ -118,6 +118,7 @@ G::$G['CON']['URL'] = '/';
 //Defaults
 G::$G['CON']['controller'] = 'Installer';
 G::$G['CON']['controller404'] = 'Default';
+G::$G['CON']['controller500'] = 'Default';
 
 //Passed Values
 if (isset($_GET['controller'])) {
