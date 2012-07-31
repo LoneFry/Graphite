@@ -11,6 +11,8 @@
  * File        : /^/controllers/InstallerController.php
  *                Account Controller class - performs user account related actions
  ****************************************************************************/
+require_once LIB.'/mysqli_.php';
+require_once LIB.'/Security.php';
 
 class InstallerController extends Controller {
 	protected $action = 'install';
@@ -103,7 +105,7 @@ class InstallerController extends Controller {
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` ("
 										   ."`login_id` int(11) NOT NULL AUTO_INCREMENT,"
 										   ."`loginname` varchar(255) NOT NULL,"
-										   ."`password` varchar(40) NOT NULL,"
+										   ."`password` varchar(255) NOT NULL,"
 										   ."`realname` varchar(255) NOT NULL DEFAULT '',"
 										   ."`email` varchar(255) NOT NULL DEFAULT '',"
 										   ."`comment` varchar(255) NOT NULL DEFAULT '',"
