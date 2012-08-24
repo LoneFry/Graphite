@@ -22,10 +22,11 @@ class View {
 		);
 	protected $includePath = null;
 
-	public $vals = array('_meta'   => array(),
-						 '_script' => array(),
-						 '_link'   => array(),
-						 );
+	public $vals = array(
+		'_meta'   => array(),
+		'_script' => array(),
+		'_link'   => array(),
+		);
 
 	/**
 	 * View Constructor
@@ -128,6 +129,21 @@ class View {
 			return $this->vals['_link'];
 		}
 		$this->vals['_link'][] = array('rel' => $rel, 'type' => $type, 'href' => $href, 'title' => $title);
+	}
+
+	/**
+	 * Add values for a css STYLE tag to be written to document <HEAD>
+	 * Merely wrap _link()
+	 *
+	 * @param string $src CSS Source URL
+	 *
+	 * @return void
+	 */
+	public function _style($src = null) {
+		if (null === $src) {
+			return false;
+		}
+		$this->_link('stylesheet', 'text/css', $src);
 	}
 
 	/**
@@ -260,6 +276,16 @@ class View {
 	 */
 	public function render($_template = 'template') {
 		extract($this->vals);
+		//To prevent applications from altering these vars, they are set last
+		if (G::$S && G::$S->Login) {
+			$_login_id  = G::$S->Login->login_id;
+			$_loginname = G::$S->Login->loginname;
+		} else {
+			$_login_id  = 0;
+			$_loginname = 'world';
+		}
+
+		//Find the requested template in the include path
 		foreach ($this->includePath as $_v) {
 			if (isset($this->templates[$_template]) &&
 				file_exists($_v.$this->templates[$_template])
@@ -268,6 +294,8 @@ class View {
 				return true;
 			}
 		}
+
+		//If we got here, we didn't find the template.
 		return false;
 	}
 }

@@ -19,7 +19,5 @@ require_once LIB.'/View.php';
 G::$C = new Dispatcher(G::$G['CON']);
 G::$V = new View(G::$G['VIEW']);
 G::$C->Act();
-G::$V->_login_id  = G::$S && G::$S->Login ? G::$S->Login->login_id  : 0;
-G::$V->_loginname = G::$S && G::$S->Login ? G::$S->Login->loginname : 'world';
 G::close();
 G::$V->render();
