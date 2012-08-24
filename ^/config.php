@@ -12,13 +12,12 @@
  *                website core configuration file
  ****************************************************************************/
 
-if (!isset(G::$G)) {
-	G::$G = array('startTime' => NOW);
-}
 
 /** **************************************************************************
  * General settings
  ****************************************************************************/
+G::$G['startTime'] = NOW;
+
 G::$G['timezone'] = 'America/New_York';
 G::$G['siteEmail'] = 'apache@localhost';
 G::$G['MODE'] = 'prd';
