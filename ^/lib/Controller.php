@@ -118,7 +118,8 @@ abstract class Controller {
 	 */
 	function __set($name, $value) {
 		switch ($name) {
-			case 'action': return $this->action($value);
+			case 'action':
+				return $this->action($value);
 			default:
 				$trace = debug_backtrace();
 				trigger_error('Undefined property via __set(): '.$name.' in '
@@ -136,7 +137,8 @@ abstract class Controller {
 	 */
 	function __get($name) {
 		switch ($name) {
-			case 'action': return $this->action;
+			case 'action':
+				return $this->action;
 			default:
 				$trace = debug_backtrace();
 				trigger_error('Undefined property via __get(): '.$name.' in '

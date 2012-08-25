@@ -18,8 +18,8 @@ require_once SITE.CORE.'/models/Login.php';
  * Login Security - for authenticating and managing current user.
  * see Record.php for details.
  */
-class Security{
-	protected $Login=false;
+class Security {
+	protected $Login = false;
 	protected $ip;
 	protected $ua;
 	protected $UA;
@@ -185,10 +185,14 @@ class Security{
 	 */
 	public function __get($k) {
 		switch ($k) {
-			case 'Login': return $this->Login;
-			case 'ip': return $this->ip;
-			case 'ua': return $this->ua;
-			case 'UA': return $this->UA;
+			case 'Login':
+				return $this->Login;
+			case 'ip':
+				return $this->ip;
+			case 'ua':
+				return $this->ua;
+			case 'UA':
+				return $this->UA;
 			default:
 				$trace = debug_backtrace();
 				trigger_error('Undefined property via __get(): '.$k.' in '

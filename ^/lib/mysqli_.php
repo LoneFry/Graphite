@@ -147,10 +147,14 @@ class mysqli_ extends mysqli {
 	 */
 	public function __get($k) {
 		switch ($k) {
-			case 'tabl':return self::$_tabl;
-			case 'table':return self::$_tabl;
-			case 'log':return self::$_log;
-			case 'open':return $this->_open;
+			case 'tabl':
+				return self::$_tabl;
+			case 'table':
+				return self::$_tabl;
+			case 'log':
+				return self::$_log;
+			case 'open':
+				return $this->_open;
 			default:
 				$d = debug_backtrace();
 				trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'], E_USER_NOTICE);
