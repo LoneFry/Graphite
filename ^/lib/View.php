@@ -211,9 +211,12 @@ class View {
 	 */
 	function __set($name, $value) {
 		switch ($name) {
-			case '_header': return $this->setTemplate('header', $value);
-			case '_footer': return $this->setTemplate('footer', $value);
-			case '_template': return $this->setTemplate('template', $value);
+			case '_header':
+				return $this->setTemplate('header', $value);
+			case '_footer':
+				return $this->setTemplate('footer', $value);
+			case '_template':
+				return $this->setTemplate('template', $value);
 			default:
 				$this->vals[$name] = $value;
 		}
@@ -230,9 +233,12 @@ class View {
 	 */
 	function __get($name) {
 		switch ($name) {
-			case '_header': return $this->getTemplate('header');
-			case '_footer': return $this->getTemplate('footer');
-			case '_template': return $this->getTemplate('template');
+			case '_header':
+				return $this->getTemplate('header');
+			case '_footer':
+				return $this->getTemplate('footer');
+			case '_template':
+				return $this->getTemplate('template');
 			default:
 				if (isset($this->vals[$name])) {
 					return $this->vals[$name];

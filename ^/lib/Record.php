@@ -18,7 +18,7 @@ require_once LIB.'/DataModel.php';
  * Record class - used as a base class for Active Record Model classes
  * an example extension is at bottom of file
  */
-abstract class Record extends DataModel{
+abstract class Record extends DataModel {
 	protected $DBvals = array();//instance DB values of vars defined in $vars
 
 	//Should be defined in subclasses
