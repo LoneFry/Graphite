@@ -378,16 +378,35 @@ abstract class Record extends DataModel{
 	}
 
 	/**
-	 * SELECT all the records from the database using static::$query
-	 * add passed list of ids, returns collection
+	 * SELECT the record from the database with the specified pkey value
 	 *
 	 * @param int $id numeric id to SELECT record for
+	 *
+	 * @deprecated
+	 * @see Record::byPK
 	 *
 	 * @return object object for specified ID
 	 */
 	public static function byId($id) {
 		$R = new static($id);
 		$R->load();
+		return $R;
+	}
+
+	/**
+	 * SELECT the record from the database with the specified pkey value
+	 *
+	 * @param int $val numeric id to SELECT record for
+	 *
+	 * @return bool|Record false on failure or Record object for specified PKey
+	 */
+	public static function byPK($val) {
+		$R = new static();
+		$pkey = static::$pkey;
+		$R->$pkey = $val;
+		if (false === $R->select()) {
+			return false;
+		}
 		return $R;
 	}
 
