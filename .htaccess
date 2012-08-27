@@ -6,5 +6,6 @@ RewriteCond %{REQUEST_FILENAME} !-f
 RewriteRule ^(.+) /^/index.php?_path=$1 [QSA,L]
 
 ##for preventing direct access to core files
-RewriteRule ^(\^/lib|\^/models|\^/actors|\^/templates|\^/config\.php|\^/includeme.php) /^/index.php?_path=$1 [QSA,L]
+RewriteRule ^(^[^/]*/)$ /^/index.php?_path=$1 [QSA,L]
+RewriteRule ^(^[^/]*/(controllers|lib|models|templates|config\.php|includeme\.php).*)$ /^/index.php?_path=$1 [QSA,L]
 
