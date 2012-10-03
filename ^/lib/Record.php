@@ -102,6 +102,25 @@ abstract class Record extends DataModel {
 	}
 
 	/**
+	 * return array of values changed since last DB load/save
+	 *
+	 * @return array Changed values
+	 */
+	public static function getDiff() {
+		$diff = array();
+		foreach (static::$vars as $k => $v) {
+			if ($this->vals[$k] != $this->DBvals[$k]
+				|| (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
+				|| (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
+				|| (false === $this->vals[$k]) != (false === $this->DBvals[$k])
+			) {
+				$diff[$k] = $this->vals[$k];
+			}
+		}
+		return $diff;
+	}
+
+	/**
 	 * Override this function to perform custom actions AFTER load
 	 *
 	 * @param array $row unregistered values selected in load()
