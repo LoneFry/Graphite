@@ -36,6 +36,8 @@ final class G {
 	 * log messages for output later
 	 *
 	 * @param string $s the message
+	 *                  pass null to return the messages
+	 *                  pass true to return the messages and clear the log
 	 * @param string $c class, arbitrary, used at will by template on output
 	 *
 	 * @return void
@@ -43,6 +45,11 @@ final class G {
 	public static function msg($s = null, $c = '') {
 		if (null === $s) {
 			return self::$_msg;
+		}
+		if (true === $s) {
+			$msg = self::$_msg;
+			self::$_msg = array();
+			return $msg;
 		}
 		self::$_msg[] = array($s, $c);
 	}
