@@ -29,12 +29,12 @@ class Security {
 	 */
 	public function __construct() {
 		$this->ip = $_SERVER['REMOTE_ADDR'];
-		$this->ua = ''
+		$this->ua = strtolower(''
 			. (isset($_SERVER['HTTP_USER_AGENT']     )?$_SERVER['HTTP_USER_AGENT']     :'')
 			. (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])?$_SERVER['HTTP_ACCEPT_LANGUAGE']:'')
 			. (isset($_SERVER['HTTP_ACCEPT_ENCODING'])?$_SERVER['HTTP_ACCEPT_ENCODING']:'')
 			. (isset($_SERVER['HTTP_ACCEPT_CHARSET'] )?$_SERVER['HTTP_ACCEPT_CHARSET'] :'')
-			;
+			);
 		$this->UA = sha1($this->ua);
 
 		ini_set('session.use_only_cookies', 1);
