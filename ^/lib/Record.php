@@ -106,7 +106,7 @@ abstract class Record extends DataModel {
 	 *
 	 * @return array Changed values
 	 */
-	public static function getDiff() {
+	public function getDiff() {
 		$diff = array();
 		foreach (static::$vars as $k => $v) {
 			if ($this->vals[$k] != $this->DBvals[$k]
