@@ -1,8 +1,4 @@
 <?php get_header(); ?>
-		<style type="text/css">
-			table#contactForm th {width:200px;text-align:right;}
-			table#contactForm .c<?php echo $honey; ?> {display:none;}
-		</style>
 		<script type="text/javascript"><!--
 			function contactValid() {
 				if(ajas.Email.validate(document.getElementById('i<?php echo $from; ?>'))) {
