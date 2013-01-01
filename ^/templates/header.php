@@ -6,13 +6,15 @@
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
 <?php foreach($_meta as $k => $v){ ?>
 		<meta name="<?php html($k)?>" content="<?php html($v)?>">
-<?php } ?>
-<?php foreach($_script as $v){ ?>
+<?php }
+      foreach($_script as $v){ ?>
 		<script type="text/javascript" src="<?php html($v)?>"></script>
-<?php } ?>
-<?php foreach($_link as $v){ ?>
+<?php }
+      foreach($_link as $v){ ?>
 		<link rel="<?php html($v['rel'])?>" type="<?php html($v['type'])?>" href="<?php html($v['href'])?>" title="<?php html($v['title'])?>">
-<?php } ?>
+<?php }
+      echo $_head;
+?>
 	</head>
 	<body>
 		<div id="header">

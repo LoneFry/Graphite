@@ -26,6 +26,7 @@ class View {
 		'_meta'   => array(),
 		'_script' => array(),
 		'_link'   => array(),
+		'_head'   => '',
 		);
 
 	/**
