@@ -86,13 +86,13 @@ final class G {
 	 */
 	public static function croak($v = null, $die = true) {
 		$d = debug_backtrace();
-		echo '<pre class="G__croak">'
+		echo '<div class="G__croak">'
 			.'<div class="G__croak_info"><b>'.__METHOD__.'()</b> called'
 			.(isset($d[1])?' in <b>'.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'].'()</b>':'')
 			.' at <b>'.$d[0]['file'].':'.$d[0]['line'].'</b></div>'
 			.'<hr><div class="G__croak_value">';
 		var_dump($v);
-		echo '</div></pre>';
+		echo '</div></div>';
 		if ($die) {
 			exit;
 		}

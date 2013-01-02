@@ -8,7 +8,7 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /config.php
+ * File        : /^/config.php
  *                website core configuration file
  ****************************************************************************/
 
@@ -23,7 +23,7 @@ G::$G['siteEmail'] = 'apache@localhost';
 G::$G['MODE'] = 'prd';
 //includePath relative to SITE
 //each class will append it's own sub directory to each path
-G::$G['includePath'] = CORE.'CLI;'.CORE;
+G::$G['includePath'] = CORE.'HTML5;'.CORE;
 
 //enable the installer -- reverse this when installed
 G::$G['installer'] = true;
@@ -159,15 +159,14 @@ G::$G['VIEW']['_loginURL'] = G::$G['CON']['URL'].'Account/login';
 G::$G['VIEW']['_logoutURL'] = G::$G['CON']['URL'].'Account/Logout';
 G::$G['VIEW']['_meta'] = array(
 	"description" => "Graphite MVC framework",
-	"keywords" => "Graphite,MVC,framework",
-	"copyright" => "Creative Commons (CC BY-NC-SA) LoneFry."
+	"keywords"    => "Graphite,MVC,framework",
+	"generator"   => "Graphite MVC Framework",
 );
 G::$G['VIEW']['_script'] = array(
 	// '/path/to/script.js',
 );
 G::$G['VIEW']['_link'] = array(
 	array('rel' => 'shortcut icon','type' => 'image/vnd.microsoft.icon','href' => '/favicon.ico'),
-	array('rel' => 'stylesheet','type' => 'text/css','href' => CORE.'/css/default.css')
 );
 //login redirection vars
 G::$G['VIEW']['_URI'] = isset($_POST['_URI']) ? $_POST['_URI'] : $_SERVER['REQUEST_URI'];

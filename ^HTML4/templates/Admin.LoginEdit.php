@@ -30,13 +30,13 @@
             </tr>
             <tr>
                 <th>E-Mail Address</th>
-                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" onblur="ajas.ui.magicEmail(this,true,true);">
+                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
                         <label class="msg" for="email1" id="email1Msg"></label>
                 </td>
             </tr>
             <tr>
                 <th>Confirm E-Mail Address</th>
-                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" onblur="ajas.ui.magicEmail(this,true,true);">
+                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
                         <label class="msg" for="email2" id="email2Msg"></label>
                 </td>
             </tr>
@@ -127,26 +127,40 @@
     <div class="fleft" style="border-top:1px solid transparent;">
         <h2>Login Log</h2>
         <table class="listTable">
-                <thead>
-                        <th>pkey</th>
-                        <th>date</th>
-                        <th>IP</th>
-                        <th>user agent</th>
-                </thead>
-                <tbody>
-<?php if(is_array($log))foreach($log as $k => $v){ ?>
-                        <tr>
-                                <td><?php html($v->pkey);?></td>
-                                <td><?php html($v->iDate);?></td>
-                                <td><?php html($v->ip);?></td>
-                                <td><?php html($v->ua);?></td>
-                        </tr>
-<?php } ?>
-                </tbody>
+			<thead>
+				<tr>
+					<th>pkey</th>
+					<th>date</th>
+					<th>IP</th>
+					<th>user agent</th>
+				</tr>
+			</thead>
+			<tbody>
+<?php
+if (is_array($log) && count($log)) {
+	foreach ($log as $k => $v) {
+?>
+				<tr>
+					<td><?php html($v->pkey);?></td>
+					<td><?php html($v->iDate);?></td>
+					<td><?php html($v->ip);?></td>
+					<td><?php html($v->ua);?></td>
+				</tr>
+<?php
+	}
+} else {
+?>
+		<tr><td colspan="4">No records found.</td></tr>
+<?php
+}
+?>
+			</tbody>
         </table>
     </div>
 
 </form>
 
 
+<script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
 <?php get_footer(); ?>
+

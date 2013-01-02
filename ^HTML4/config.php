@@ -1,4 +1,5 @@
-/*****************************************************************************
+<?php
+/** **************************************************************************
  * Project     : Graphite
  *                Simple MVC web-application framework
  * Created By  : LoneFry
@@ -7,8 +8,9 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/css/default.ie.css
- *                Graphite default stylesheet - Internet Explorer adjustments
+ * File        : /^HTML4/config.php
+ *                website HTML4 skin configuration file
  ****************************************************************************/
 
-img { -ms-interpolation-mode: bicubic; }
+G::$G['VIEW']['_link'][] = array('rel' => 'stylesheet','type' => 'text/css','href' => '/^HTML4/css/default.css');
+

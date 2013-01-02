@@ -35,9 +35,8 @@ class HomeController extends Controller {
 	 * @return mixed
 	 */
 	public function do_contact($argv) {
-		G::$V->_template = 'Contact.php';
+		G::$V->_template = 'Home.Contact.php';
 		G::$V->_title    = G::$V->_siteName.': Contact';
-		G::$V->_script(CORE.'/js/ajas.Email.js');
 		G::$V->seed    =$seed    =(int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
 		G::$V->from    =$from    =substr(md5($seed), -6);
 		G::$V->subject =$subject =md5($from);
@@ -110,7 +109,7 @@ class HomeController extends Controller {
 			return parent::do_403($argv);
 		}
 
-		G::$V->_template = 'ContactLog.php';
+		G::$V->_template = 'Home.ContactLog.php';
 		G::$V->_title    = G::$V->_siteName.': Contact Log';
 
 		require_once SITE.CORE.'/models/ContactLog.php';
@@ -118,3 +117,4 @@ class HomeController extends Controller {
 		G::$V->log = $C->search(0, 100, 'id', true);
 	}
 }
+

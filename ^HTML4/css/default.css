@@ -7,7 +7,7 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /^/css/default.css
+ * File        : /^HTML4/css/default.css
  *                Graphite default stylesheet
  ****************************************************************************/
 
@@ -22,7 +22,7 @@ code.block {display:block;white-space:pre;border:1px inset gray;background-color
 a img {border:0;}
 a {color:#0076fd;}
 a.incognito {font-size:inherit;font-family:inherit;text-decoration:inherit;color:inherit;}
-a[rel~="external"]{background: url(/^/images/url_icon.gif) no-repeat left center;padding-left:15px;}
+a[rel~="external"]{background: url(/^HTML4/images/url_icon.gif) no-repeat left center;padding-left:15px;}
 
 .del{text-decoration:line-through;}
 .subtle{color:#80a080;font:italic 0.8em sans-serif;}
@@ -39,9 +39,9 @@ a[rel~="external"]{background: url(/^/images/url_icon.gif) no-repeat left center
 .ajas_email_error { background-color: #f99; }
 p.error,div.error {border:2px solid red;padding:10px;background-color:#fee;}
 
-pre.G__croak{background:white;color:black;white-space:pre-wrap;}
+div.G__croak{background:white;color:black;white-space:pre-wrap;font-family:monospace;}
 div.G__croak_info{padding-left:5px;border-left:5px solid black;}
-pre.G__croak hr{margin:0;}
+div.G__croak hr{margin:0;}
 div.G__croak_value{padding-left:10px;}
 
 div.golden > *:first-child     {width:38.1966%;}
@@ -91,3 +91,5 @@ table.listTable tbody tr.odd td{}
 
 ul.breadcrumbs{width:100%;margin:0;padding:0;height:1.3em;}
 ul.breadcrumbs li{float:left;margin-left:30px;}
+
+img { -ms-interpolation-mode: bicubic; }

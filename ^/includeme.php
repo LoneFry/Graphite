@@ -8,7 +8,7 @@
  *                Creative Commons Attribution-NonCommercial-ShareAlike
  *                http://creativecommons.org/licenses/by-nc-sa/3.0/
  *
- * File        : /includeme.php
+ * File        : /^/includeme.php
  *                website base include file
  ****************************************************************************/
 
