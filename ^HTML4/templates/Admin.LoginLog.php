@@ -8,14 +8,19 @@
 <h2>Login Log</h2>
 <table class="listTable">
 	<thead>
-		<th>pkey</th>
-		<th>date</th>
-		<th>login_id</th>
-		<th>IP</th>
-		<th>user agent</th>
+		<tr>
+			<th>pkey</th>
+			<th>date</th>
+			<th>login_id</th>
+			<th>IP</th>
+			<th>user agent</th>
+		</tr>
 	</thead>
 	<tbody>
-<?php if(is_array($log))foreach($log as $k => $v){ ?>
+<?php
+if (is_array($log) && count($log)) {
+	foreach($log as $k => $v) {
+?>
 		<tr>
 			<td><?php html($v->pkey);?></td>
 			<td><?php echo date("r",$v->iDate);?></td>
@@ -23,7 +28,15 @@
 			<td><?php html($v->ip);?></td>
 			<td><?php html($v->ua);?></td>
 		</tr>
-<?php } ?>
+<?php
+	}
+} else {
+?>
+		<tr><td colspan="4">No records found.</td></tr>
+<?php
+}
+?>
 	</tbody>
 </table>
 <?php get_footer(); ?>
+

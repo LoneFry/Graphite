@@ -14,13 +14,11 @@
  * ajas.Email.validate()    - call for true/false validation
  * ajas.Email.parse()       - don't call this
  *
- * The function cancelBubble() is found in ajas.event.js
- *
  * TLD list taken from http://data.iana.org/TLD/tlds-alpha-by-domain.txt
  * ref: RFC822,RFC1035,icann.org,iana.org
  *****************************************************************************/
 if("undefined" == typeof(ajas))ajas={};
-ajas.Email=ajas.validator.email?ajas.Email:{};
+ajas.Email=ajas.Email?ajas.Email:{};
 
 
 // use this function for form feedback
@@ -31,17 +29,17 @@ ajas.Email.magic=function(oInput, bStrict, bStrict2) {
     // bStrict2=true will validate the TLD against a strict list
     //ONLY SET IF YOU KEEP THAT LIST UP TO DATE!
     if(arguments.length < 3) var bStrict2=false;
-    
+
     var sLabel = oInput.id + 'Msg';
     oInput.className = oInput.className.replace(/ajas_email_error/g, '');
     try {
         if (oInput.value == '') {
-            ajas._e(sLabel).innerHTML = 'user@domain'+(bStrict?'.tld':'');
+            document.getElementById(sLabel).innerHTML = 'user@domain'+(bStrict?'.tld':'');
             return;
         }
         var sEmail = ajas.Email.parse(oInput.value, bStrict, bStrict2);
         // Human readable email
-        ajas._e(sLabel).innerHTML = oInput.value = sEmail;
+        document.getElementById(sLabel).innerHTML = oInput.value = sEmail;
     } catch (e) {
         oInput.className += ' ajas_email_error';
         var message = e.message;
@@ -49,7 +47,7 @@ ajas.Email.magic=function(oInput, bStrict, bStrict2) {
         if (message.indexOf('is null or not an object') > -1) {
             message = 'Invalid Email string';
         }
-        ajas._e(sLabel).innerHTML = message;
+        document.getElementById(sLabel).innerHTML = message;
     }
 
 };
@@ -66,7 +64,7 @@ ajas.Email.parse=function(sEmail, bStrict, bStrict2) {
     }
     var sUser=aParts[1];
     var sDomain=aParts[2];
-    
+
     //NOT:   CTRL     SP  (   )   <   >   @   ,   ;   :   \   "   .   [   ]  DEL EXT
     sAtom='[^\000-\037\040\050\051\074\076\100\054\073\072\134\042\056\133\\]\177\200-\377]+';
     rAtom=new RegExp('^'+sAtom+'$');
@@ -79,7 +77,7 @@ ajas.Email.parse=function(sEmail, bStrict, bStrict2) {
     if (sUser.match(rLocalPart) == null) {
         throw new Error("Invalid User part");
     }
-    
+
     sDomainIP='\\[(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\.(\\d{1,3})\\]';
     rDomainIP=new RegExp('^'+sDomainIP+'$');
     rDomainNa=new RegExp('^'+sAtom+'(\\.'+sAtom+')*$');
@@ -89,7 +87,7 @@ ajas.Email.parse=function(sEmail, bStrict, bStrict2) {
     if (sDomain.match(rDomain) == null) {
         throw new Error("Invalid Domain part");
     }
-    
+
     //if IP, validate IP
     if (aBits=sDomain.match(rDomainIP)) {
         if (aBits[1]>255) throw new Error("Invalid IP address");
@@ -122,7 +120,7 @@ ajas.Email.parse=function(sEmail, bStrict, bStrict2) {
         if (aBits.length>1 && aBits[aBits.length-2].length<2) { // single character SLD?!
             throw new Error("Invalid Domain");
         }
-        for(var i in aBits) { 
+        for(var i in aBits) {
             // even though RFC1035 says start with a letter, we don't always
             //check for hyphens below to be more specfic in our error
             if (aBits[i].match(/^[a-zA-Z0-9\-]{1,63}$/) == null) {
@@ -139,7 +137,7 @@ ajas.Email.parse=function(sEmail, bStrict, bStrict2) {
             }
         }
     }
-    
+
     return sEmail;
 };
 

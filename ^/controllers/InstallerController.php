@@ -33,7 +33,15 @@ class InstallerController extends Controller {
 
 		G::$V->_template = 'Installer.php';
 		G::$V->_title    = G::$V->_siteName.' : Install';
-
+		G::$V->_head    .= '
+<style type="text/css">
+form#installer {background-color:#e2e2e2;padding:50px;}
+form#installer div{margin:auto;width:500px;}
+form#installer h3{margin:0 -10px 20px -10px;border-bottom:3px solid #2e2e2e;}
+form#installer label{display:block;font:bold 10pt Georgia}
+form#installer input[type=text],form#installer input[type=password]{margin-bottom:20px;width:400px;font:bold 16pt Tahoma;}
+</style>
+';
 
 		if (isset($_POST['siteName']) && isset($_POST['loginname']) &&
 		   isset($_POST['password1']) && isset($_POST['password2']) &&

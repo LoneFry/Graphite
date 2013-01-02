@@ -401,7 +401,7 @@ class AdminController extends Controller {
 			return parent::do_403($argv);
 		}
 
-		G::$V->_template = 'LoginLog.php';
+		G::$V->_template = 'Admin.LoginLog.php';
 		G::$V->_title    = G::$V->_siteName.': Login Log';
 
 		require_once SITE.CORE.'/models/LoginLog.php';
@@ -409,3 +409,4 @@ class AdminController extends Controller {
 		G::$V->log = $LL->search(100, 0, 'pkey', true);
 	}
 }
+

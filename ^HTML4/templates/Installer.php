@@ -1,11 +1,4 @@
 <?php get_header(); ?>
-<style>
-form#installer {background-color:#e2e2e2;padding:50px;}
-form#installer div{margin:auto;width:500px;}
-form#installer h3{margin:0 -10px 20px -10px;border-bottom:3px solid #2e2e2e;}
-form#installer label{display:block;font:bold 10pt Georgia}
-form#installer input[type=text],form#installer input[type=password]{margin-bottom:20px;width:400px;font:bold 16pt Tahoma;}
-</style>
 <form action="<?php echo CONT; ?>Installer/install" method="post" id="installer">
 <div>
 <?php if(isset($config)){ ?>

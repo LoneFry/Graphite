@@ -24,7 +24,7 @@
 	if ($_login_id) {
 		echo 'Hello, '.$_loginname
 			.'. (<a href="'.$_logoutURL.'">Logout</a> | '
-			.'<a href="<?php echo CONT; ?>Account/edit" title="Your Account Settings">Account</a>)'
+			.'<a href="'.CONT.'Account/edit" title="Your Account Settings">Account</a>)'
 			;
 	} else {
 ?>

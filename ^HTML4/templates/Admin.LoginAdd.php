@@ -29,13 +29,13 @@
             </tr>
             <tr>
                 <th>E-Mail Address</th>
-                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" onblur="ajas.ui.magicEmail(this,true,true);">
+                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
                         <label class="msg" for="email1" id="email1Msg"></label>
                 </td>
             </tr>
             <tr>
                 <th>Confirm E-Mail Address</th>
-                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" onblur="ajas.ui.magicEmail(this,true,true);">
+                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
                         <label class="msg" for="email2" id="email2Msg"></label>
                 </td>
             </tr>
@@ -73,4 +73,6 @@
     </form>
 
 
+	<script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
 <?php get_footer(); ?>
+
