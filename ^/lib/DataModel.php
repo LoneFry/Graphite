@@ -752,6 +752,69 @@ abstract class DataModel {
 		return json_decode($this->vals[$k]);
 	}
 
+	/**
+	 * Arrays
+	 * stores a php array with serialize()
+	 * supports whitelisting
+	 * converts non-arrays to array
+	 *
+	 * @param string $k property to get/set
+	 *
+	 * @return mixed current value, if setting, resultant value
+	 */
+	protected function _a($k) {
+		//$k is a valid var?
+		if (!isset(static::$vars[$k])) {
+			$trace = debug_backtrace();
+			trigger_error('Undefined property via __set(): '.$k
+				.' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
+				E_USER_NOTICE);
+			return null;
+		}
+		if (1 < count($a = func_get_args())) {
+			$strict = isset(static::$vars[$k]['strict']) && static::$vars[$k]['strict'];
+
+			// Do not serialize serialized strings
+			if (is_string($a[1]) && $a[1] == serialize(false)) {
+				$v = false;
+			} elseif (is_string($a[1]) && false !== $v = @unserialize($a[1])) {
+				//$v = unserialize($a[1]); // set in above conditional
+			} elseif(!is_array($a[1])) {
+				$v = array($a[1]);
+			} else {
+				$v = $a[1];
+			}
+
+			//IF we have a whitelist, filter supplied value
+			if (isset(static::$vars[$k]['values'])
+				&& is_array(static::$vars[$k]['values'])
+				&& count(static::$vars[$k]['values'])
+			) {
+				$tmp = array();
+
+				foreach($v as $kk => $vv) {
+					if (in_array($vv, static::$vars[$k]['values'])) {
+						$tmp[$kk] = $vv;
+					} elseif ($strict) {
+						$tmp = $this->vals[$k];
+						break;
+					}
+				}
+				$v = $tmp;
+			}
+			$v = serialize($v);
+
+			//IF value does not exceed column length
+			if (!isset(static::$vars[$k]['max'])
+				|| !is_numeric(static::$vars[$k]['max'])
+				|| strlen($v) <= static::$vars[$k]['max']
+			) {
+				$this->vals[$k] = $v;
+			}
+		}
+		return $this->vals[$k];
+	}
+
 	/** **********************************************************************
 	 * END Type specific combined Getter/Setter functions
 	 ************************************************************************/
