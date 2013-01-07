@@ -80,10 +80,24 @@ abstract class Report extends DataModel {
 	public function load() {
 		$this->_data = array();
 		$query = array();
+
 		foreach (static::$vars as $k  => $v) {
 			if (isset($this->vals[$k]) && null !== $this->vals[$k]) {
-				$query[] = sprintf($v['sql'],
+				if ('a' === $v['type']) {
+					$arr = array();
+
+					$arr = unserialize($this->$k);
+
+					foreach($arr as $kk => $vv) {
+						$arr[$kk] = G::$m->escape_string($vv);
+					}
+
+					$query[] = sprintf($v['sql'],
+									"'".implode("', '", $arr)."'");
+				} else {
+					$query[] = sprintf($v['sql'],
 									G::$m->escape_string($this->vals[$k]));
+				}
 			}
 		}
 		if (count($query) == 0) {
