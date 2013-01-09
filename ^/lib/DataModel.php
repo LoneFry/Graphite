@@ -779,10 +779,11 @@ abstract class DataModel {
 				$v = false;
 			} elseif (is_string($a[1]) && false !== $v = @unserialize($a[1])) {
 				//$v = unserialize($a[1]); // set in above conditional
-			} elseif(!is_array($a[1])) {
-				$v = array($a[1]);
 			} else {
 				$v = $a[1];
+			}
+			if(!is_array($v)) {
+				$v = array($v);
 			}
 
 			//IF we have a whitelist, filter supplied value
