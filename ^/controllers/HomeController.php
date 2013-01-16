@@ -45,8 +45,7 @@ class HomeController extends Controller {
 		G::$V->honey2  =$honey2  =md5($honey);
 		G::$V->_head .= '
 		<style type="text/css">
-			table#contactForm th {width:200px;text-align:right;}
-			table#contactForm .c'.$honey.' {display:none;}
+			.c'.$honey.' {display:none;}
 		</style>
 ';
 
