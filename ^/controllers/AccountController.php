@@ -39,12 +39,10 @@ class AccountController extends Controller {
 		} else {
 			G::$V->l = '';
 		}
-		if (!isset(G::$V->_URI)) {
-			G::$V->_URI = isset($_POST['_URI']) ? $_POST['_URI'] : CONT;
-		}
-		if (!isset(G::$V->_Lbl)) {
-			G::$V->_Lbl = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'Home';
-		}
+		G::$V->_URI = isset($_POST['_URI']) ? $_POST['_URI']
+					: (isset($_GET['_URI']) ? $_GET['_URI'] : CONT);
+		G::$V->_Lbl = isset($_POST['_Lbl']) ? $_POST['_Lbl']
+					: (isset($_GET['_Lbl']) ? $_GET['_Lbl'] : 'Home');
 	}
 
 	/**

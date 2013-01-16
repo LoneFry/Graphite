@@ -1,0 +1,87 @@
+/*****************************************************************************
+ * Project     : Graphite
+ *                Simple MVC web-application framework
+ * Created By  : LoneFry
+ *                dev@lonefry.com
+ * License     : CC BY-NC-SA
+ *                Creative Commons Attribution-NonCommercial-ShareAlike
+ *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+ *
+ * File        : /^HTML5/css/default.css
+ *                Graphite default stylesheet
+ ****************************************************************************/
+
+/* CSS required for details-shim https://github.com/tyleruebele/details-shim */
+details,summary{display:block}details.closed>*{display:none}details.closed>summary{display:block}details.open>summary{display:block}details.closed>summary:before{display:inline-block;content:"\25b6";padding:0 .1em;margin-right:.4em;font-size:.9em}details.open>summary:before{display:inline-block;content:"\25bc";padding:0;margin-right:.35em}
+
+/* Improved MSIE image scaling */
+img { -ms-interpolation-mode: bicubic; }
+
+
+/* Begin Graphite general styles */
+body {margin:0;padding:0;border:0;background-color:#fff;color:#000;font:11pt Tahoma,Arial,sans-serif;}
+
+body > header {background-color:#2e2e2e;padding:0 4px 4	px;color:#fff;}
+body > header h1 {margin:0 0 2px 2px;color:#fff;text-shadow:0 0 0.2em #fff;float:left;}
+body > header div#login {margin:6px 0;font-size:0.8em;float:right;}
+body > header nav {padding-top:6px;text-align:center;}
+body > header a {color:#a0c0ff;}
+body > header:after { content: " "; display: block; height: 0; clear: both; }
+
+details#msg {}
+details#msg summary {color:#444;font:bold 1.6em Georgia,Palatino,sans-serif;display:block;padding:0.1em 1em;background-color:#ddd;border-bottom:2px solid #888;}
+details#msg ul {margin:0;padding:0;list-style:none;}
+details#msg ul li{padding:0.1em 3em;background-color:#ddeedd;border-bottom:2px solid #8b8;}
+details#msg ul li.error{padding:0.1em 3em;background-color:#eedddd;border-bottom:2px solid #b88;color:red;}
+
+section#body {}
+
+body > footer {clear:both;margin-top:1em;}
+
+details#debug summary{color:#80a080;font-style:italic;font-size:0.8em;display:block;}
+
+h1,h2,h3,h4,h5 {font-family:Georgia,Palatino,sans-serif;}
+a img {border:0;}
+a {color:#0076fd;}
+a[rel~="external"] {background: url(/^HTML5/images/url_icon.gif) no-repeat left center;padding-left:15px;}
+
+div.G__croak{background:white;color:black;white-space:pre-wrap;font:10pt monospace;}
+div.G__croak_info{padding-left:5px;border-left:5px solid black;}
+div.G__croak hr{margin:0;}
+div.G__croak_value{padding-left:10px;}
+
+
+form#Home_Contact {margin:0 3em;}
+form#Home_Contact label {font-weight:bold;font-size:0.8em}
+form#Home_Contact input[type=text],
+form#Home_Contact input[type=email],
+form#Home_Contact textarea {margin:0 0.4em 0 1.5em;font-size:12pt;border:1px solid black;padding:0.3em;font-family:Tahoma,Arial,sans-serif;}
+form#Home_Contact input + label {font-weight:normal;font-style:italic;color:#888;}
+
+ul.breadcrumbs {width:100%;margin:0;padding:0;height:1.3em;}
+ul.breadcrumbs li {float:left;margin-left:30px;}
+
+table.list {border:1px outset #ccc;margin:0;border-collapse:collapse;}
+table.list th {border:1px outset #ccc;margin:0;text-align:right;font:bold 9pt Tahoma, sans-serif;color:#294a69;background-color:#f8f8ff;}
+table.list thead th {text-align:center;}
+table.list td {border:1px outset #ccc;margin:0;text-align:left;background-color:#f8f8ff;}
+table.list tbody tr:nth-child(even) {background-color:#f8fff8;}
+table.form th {text-align:right;vertical-align:top;font:bold 10pt Verdana, Tahoma, sans-serif;color:#777;}
+table.form td.th {font:bold 9pt Tahoma, sans-serif;color:#777;}
+table.form td {text-align:left;vertical-align:top;}
+table.form h3 {margin:0;padding:0;}
+
+div#bodyLogin {width:200px;margin:39px auto;border:3px solid #2e2e2e;background-color:#e2e2e2;padding:50px;text-align:left;}
+div#bodyLogin label {width:65px;font:13pt Tahoma;text-align:right;}
+div#bodyLogin input {width:200px;font:bold 16pt Tahoma;text-align:center;}
+div#bodyLogin input[type=text],div#bodyLogin input[type=email],div#bodyLogin input[type=password]{margin-bottom:30px;}
+div#bodyLogin form {margin:0;padding:0;}
+div#bodyLogin p {margin:30px 0 0 0;padding:0;}
+div#bodyLogin p#password_policy {margin-top:-30px;color:#80a080;font:italic 0.8em sans-serif;}
+
+.Account {text-align:center;}
+.Account h2 {margin-bottom:2em;}
+.Account_left {width:50%;float:left;}
+.Account_left + .Account {width:50%;float:right;}
+
+#Admin_LoginEdit > div {float:left;border-top:1px solid transparent;}
