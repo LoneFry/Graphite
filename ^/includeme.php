@@ -95,3 +95,17 @@ if (G::$S->Login && 1 == G::$S->Login->flagChangePass
 	G::$G['CON']['path'] = 'Account/edit';
 }
 
+/**
+ * Load per-application includeme.php files
+ */
+if (isset(G::$G['includePath'])) {
+	foreach (explode(';', G::$G['includePath']) as $v) {
+		$s = realpath(SITE.$v.'/includeme.php');
+		if (false !== strpos($s, SITE.$v) && file_exists($s)
+			&& $s != __FILE__
+		) {
+			require_once $s;
+		}
+	}
+}
+
