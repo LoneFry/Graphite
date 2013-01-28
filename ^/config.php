@@ -20,6 +20,7 @@ G::$G['startTime'] = NOW;
 
 G::$G['timezone'] = 'America/New_York';
 G::$G['siteEmail'] = 'apache@localhost';
+G::$G['contactFormSubject'] = 'Contact form message: ';
 G::$G['MODE'] = 'prd';
 //includePath relative to SITE
 //each class will append it's own sub directory to each path

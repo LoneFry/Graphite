@@ -70,12 +70,12 @@ class HomeController extends Controller {
 					   .'Your message has not been sent.  '
 					   .'We check this to prevent automated mailers.');
 			} else {
-				mail(G::$G['siteEmail'], '['.G::$V->_siteName.'] message: '.$_POST[$subject],
+				mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$_POST[$subject],
 					'Login Info: '.$loginname.' - '.$login_id."\n"
 					.'Specified Email Address: '.$_POST[$from]."\n"
 					.'Subject: '.$_POST[$subject]."\n"
 					.'Message: '."\n".$_POST[$message],
-					'From: "'.$_POST[$from].'" <'.G::$G['siteEmail'].">\n"
+					'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
 					."Reply-To: ".$_POST[$from]."\nX-Mailer: PHP/" . phpversion()
 					);
 				G::msg('Your message has been sent.');
