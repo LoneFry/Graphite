@@ -84,7 +84,7 @@ final class G {
 	 *
 	 * @return void
 	 */
-	public static function croak($v = null, $die = true) {
+	public static function croak($v = null, $die = false) {
 		$d = debug_backtrace();
 		echo '<div class="G__croak">'
 			.'<div class="G__croak_info"><b>'.__METHOD__.'()</b> called'
