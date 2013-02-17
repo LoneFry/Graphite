@@ -279,7 +279,7 @@ abstract class Record extends DataModel {
 			.' GROUP BY `'.static::$pkey.'`'
 			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
 			;
 		if (false === $result = G::$m->query($query)) {
 			return false;
@@ -311,7 +311,7 @@ abstract class Record extends DataModel {
 			.' GROUP BY `'.static::$pkey.'`'
 			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
 			;
 		if (false === $result = G::$m->query($query)) {
 			return false;
@@ -341,7 +341,7 @@ abstract class Record extends DataModel {
 			.' GROUP BY `'.static::$pkey.'`'
 			.(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
 			.('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.$start.','.$count:'')
+			.(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
 			;
 		if (false === $result = G::$m->query($query)) {
 			return false;
