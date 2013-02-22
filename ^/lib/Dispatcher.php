@@ -149,6 +149,8 @@ class Dispatcher {
 			require_once $this->controllerPath.$this->controller.'Controller.php';
 			if (method_exists($this->controller.'Controller', 'do_'.$a[0])) {
 				$this->action = $a[0];
+			} elseif (method_exists($this->controller.'Controller', 'do_404')) {
+				$this->action = '404';
 			} else {
 				$this->controller = $this->controller404;
 				$this->controllerPath = $this->controller404Path;
