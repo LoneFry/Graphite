@@ -18,7 +18,6 @@ class Dispatcher {
 	protected $controllerPath    = '';
 	protected $controller404     = 'Default';
 	protected $controller404Path = '';
-	protected $action            = '';
 	protected $includePath       = array();
 	protected $argv              = array();
 
@@ -56,9 +55,7 @@ class Dispatcher {
 			}
 			//argv should contain the rest of the request path, action at [0]
 			$this->argv = $a;
-			if (count($a) > 0) {
-				$this->action(urldecode(array_shift($a)));
-			}
+			array_shift($a);
 
 			//If we have other argv, pair them up and add them to the _GET array
 			//Yes, this will result in redundancy: paired and unpaired; intentional
@@ -84,12 +81,10 @@ class Dispatcher {
 				$this->argv = $cfg['params'];
 			}
 			if (isset($cfg['action'])) {
-				$this->action($cfg['action']);
 				array_unshift($this->argv, $cfg['action']);
 			}
 			// passing an argv config will override the params and action configs
 			if (isset($cfg['argv'])) {
-				$this->action($cfg['argv'][0]);
 				$this->argv = $cfg['argv'];
 			}
 		}
@@ -139,26 +134,6 @@ class Dispatcher {
 	}
 
 	/**
-	 * Set action if exists in chosen controller, else set controller to 404
-	 *
-	 * @return void
-	 */
-	public function action() {
-		if (0 < count($a = func_get_args())) {
-			require_once LIB.'/Controller.php';
-			require_once $this->controllerPath.$this->controller.'Controller.php';
-			if (method_exists($this->controller.'Controller', 'do_'.$a[0])) {
-				$this->action = $a[0];
-			} elseif (method_exists($this->controller.'Controller', 'do_404')) {
-				$this->action = '404';
-			} else {
-				$this->controller = $this->controller404;
-				$this->controllerPath = $this->controller404Path;
-			}
-		}
-	}
-
-	/**
 	 * Perform specified action in specified Controller
 	 *
 	 * @param array $argv Arguments list to pass to action
@@ -173,6 +148,14 @@ class Dispatcher {
 		require_once $this->controllerPath.$this->controller.'Controller.php';
 		$Controller = $this->controller.'Controller';
 		$Controller = new $Controller($argv);
-		$Controller->act();
+		if (method_exists($Controller, 'do_'.$Controller->action)) {
+			return $Controller->act();
+		}
+
+		// else use 404 controller
+		require_once $this->controller404Path.$this->controller404.'Controller.php';
+		$Controller = $this->controller404.'Controller';
+		$Controller = new $Controller($argv);
+		return $Controller->act();
 	}
 }

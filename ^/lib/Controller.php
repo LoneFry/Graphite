@@ -16,10 +16,10 @@
 
 /**
  * Controller class - used as a base class for MVC Controller classes
- * a trivial example extension is in 404.php
+ * a trivial example extension is in /^/controllers/DefaultController.php
  */
 abstract class Controller {
-	protected $action = '404';
+	protected $action = '';
 	protected $argv   = array();
 
 	/**
@@ -39,19 +39,6 @@ abstract class Controller {
 	}
 
 	/**
-	 * default action for handling 404 errors
-	 *
-	 * @param array $argv request parameters
-	 *
-	 * @return void
-	 */
-	public function do_404($argv) {
-		header("HTTP/1.0 404 File Not Found");
-		G::$V->_template = '404.php';
-		G::$V->_title    = 'Requested Page Not Found';
-	}
-
-	/**
 	 * default action for handling 403 errors
 	 *
 	 * @param array $argv request parameters
@@ -65,19 +52,6 @@ abstract class Controller {
 	}
 
 	/**
-	 * default action for handling 500 errors
-	 *
-	 * @param array $argv request parameters
-	 *
-	 * @return void
-	 */
-	public function do_500($argv) {
-		header("HTTP/1.0 500 Internal Server Error");
-		G::$V->_template = '500.php';
-		G::$V->_title    = 'Internal Server Error';
-	}
-
-	/**
 	 * Getter/Setter for assigning action
 	 *
 	 * @return string The current value of $this->action
@@ -86,8 +60,10 @@ abstract class Controller {
 		if (0 < count($a = func_get_args())) {
 			if (method_exists($this, 'do_'.$a[0])) {
 				$this->action = $a[0];
-			} else {
+			} elseif (method_exists($this, 'do_404')) {
 				$this->action = '404';
+			} else {
+				$this->action = '';
 			}
 		}
 		return $this->action;
