@@ -26,7 +26,8 @@ if ($_login_id) {
 			.'<a href="'.CONT.'Account/edit" title="Your Account Settings">Account</a>)'
 			;
 } else {
-		echo '(<a href="'.$_loginURL.'?_URI='.htmlspecialchars($_SERVER["REQUEST_URI"]).'&amp;_Lbl=Back">Login</a>)';
+		echo '(<a id="_loginLink" href="'.$_loginURL.'?_Lbl=Back&amp;_URI='.urlencode($_SERVER["REQUEST_URI"]).'">Login</a>)'
+			.'<script type="text/javascript">document.getElementById(\'_loginLink\').href += encodeURIComponent(location.hash);</script>';
 }
 			?></div>
 			<nav>

@@ -35,7 +35,7 @@
 						<label for="loginP">P</label>
 						<input id="loginP" type="password" name="p" class="text">
 						<input id="loginS" type="submit" value="Check-in" class="submit">
-						<input type="hidden" name="_URI" value="<?php html($_URI); ?>">
+						<input type="hidden" name="_URI" value="<?php echo str_replace('"', '&quot;', $_URI); ?>">
 						<input type="hidden" name="_Lbl" value="<?php html($_Lbl); ?>">
 					</p>
 				</form>
