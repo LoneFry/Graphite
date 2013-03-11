@@ -15,5 +15,6 @@ if (MODE == 'dev') {
 	echo '</details>';
 }
 ?>
+		<div id="G__tail"><?php echo $_tail;?></div>
 	</body>
 </html>

@@ -27,6 +27,7 @@ class View {
 		'_script' => array(),
 		'_link'   => array(),
 		'_head'   => '',
+		'_tail'   => '',
 		);
 
 	/**
@@ -83,7 +84,7 @@ class View {
 			}
 			unset($cfg['_link']);
 		}
-		$this->vals = $this->vals + $cfg;
+		$this->vals = array_merge($this->vals, $cfg);
 	}
 
 	/**
