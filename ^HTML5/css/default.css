@@ -40,6 +40,8 @@ body > footer {clear:both;margin-top:1em;}
 
 details#debug summary{color:#80a080;font-style:italic;font-size:0.8em;display:block;}
 
+div#G__tail {display: none;}
+
 h1,h2,h3,h4,h5 {font-family:Georgia,Palatino,sans-serif;}
 a img {border:0;}
 a {color:#0076fd;}
