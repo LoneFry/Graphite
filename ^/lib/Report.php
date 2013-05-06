@@ -108,8 +108,8 @@ abstract class Report extends DataModel {
 
 		//if an order has been set, add it to the query
 		if (null !== $this->_order) {
-			$query .= ' ORDER BY `'.$this->_order.'` '
-				.($this->_asc ? 'ASC' : 'DESC');
+			$query .= ' ORDER BY '.$this->_order
+				.($this->_asc ? ' ASC' : ' DESC');
 		}
 
 		//add limits also
@@ -148,10 +148,10 @@ abstract class Report extends DataModel {
 	 * filter and set query params.
 	 * handle start,count,order, pass the rest upwards
 	 *
-	 *  @param string $k parameter to set
-	 *  @param mixed  $v value to use
+	 * @param string $k parameter to set
+	 * @param mixed  $v value to use
 	 *
-	 *  @return mixed set value on success, null on failure
+	 * @return mixed set value on success, null on failure
 	 */
 	public function __set($k, $v) {
 		if ('_start' == $k) {
@@ -168,7 +168,7 @@ abstract class Report extends DataModel {
 		}
 		if ('_order' == $k) {
 			if (in_array($v, $this->_orders)) {
-				$this->_order = $v;
+				$this->_order = '`'.$v.'`';
 			}
 			return $this->_order;
 		}
