@@ -39,7 +39,9 @@ class GshController extends CLIController {
 			// do nothing
 		} else {
 			$this->_println($command);
-			if (get_class() == G::$G['CLI'][$this->action][0].'Controller') {
+			if (!isset(G::$G['CLI'][$this->action])) {
+				$this->_println('Command not found: '.$this->action);
+			} elseif (get_class() == G::$G['CLI'][$this->action][0].'Controller') {
 				$ret = $this->act($argv);
 			} else {
 				$C = new Dispatcher(array(
@@ -53,7 +55,7 @@ class GshController extends CLIController {
 					$this->_println('Command not found: '.$this->action);
 				}
 			}
-			if ($ret) {
+			if (isset($ret) && $ret) {
 				$this->_println($ret);
 			}
 		}
@@ -91,6 +93,7 @@ class GshController extends CLIController {
 			return $this->do_403($argv);
 		}
 		G::$V->_template = 'CLI.php';
+		G::$V->_title = 'Graphite Shell';
 		$r = '';
 		$this->_cli_load();
 		if (isset($_POST['prompt'])) {

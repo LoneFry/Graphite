@@ -5,12 +5,10 @@
 			</div>
 
 			<script type="text/javascript">
-				window.onresize = CLI_resize;
-				CLI_resize();
+				window.addEventListener('load', CLI_resize);
+				window.addEventListener('resize', CLI_resize);
 				document.getElementById('prompt').focus();
 				document.getElementById('prompt').scrollIntoView();
 				var refreshers = <?php echo json_encode($refreshers); ?>;
 			</script>
-		</div>
-	</body>
-</html>
+<?php get_footer(); ?>
