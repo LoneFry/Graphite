@@ -1,5 +1,5 @@
 		</section>
-		<footer>
+		<footer id="footer">
 		</footer>
 <?php
 if (MODE == 'dev') {
