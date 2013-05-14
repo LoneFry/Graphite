@@ -7,4 +7,4 @@
 						window.setTimeout("location.replace('<?php html($_URI);?>')",1);//--></script>
 				</p>
 			</section>
-<?php get_footer(); ?>
+<?php get_footer();

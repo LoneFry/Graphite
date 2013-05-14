@@ -44,8 +44,8 @@
                 <th>Session Strength</th>
                 <td><select name="sessionStrength">
                         <option value="2">Secure session to Browser and IP</option>
-                        <option value="1"<?php if(1==$L->sessionStrength){echo ' selected';}?>>Secure session to Browser only</option>
-                        <option value="0"<?php if(0==$L->sessionStrength){echo ' selected';}?>>Allow multiple concurrent sessions</option>
+                        <option value="1"<?php if (1==$L->sessionStrength) {echo ' selected';}?>>Secure session to Browser only</option>
+                        <option value="0"<?php if (0==$L->sessionStrength) {echo ' selected';}?>>Allow multiple concurrent sessions</option>
                     </select>
                 </td>
             </tr>
@@ -53,7 +53,7 @@
                 <th>Must Change Password?</th>
                 <td><select name="flagChangePass">
                         <option value="0">No</option>
-                        <option value="1"<?php if(1==$L->flagChangePass){echo ' selected';}?>>Yes</option>
+                        <option value="1"<?php if (1==$L->flagChangePass) {echo ' selected';}?>>Yes</option>
                     </select>
                 </td>
             </tr>
@@ -61,7 +61,7 @@
                 <th>Disabled?</th>
                 <td><select name="disabled">
                         <option value="0">No, User is Enabled</option>
-                        <option value="1"<?php if(1==$L->disabled){echo ' selected';}?>>Yes, User is Disabled</option>
+                        <option value="1"<?php if (1==$L->disabled) {echo ' selected';}?>>Yes, User is Disabled</option>
                     </select>
                 </td>
             </tr>
@@ -72,23 +72,23 @@
             </tr>
             <tr>
                 <th>Created</th>
-                <td><?php echo $L->dateCreated?date('r',$L->dateCreated):'Never';?></td>
+                <td><?php echo $L->dateCreated?date('r', $L->dateCreated):'Never';?></td>
             </tr>
             <tr>
                 <th>Modified</th>
-                <td><?php echo $L->dateModified?date('r',$L->dateModified):'Never';?></td>
+                <td><?php echo $L->dateModified?date('r', $L->dateModified):'Never';?></td>
             </tr>
             <tr>
                 <th>Checked In</th>
-                <td><?php echo $L->dateLogin?date('r',$L->dateLogin):'Never';?></td>
+                <td><?php echo $L->dateLogin?date('r', $L->dateLogin):'Never';?></td>
             </tr>
             <tr>
                 <th>Checked Out</th>
-                <td><?php echo $L->dateLogout?date('r',$L->dateLogout):'Never';?></td>
+                <td><?php echo $L->dateLogout?date('r', $L->dateLogout):'Never';?></td>
             </tr>
             <tr>
                 <th>Active</th>
-                <td><?php echo $L->dateActive?date('r',$L->dateActive):'Never';?></td>
+                <td><?php echo $L->dateActive?date('r', $L->dateActive):'Never';?></td>
             </tr>
             <tr>
                 <th>Last IP</th>
@@ -114,12 +114,18 @@
                 </tr>
             </thead>
             <tbody>
-<?php if(is_array($Roles))foreach($Roles as $k => $v){ ?>
-                <tr>
-                    <td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if($L->roleTest($v->label))echo ' checked';?>></td>
-                    <td><label for="g<?php echo $k;?>"><?php echo $v->label;?></label></td>
-                </tr>
-<?php } ?>
+<?php
+if (is_array($Roles)) {
+	foreach ($Roles as $k => $v) {
+?>
+		<tr>
+			<td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if ($L->roleTest($v->label)) {echo ' checked';}?>></td>
+			<td><label for="g<?php echo $k;?>"><?php echo $v->label;?></label></td>
+		</tr>
+<?php
+	}
+}
+?>
             </tbody>
         </table>
     </div>
@@ -160,7 +166,5 @@ if (is_array($log) && count($log)) {
 
 </form>
 
-
 <script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
-<?php get_footer(); ?>
-
+<?php get_footer();

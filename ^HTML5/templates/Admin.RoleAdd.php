@@ -21,7 +21,7 @@
                 <th>Disabled?</th>
                 <td><select name="disabled">
                         <option value="0">No, Role is Enabled</option>
-                        <option value="1"<?php if(1==$R->disabled){echo ' selected';}?>>Yes, Role is Disabled</option>
+                        <option value="1"<?php if (1==$R->disabled) {echo ' selected';}?>>Yes, Role is Disabled</option>
                     </select>
                 </td>
             </tr>
@@ -32,4 +32,4 @@
             </tr>
         </table>
     </form>
-<?php get_footer(); ?>
+<?php get_footer();

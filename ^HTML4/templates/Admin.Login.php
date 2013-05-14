@@ -7,8 +7,14 @@
 <?php include 'Admin.LoginSearch.php'; ?>
 
 <ul>
-<?php if(isset($list) && is_array($list))foreach($list as $k => $v){ ?>
-    <li><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $k;?>"><?php html($v->loginname);?></a></li>
-<?php } ?>
+<?php
+if (isset($list) && is_array($list)) {
+	foreach ($list as $k => $v) {
+?>
+		<li><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $k;?>"><?php html($v->loginname);?></a></li>
+<?php
+	}
+}
+?>
 </ul>
-<?php get_footer(); ?>
+<?php get_footer();

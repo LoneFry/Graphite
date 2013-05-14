@@ -43,8 +43,8 @@
                 <th>Session Strength</th>
                 <td><select name="sessionStrength">
                         <option value="2">Secure session to Browser and IP</option>
-                        <option value="1"<?php if(1==$L->sessionStrength){echo ' selected';}?>>Secure session to Browser only</option>
-                        <option value="0"<?php if(0==$L->sessionStrength){echo ' selected';}?>>Allow multiple concurrent sessions</option>
+                        <option value="1"<?php if (1==$L->sessionStrength) {echo ' selected';}?>>Secure session to Browser only</option>
+                        <option value="0"<?php if (0==$L->sessionStrength) {echo ' selected';}?>>Allow multiple concurrent sessions</option>
                     </select>
                 </td>
             </tr>
@@ -52,7 +52,7 @@
                 <th>Must Change Password?</th>
                 <td><select name="flagChangePass">
                         <option value="0">No</option>
-                        <option value="1"<?php if(1==$L->flagChangePass){echo ' selected';}?>>Yes</option>
+                        <option value="1"<?php if (1==$L->flagChangePass) {echo ' selected';}?>>Yes</option>
                     </select>
                 </td>
             </tr>
@@ -60,7 +60,7 @@
                 <th>Disabled?</th>
                 <td><select name="disabled">
                         <option value="0">No, User is Enabled</option>
-                        <option value="1"<?php if(1==$L->disabled){echo ' selected';}?>>Yes, User is Disabled</option>
+                        <option value="1"<?php if (1==$L->disabled) {echo ' selected';}?>>Yes, User is Disabled</option>
                     </select>
                 </td>
             </tr>
@@ -74,5 +74,4 @@
 
 
 	<script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
-<?php get_footer(); ?>
-
+<?php get_footer();

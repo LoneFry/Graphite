@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<?php if($_login_id){ ?>
+<?php if ($_login_id) { ?>
 		<section class="Account Account_left">
 			<h2>You Are Already Checked In</h2>
 			<p>You are already recognized as <b><?php html($_loginname); ?></b>.</p>
@@ -8,12 +8,12 @@
 <?php } ?>
 		<section class="Account">
 			<h2>Check In Below</h2>
-			<p><?php echo isset($msg)?$msg:''; ?></p>
+			<p><?php echo isset($msg) ? $msg : ''; ?></p>
 			<div id="bodyLogin">
 				<form action="<?php echo $_loginURL; ?>" method="post">
 					<div>
 						<label for="loginU2">Username</label>
-						<input id="loginU2" type="text" name="l" value="<?php html(isset($l)?$l:''); ?>">
+						<input id="loginU2" type="text" name="l" value="<?php html(isset($l) ? $l : ''); ?>">
 					</div>
 					<div>
 						<label for="loginP2">Password</label>
@@ -28,4 +28,4 @@
 			</div>
 			<p><a href="<?php echo CONT; ?>Account/recover">Forgot Password?</a></p>
 		</section>
-<?php get_footer(); ?>
+<?php get_footer();

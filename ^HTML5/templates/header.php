@@ -4,13 +4,13 @@
 		<title><?php html($_title); ?></title>
 		<base href="<?php html($_siteURL); ?>">
 		<meta http-equiv="Content-Type" content="text/html;charset=utf-8">
-<?php foreach($_meta as $k => $v){ ?>
+<?php foreach ($_meta as $k => $v) { ?>
 		<meta name="<?php html($k)?>" content="<?php html($v)?>">
 <?php }
-      foreach($_script as $v){ ?>
+      foreach ($_script as $v) { ?>
 		<script type="text/javascript" src="<?php html($v)?>"></script>
 <?php }
-      foreach($_link as $v){ ?>
+      foreach ($_link as $v) { ?>
 		<link rel="<?php html($v['rel'])?>" type="<?php html($v['type'])?>" href="<?php html($v['href'])?>" title="<?php html($v['title'])?>">
 <?php }
       echo $_head;
@@ -33,7 +33,7 @@ if ($_login_id) {
 			<nav>
 				<a href="/" title="Home Page">Home</a>
 				<a href="/Home/Contact" title="Contact">Contact</a>
-<?php if(G::$S && G::$S->Login && G::$S->roleTest('Admin')){ ?>
+<?php if (G::$S && G::$S->Login && G::$S->roleTest('Admin')) { ?>
 				<a href="<?php echo CONT;?>Admin">Admin</a>
 <?php } ?>
 			</nav>
@@ -46,7 +46,7 @@ if (0 < $v = count($a = G::msg())) { ?>
 		<details id="msg" open="open">
 			<summary><?php echo $v;?> Messages:</summary>
 			<ul>
-<?php foreach($a as $v){ ?>
+<?php foreach ($a as $v) { ?>
 				<li class="<?php echo $v[1]; ?>"><?php echo $v[0]; ?></li>
 <?php } ?>
 			</ul>

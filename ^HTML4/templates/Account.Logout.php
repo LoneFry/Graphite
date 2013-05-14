@@ -5,4 +5,4 @@
 				<script type="text/javascript"><!--
 					window.setTimeout("location.replace('<?php html($_URI);?>')",1);//--></script>
 			</p>
-<?php get_footer(); ?>
+<?php get_footer();
