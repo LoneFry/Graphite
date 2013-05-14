@@ -207,4 +207,26 @@ class GshController extends CLIController {
 		}
 		$this->_println('Command not found: '.$this->action());
 	}
+
+	/**
+	 * Controller action for unauthorized sessions
+	 *
+	 * @param array $argv Argument list passed from Dispatcher
+	 *
+	 * @return void
+	 */
+	public function do_403($argv=array()) {
+		if (isset($_GET['a'])) {
+			if (!G::$S->Login) {
+				$this->_println('Your session has expired.  Log in and try again.');
+			} elseif (!G::$S->roleTest($this->role)) {
+				$this->_println('You are not authorized to run commands in this shell.');
+			}
+			exit;
+		} else {
+			if (!G::$S->roleTest($this->role)) {
+				return parent::do_403($argv);
+			}
+		}
+	}
 }
