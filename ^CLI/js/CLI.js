@@ -76,8 +76,11 @@ function CLI_runCommand_() {
  * @return void
  */
 function CLI_resize() {
+	var newHeight = window.innerHeight;
+	newHeight -= document.getElementById('header').clientHeight;
+	newHeight -= document.getElementById('footer').clientHeight;
 	document.getElementById('cli').style.height =
-		Math.max(400, window.innerHeight-document.getElementById('header').clientHeight) + 'px';
+		Math.max(400, newHeight) + 'px';
 	document.getElementById('prompt').style.width =
 		(document.getElementById('cli').clientWidth-document.getElementById('submit').clientWidth - 40) + 'px';
 }
