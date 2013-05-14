@@ -17,7 +17,7 @@
 ?>
 	</head>
 	<body>
-		<header>
+		<header id="header">
 			<h1 id="logo"><span><?php html($_siteName)?></span></h1>
 			<div id="login"><?php
 if ($_login_id) {
