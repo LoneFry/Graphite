@@ -1,7 +1,7 @@
 <?php get_header(); ?>
 <form action="<?php echo CONT; ?>Installer/install" method="post" id="installer">
 <div>
-<?php if(isset($config)){ ?>
+<?php if (isset($config)) { ?>
 	<h3>Config</h3>
 		<textarea rows="4" cols="80"><?php html($config);?></textarea>
 <?php } ?>
@@ -43,4 +43,4 @@
 		<input type="submit" value="Install">
 </div>
 </form>
-<?php get_footer();?>
+<?php get_footer();

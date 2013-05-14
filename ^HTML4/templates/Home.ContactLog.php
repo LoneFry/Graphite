@@ -34,5 +34,4 @@ if (is_array($log) && count($log)) {
 ?>
 	</tbody>
 </table>
-<?php get_footer(); ?>
-
+<?php get_footer();

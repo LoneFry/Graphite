@@ -782,7 +782,7 @@ abstract class DataModel {
 			} else {
 				$v = $a[1];
 			}
-			if(!is_array($v)) {
+			if (!is_array($v)) {
 				$v = array($v);
 			}
 
@@ -793,7 +793,7 @@ abstract class DataModel {
 			) {
 				$tmp = array();
 
-				foreach($v as $kk => $vv) {
+				foreach ($v as $kk => $vv) {
 					if (in_array($vv, static::$vars[$k]['values'])) {
 						$tmp[$kk] = $vv;
 					} elseif ($strict) {

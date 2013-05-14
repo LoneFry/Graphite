@@ -23,7 +23,7 @@
                 <th>Disabled?</th>
                 <td><select name="disabled">
                         <option value="0">No, Role is Enabled</option>
-                        <option value="1"<?php if(1==$R->disabled){echo ' selected';}?>>Yes, Role is Disabled</option>
+                        <option value="1"<?php if (1==$R->disabled) {echo ' selected';}?>>Yes, Role is Disabled</option>
                     </select>
                 </td>
             </tr>
@@ -34,11 +34,11 @@
             </tr>
             <tr>
                 <th>Created</th>
-                <td><?php echo $R->dateCreated?date('r',$R->dateCreated):'Never';?></td>
+	            <td><?php echo $R->dateCreated ? date('r', $R->dateCreated) : 'Never'; ?></td>
             </tr>
             <tr>
                 <th>Modified</th>
-                <td><?php echo $R->dateModified?date('r',$R->dateModified):'Never';?></td>
+	            <td><?php echo $R->dateModified ? date('r', $R->dateModified) : 'Never'; ?></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -61,18 +61,24 @@
                 </tr>
             </thead>
             <tbody>
-<?php if(is_array($Logins))foreach($Logins as $k => $v){ ?>
-                <tr>
-                    <td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if(isset($members[$k]))echo ' checked';?>></td>
-                    <td><label for="g<?php echo $k;?>"><?php echo $v->loginname;?></label></td>
-                    <td class="subtle"><?php
-                        if(isset($members[$k]) && isset($Logins[$members[$k]])){
-                            echo $Logins[$members[$k]]->loginname;
-                        }?></td>
-                </tr>
-<?php } ?>
+<?php
+if (is_array($Logins)) {
+	foreach ($Logins as $k => $v) {
+?>
+		<tr>
+			<td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if(isset($members[$k]))echo ' checked';?>></td>
+			<td><label for="g<?php echo $k;?>"><?php echo $v->loginname;?></label></td>
+			<td class="subtle"><?php
+				if (isset($members[$k]) && isset($Logins[$members[$k]])) {
+					echo $Logins[$members[$k]]->loginname;
+				}?></td>
+		</tr>
+<?php
+	}
+}
+?>
             </tbody>
         </table>
     </div>
 </form>
-<?php get_footer(); ?>
+<?php get_footer();

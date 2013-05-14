@@ -88,7 +88,7 @@ abstract class Report extends DataModel {
 
 					$arr = unserialize($this->$k);
 
-					foreach($arr as $kk => $vv) {
+					foreach ($arr as $kk => $vv) {
 						$arr[$kk] = G::$m->escape_string($vv);
 					}
 

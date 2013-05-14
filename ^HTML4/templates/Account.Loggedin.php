@@ -9,4 +9,4 @@
 				Hello, <?php html($_loginname); ?>.
 				(<a href="<?php html($_logoutURL); ?>">Logout</a>)
 			</div>
-<?php get_footer(); ?>
+<?php get_footer();

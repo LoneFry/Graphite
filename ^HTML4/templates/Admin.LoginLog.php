@@ -19,11 +19,11 @@
 	<tbody>
 <?php
 if (is_array($log) && count($log)) {
-	foreach($log as $k => $v) {
+	foreach ($log as $k => $v) {
 ?>
 		<tr>
 			<td><?php html($v->pkey);?></td>
-			<td><?php echo date("r",$v->iDate);?></td>
+			<td><?php echo date("r", $v->iDate);?></td>
 			<td><?php echo '<a href="'.CONT.'Admin/LoginEdit/'.$v->login_id.'">'.$v->login_id.'</a>';?></td>
 			<td><?php html($v->ip);?></td>
 			<td><?php html($v->ua);?></td>
@@ -38,5 +38,4 @@ if (is_array($log) && count($log)) {
 ?>
 	</tbody>
 </table>
-<?php get_footer(); ?>
-
+<?php get_footer();

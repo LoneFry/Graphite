@@ -11,4 +11,4 @@
 				document.getElementById('prompt').scrollIntoView();
 				var refreshers = <?php echo json_encode($refreshers); ?>;
 			</script>
-<?php get_footer(); ?>
+<?php get_footer();

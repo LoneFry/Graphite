@@ -11,4 +11,4 @@
 					(<a href="<?php html($_logoutURL); ?>">Logout</a>)
 				</div>
 			</section>
-<?php get_footer(); ?>
+<?php get_footer();

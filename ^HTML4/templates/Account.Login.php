@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<?php if($_login_id){ ?>
+<?php if ($_login_id) { ?>
 			<div class="fleft" style="width:50%;">
 				<h2 class="tcenter">You Are Already Checked In</h2>
 				<p class="tcenter">&nbsp;</p>
@@ -28,7 +28,7 @@
 				</form>
 			</div>
 			<p class="tcenter"><a href="<?php echo CONT; ?>Account/recover">Forgot Password?</a></p>
-<?php if($_login_id){ ?>
+<?php if ($_login_id) { ?>
 		</div>
 <?php } ?>
-<?php get_footer(); ?>
+<?php get_footer();
