@@ -1,22 +1,30 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Controller - Base class for all controllers
+ * File : /^/lib/Controller.php
  *
- * File        : /^/controllers/Controller.php
- *                Controller base class
+ * PHP version 5.3
  *
- * Controllers are dispatched by the Dispatcher
- ****************************************************************************/
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
+
 
 /**
  * Controller class - used as a base class for MVC Controller classes
- * a trivial example extension is in /^/controllers/DefaultController.php
+ * A trivial example extension is in /^/controllers/DefaultController.php
+ * Controllers are dispatched by the Dispatcher
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Dispatcher.php
+ * @see      /^/controllers/DefaultController.php
  */
 abstract class Controller {
 	protected $action = '';
@@ -43,7 +51,7 @@ abstract class Controller {
 	 *
 	 * @param array $argv request parameters
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_403($argv) {
 		header("HTTP/1.0 403 Forbidden");
@@ -74,7 +82,7 @@ abstract class Controller {
 	 *
 	 * @param array $argv Arguments list to pass to action
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function act($argv = null) {
 		if (null === $argv) {
@@ -90,7 +98,7 @@ abstract class Controller {
 	 * @param string $name  property to set
 	 * @param string $value value to use
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	function __set($name, $value) {
 		switch ($name) {
@@ -109,7 +117,7 @@ abstract class Controller {
 	 *
 	 * @param string $name property to get
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	function __get($name) {
 		switch ($name) {

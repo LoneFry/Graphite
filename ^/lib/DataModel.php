@@ -1,19 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * DataModel - Shared functionality for data access and sanitization
+ * File : /^/lib/DataModel.php
  *
- * File        : /^/lib/DataModel.php
- *                Shared Functionality of Record and Report base classes
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
+
 
 /**
  * DataModel class - used as a base class for Record and Report data classes
+ * Shared Functionality of Record and Report base classes
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Record.php
+ * @see      /^/lib/Report.php
  */
 abstract class DataModel {
 	/**

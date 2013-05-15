@@ -1,22 +1,28 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Role - Role AR class
+ * File : /^/models/Role.php
  *
- * File        : /^/models/Role.php
- *                Role AR class
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/Record.php';
 
 /**
- * Role class - for managing site roles/responsiblities
- * see Record.php for details.
+ * Role class - for managing site roles/responsibilities
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Record.php
  */
 class Role extends Record {
 	protected static $table = 'Roles';

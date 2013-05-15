@@ -1,15 +1,13 @@
-/*****************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Graphite default stylesheet
+ * File : /^HTML4/css/default.css
  *
- * File        : /^HTML4/css/default.css
- *                Graphite default stylesheet
- ****************************************************************************/
+ * @category Graphite
+ * @package  HTML4
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 body {margin:0;padding:0;border:0;background-color:#fff;color:#000;font:11pt Tahoma,Arial,sans-serif;}
 

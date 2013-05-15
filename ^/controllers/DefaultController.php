@@ -1,17 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Default Controller - leans on Controller's defaults
+ * File : /^/controllers/DefaultController.php
  *
- * File        : /^/controllers/DefaultController.php
- *                default controller, leans on Controller's defaults
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+require_once LIB.'/Controller.php';
+
+/**
+ * DefaultController class - leans on Controller's defaults
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Controller.php
+ */
 class DefaultController extends Controller {
 	protected $action = '404';
 

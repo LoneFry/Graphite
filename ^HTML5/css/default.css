@@ -1,15 +1,13 @@
-/*****************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Graphite default stylesheet
+ * File : /^HTML5/css/default.css
  *
- * File        : /^HTML5/css/default.css
- *                Graphite default stylesheet
- ****************************************************************************/
+ * @category Graphite
+ * @package  HTML5
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 /* CSS required for details-shim https://github.com/tyleruebele/details-shim */
 details,summary{display:block}details.closed>*{display:none}details.closed>summary{display:block}details.open>summary{display:block}details.closed>summary:before{display:inline-block;content:"\25b6";padding:0 .1em;margin-right:.4em;font-size:.9em}details.open>summary:before{display:inline-block;content:"\25bc";padding:0;margin-right:.35em}

@@ -1,31 +1,40 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * G - static class for scoping core Graphite objects & functions
+ * File : /^/lib/G.php
  *
- * File        : /^/lib/G.php
- *                core object
- *                static class for scoping core Graphite objects & functions
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+
+/**
+ * G class - static class for scoping core Graphite objects & functions
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 final class G {
 	static
 		$M,            // mysqli object
 		$m,            // mysqli object with read-only connection
 		$V,            // View object
-		$C,            // Dispatcher object
+		$C,            // (Controller) Dispatcher object
 		$S,            // Security / Session object
-		$G = array();  // Gonfiguration array
+		$G = array();  // Graphite configuration array
 
 	private static $_msg = array();
 
 	/**
-	 * private constructor to prevent instanciation
+	 * private constructor to prevent instantiation
 	 */
 	private function __construct() {
 
@@ -40,7 +49,7 @@ final class G {
 	 *                  pass true to return the messages and clear the log
 	 * @param string $c class, arbitrary, used at will by template on output
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public static function msg($s = null, $c = '') {
 		if (null === $s) {
@@ -59,16 +68,16 @@ final class G {
 	 *
 	 * @param string $s the string to alter
 	 *
-	 * @return void
+	 * @return string
 	 */
 	public static function normalize_special_characters($s) {
-		//�single� and �double� quot�s yeah.
+		//‘single’ and “double” quot’s yeah.
 		$s = str_replace(array(
 			'“',  // left side double smart quote
 			'”',  // right side double smart quote
 			'‘',  // left side single smart quote
 			'’',  // right side single smart quote
-			'…',  // elipsis
+			'…',  // ellipsis
 			'—',  // em dash
 			'–'), // en dash
 			array('"', '"', "'", "'", "...", "-", "-"),
@@ -77,10 +86,10 @@ final class G {
 	}
 
 	/**
-	 * emit invokation info, and passed value
+	 * emit invocation info, and passed value
 	 *
-	 * @param string $v   value to var_dump
-	 * @param bool   $die whether to exit when done
+	 * @param mixed $v   value to var_dump
+	 * @param bool  $die whether to exit when done
 	 *
 	 * @return void
 	 */

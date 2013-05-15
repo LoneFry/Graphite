@@ -1,17 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Home Controller - A default Home and Contact page Controller class
+ * File : /^/controllers/HomeController.php
  *
- * File        : /^/controllers/HomeController.php
- *                A default Home and Contact page Controller class
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+require_once LIB.'/Controller.php';
+
+/**
+ * HomeController class - A default Home and Contact page Controller class
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Controller.php
+ */
 class HomeController extends Controller {
 	protected $action = 'home';
 

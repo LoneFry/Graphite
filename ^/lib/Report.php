@@ -1,19 +1,29 @@
 <?php
-/*****************************************************************************
- * Project     :
+/**
+ * Report - Base Class for Report Models
+ * File : /^/lib/Report.php
  *
- * Created By  : Tyler Uebele
+ * PHP version 5.3
  *
- * License     :
- *
- * File        : /^/lib/Report.php
- *                Base Class for Report Models
- ****************************************************************************/
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/DataModel.php';
 
 /**
  * Report class - For reporting that is not conducive to Active Record Model
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/mysqli_.php
+ * @see      /^/lib/DataModel.php
  */
 abstract class Report extends DataModel {
 	/**

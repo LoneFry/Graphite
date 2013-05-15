@@ -1,19 +1,30 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Gsh Controller - Graphite Shell Command Line Interface Controller
+ * File : /^CLI/controllers/GshController.php
  *
- * File        : /^CLI/controllers/GshController.php
- *                Graphite Shell Command Line Interface Controller
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  CLI
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once dirname(__DIR__).'/lib/CLIController.php';
 
+/**
+ * GshController class - Graphite Shell Command Line Interface Controller
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^CLI/lib/CLIController.php
+ * @see      /^/lib/Controller.php
+ */
 class GshController extends CLIController {
 	protected $action = 'sh';
 	protected $role   = 'Gsh';
@@ -23,7 +34,7 @@ class GshController extends CLIController {
 	 *
 	 * @param string $command The command to run, from the Gsh command prompt
 	 *
-	 * @return void
+	 * @return string
 	 */
 	protected function _cli_run($command) {
 		if ('' == $command) {
@@ -68,7 +79,7 @@ class GshController extends CLIController {
 	/**
 	 * If parent::action() returns 404, check for command in list
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function action() {
 		if (0<count($a = func_get_args())) {
@@ -86,7 +97,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_sh($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -123,7 +134,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_clear($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -139,7 +150,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_date($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -153,7 +164,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_echo($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -168,7 +179,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_help($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -188,7 +199,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_argv($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -202,7 +213,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_404($argv=array()) {
 		if (!G::$S->roleTest($this->role)) {
@@ -216,7 +227,7 @@ class GshController extends CLIController {
 	 *
 	 * @param array $argv Argument list passed from Dispatcher
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function do_403($argv=array()) {
 		if (isset($_GET['a'])) {

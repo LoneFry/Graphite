@@ -1,16 +1,16 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * website core configuration file
+ * File : /^/config.php
  *
- * File        : /^/config.php
- *                website core configuration file
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 
 /** **************************************************************************
@@ -199,7 +199,7 @@ if ($_dir = opendir(SITE)) {
 
 /** **************************************************************************
  * Per-Domain Settings for multi-domain sites
- *  If you are not hosting a site on multiple domains, you can safely
+ *  If you are not hosting a site on multiple domains, you can cautiously
  *  use this file as your only configuration file
  ****************************************************************************/
 if (file_exists(dirname(SITE).'/siteConfigs/config.'.$_SERVER['SERVER_NAME'].'.php')) {

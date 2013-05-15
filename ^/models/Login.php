@@ -1,16 +1,16 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Login - Login (user) AR class
+ * File : /^/models/Login.php
  *
- * File        : /^/models/Login.php
- *                Login file AR class
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/Record.php';
 require_once LIB.'/PasswordHasher.php';
@@ -19,7 +19,13 @@ require_once LIB.'/PBKDF2PasswordHasher.php';
 
 /**
  * Login class - for managing site users, including current user.
- * see Record.php for details.
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Record.php
  */
 class Login extends Record {
 	protected static $table = 'Logins';

@@ -1,15 +1,13 @@
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Graphite CLI stylesheet
+ * File : /^CLI/css/CLI.css
  *
- * File        : /^CLI/css/CLI.css
- *                Graphite CLI stylesheet
- ****************************************************************************/
+ * @category Graphite
+ * @package  CLI
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 #cli, #cli * {margin:0; padding:0; font: 12pt monospace;}
 #cli {background:#333; height:400px; overflow:scroll;}
