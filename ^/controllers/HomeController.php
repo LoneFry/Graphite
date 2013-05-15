@@ -112,8 +112,7 @@ class HomeController extends Controller {
 		G::$V->_title    = G::$V->_siteName.': Contact Log';
 
 		require_once SITE.CORE.'/models/ContactLog.php';
-		$C = new ContactLog();
-		G::$V->log = $C->search(0, 100, 'id', true);
+		G::$V->log = ContactLog::some(100, 0, 'id', true);
 	}
 }
 
