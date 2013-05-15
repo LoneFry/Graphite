@@ -18,3 +18,5 @@
 
 #cli .ls span.private {border-bottom: 1px solid red;}
 #cli .ls span.public {border-bottom: 1px solid green;}
+
+div#body, section#body, div#footer, footer#footer {margin:0}
