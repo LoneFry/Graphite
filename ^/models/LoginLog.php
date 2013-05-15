@@ -1,22 +1,28 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * LoginLog - AR class for logging log-ins
+ * File : /^/models/LoginLog.php
  *
- * File        : /^/models/LoginLog.php
- *                AR class for submissions to the Contact form
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/Record.php';
 
 /**
- * LoginLog class - for managing site users, including current user.
- * see Record.php for details.
+ * LoginLog class - AR class for logging log-ins
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Record.php
  */
 class LoginLog extends Record {
 	protected static $table = 'LoginLog';

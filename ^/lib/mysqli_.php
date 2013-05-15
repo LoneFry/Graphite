@@ -1,19 +1,26 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * mysqli_ - mysqli query-logging wrapper
+ * File : /^/lib/mysqli_.php
  *
- * File        : /^/lib/mysqli_.php
- *                mysqli query-logging wrapper
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
+
 
 /**
- * mysqli_ class - extend mysqli to add querylogging
+ * mysqli_ class - extend mysqli to add query logging
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
  */
 class mysqli_ extends mysqli {
 	/**
@@ -143,7 +150,7 @@ class mysqli_ extends mysqli {
 	 *
 	 * @param string $k property to get
 	 *
-	 * @return requested property value
+	 * @return mixed requested property value
 	 */
 	public function __get($k) {
 		switch ($k) {

@@ -1,19 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * SHA1PasswordHasher - Simple SHA1 based Password Hashing plugin
+ * File : /^/lib/SHA1PasswordHasher.php
  *
- * File        : /^/lib/SHA1PasswordHasher.php
- *                Simple SHA1 based Password Hashing plugin
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/PasswordHasher.php';
 
+/**
+ * SHA1PasswordHasher class - Simple SHA1 based Password Hashing plugin
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/PasswordHasher.php
+ */
 class SHA1PasswordHasher implements IPasswordHasher {
 	/**
 	 * private constructor to prevent instantiation

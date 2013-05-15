@@ -1,19 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * View - core View processor
+ * File : /^/lib/View.php
  *
- * File        : /^/lib/View.php
- *                core View processor
- *                manages which templates will be used
- *                manages which variables will be in scope
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+
+/**
+ * View class - core View processor
+ *  manages which templates will be used
+ *  manages which variables will be in scope
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 class View {
 	protected $templates = array(
 		'header'   => 'header.php',
@@ -93,7 +103,7 @@ class View {
 	 * @param string $name    META name=
 	 * @param string $content META content=
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function _meta($name = null, $content = null) {
 		if (null === $name) {
@@ -107,7 +117,7 @@ class View {
 	 *
 	 * @param string $src Javascript Source URL
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function _script($src = null) {
 		if (null === $src) {
@@ -124,7 +134,7 @@ class View {
 	 * @param string $href  LINK href=
 	 * @param string $title LINK title=
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function _link($rel = null, $type = '', $href = '', $title = '') {
 		if (null === $rel) {
@@ -139,7 +149,7 @@ class View {
 	 *
 	 * @param string $src CSS Source URL
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function _style($src = null) {
 		if (null === $src) {
@@ -209,7 +219,7 @@ class View {
 	 *  @param string $name  property to set
 	 *  @param mixed  $value value to use
 	 *
-	 *  @return void
+	 *  @return mixed
 	 */
 	function __set($name, $value) {
 		switch ($name) {
@@ -226,7 +236,7 @@ class View {
 
 	/**
 	 * __get magic method called when trying to get a var which is not available
-	 * If name is of a template this will passoff the get to getTemplate()
+	 * If name is of a template this will pass off the get to getTemplate()
 	 * All other names will be pulled from unrestricted vals array
 	 *
 	 * @param string $name property to set

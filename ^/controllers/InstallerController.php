@@ -1,19 +1,31 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Installer Controller - Aids Graphite setup by initializing DB and config
+ * File : /^/controllers/InstallerController.php
  *
- * File        : /^/controllers/InstallerController.php
- *                Account Controller class - performs user account related actions
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
+
+require_once LIB.'/Controller.php';
 require_once LIB.'/mysqli_.php';
 require_once LIB.'/Security.php';
 
+/**
+ * InstallerController class - Aids Graphite setup by initializing DB and config
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Controller.php
+ */
 class InstallerController extends Controller {
 	protected $action = 'install';
 

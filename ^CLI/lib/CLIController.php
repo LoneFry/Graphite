@@ -1,21 +1,31 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * CLI Controller - Command Line Interface Controller base class
+ * File : /^CLI/lib/CLIController.php
  *
- * File        : /^CLI/lib/CLIController.php
- *                Command Line Interface Controller base class
- *                Contains methods and properties of use to Controllers which
- *                 expose actions to the CLI, Gsh
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  CLI
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/Controller.php';
 
+/**
+ * CLIController class - Command Line Interface Controller base class
+ *  Contains methods and properties of use to Controllers which
+ *  expose actions to the CLI, Gsh
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Controller.php
+ */
 abstract class CLIController extends Controller {
 	protected static $_CLI = array(
 		'history' => array(),

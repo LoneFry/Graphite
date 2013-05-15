@@ -1,15 +1,15 @@
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Graphite CLI front-end scripts
+ * File : /^CLI/js/CLI.js
  *
- * File        : /^CLI/js/CLI.js
- *                Graphite CLI front-end scripts
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  CLI
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 /**
  * Hold the CLI's XHR object

@@ -1,18 +1,27 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Password Hashing
+ * File : /^/lib/PasswordHasher.php
  *
- * File        : /^/lib/PasswordHasher.php
- *                Interface for Password Hashing plugins
- *                Wrapper for Password Hashing plugins
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+
+/**
+ * IPasswordHasher interface - Interface for Password Hashing plugins
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 interface IPasswordHasher {
 	/**
 	 * Create a hashword for storage from provided password
@@ -43,6 +52,15 @@ interface IPasswordHasher {
 	public static function is_hash($hash);
 }
 
+/**
+ * PasswordHasher class - Wrapper for Password Hashing plugins
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 class PasswordHasher implements IPasswordHasher {
 	/**
 	 * private constructor to prevent instantiation

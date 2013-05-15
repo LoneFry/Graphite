@@ -1,19 +1,29 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * PBKDF2PasswordHasher - PBKDF2 Password Hashing plugin
+ * File : /^/lib/PBKDF2PasswordHasher.php
  *
- * File        : /^/lib/PBKDF2PasswordHasher.php
- *                PBKDF2 Password Hashing plugin
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/PasswordHasher.php';
 
+/**
+ * PBKDF2PasswordHasher class - PBKDF2 Password Hashing plugin
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/PasswordHasher.php
+ */
 class PBKDF2PasswordHasher implements IPasswordHasher {
 	/**
 	 * private constructor to prevent instantiation
@@ -112,4 +122,3 @@ class PBKDF2PasswordHasher implements IPasswordHasher {
 		return substr($derived_key, 0, $hash_length);
 	}
 }
-

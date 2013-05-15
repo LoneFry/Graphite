@@ -1,22 +1,30 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Record - core database active record class file
+ * File : /^/lib/Record.php
  *
- * File        : /^/lib/Record.php
- *                core database active record class file
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
 require_once LIB.'/DataModel.php';
 
 /**
  * Record class - used as a base class for Active Record Model classes
- * an example extension is at bottom of file
+ *  an example extension is at bottom of file
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/mysqli_.php
+ * @see      /^/lib/DataModel.php
  */
 abstract class Record extends DataModel {
 	protected $DBvals = array();//instance DB values of vars defined in $vars

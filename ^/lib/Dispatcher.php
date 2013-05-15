@@ -1,18 +1,28 @@
 <?php
-/** **************************************************************************
- * Project     : Graphite
- *                Simple MVC web-application framework
- * Created By  : LoneFry
- *                dev@lonefry.com
- * License     : CC BY-NC-SA
- *                Creative Commons Attribution-NonCommercial-ShareAlike
- *                http://creativecommons.org/licenses/by-nc-sa/3.0/
+/**
+ * Dispatcher - Core dispatcher - directs request to appropriate Controller
+ * File : /^/lib/Dispatcher.php
  *
- * File        : /^/lib/Dispatcher.php
- *                core Dispatcher
- *                dispatches Controllers to perform requested Actions
- ****************************************************************************/
+ * PHP version 5.3
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ */
 
+
+/**
+ * Dispatcher class - dispatches Controllers to perform requested Actions
+ *
+ * @category Graphite
+ * @package  Core
+ * @author   LoneFry <dev@lonefry.com>
+ * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
+ * @link     http://g.lonefry.com
+ * @see      /^/lib/Controller.php
+ */
 class Dispatcher {
 	protected $controller        = 'Default';
 	protected $controllerPath    = '';
@@ -138,7 +148,7 @@ class Dispatcher {
 	 *
 	 * @param array $argv Arguments list to pass to action
 	 *
-	 * @return void
+	 * @return mixed
 	 */
 	public function Act($argv = null) {
 		if (null === $argv) {
