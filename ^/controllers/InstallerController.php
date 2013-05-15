@@ -40,6 +40,7 @@ class InstallerController extends Controller {
 	form#installer h3{margin:0 -10px 20px -10px;border-bottom:3px solid #2e2e2e;}
 	form#installer label{display:block;font:bold 10pt Georgia}
 	form#installer input[type=text],
+	form#installer input[type=email],
 	form#installer input[type=password]{margin-bottom:20px;width:400px;font:bold 16pt Tahoma;}
 </style>
 ';
@@ -61,6 +62,9 @@ class InstallerController extends Controller {
 			G::$V->Name = $_POST['Name'];
 			G::$V->Tabl = $_POST['Tabl'];
 			G::$V->User2 = $_POST['User2'];
+			G::$V->HTML5 = isset($_POST['HTML5']);
+			G::$V->HTML4 = isset($_POST['HTML4']);
+			G::$V->CLI = isset($_POST['CLI']);
 
 			$install = true;
 			if ($_POST['password1'] != $_POST['password2']) {
@@ -112,156 +116,183 @@ class InstallerController extends Controller {
 			if ($install) {
 				G::$G['db']['tabl'] = G::$M->escape_string($_POST['Tabl']);
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` ("
-										   ."`login_id` int(11) NOT NULL AUTO_INCREMENT,"
+										   ."`login_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
 										   ."`loginname` varchar(255) NOT NULL,"
 										   ."`password` varchar(255) NOT NULL,"
 										   ."`realname` varchar(255) NOT NULL DEFAULT '',"
 										   ."`email` varchar(255) NOT NULL DEFAULT '',"
 										   ."`comment` varchar(255) NOT NULL DEFAULT '',"
-										   ."`sessionStrength` tinyint(1) NOT NULL DEFAULT '2',"
+										   ."`sessionStrength` tinyint(1) UNSIGNED NOT NULL DEFAULT '2',"
 										   ."`lastIP` int(11) UNSIGNED NOT NULL DEFAULT '0',"
 										   ."`UA` varchar(40) NOT NULL DEFAULT '',"
-										   ."`dateModified` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateActive` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateLogin` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateLogout` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateCreated` int(11) NOT NULL DEFAULT '0',"
-										   ."`referrer_id` int(11) NOT NULL DEFAULT '0',"
+										   ."`dateModified` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateActive` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateLogin` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateLogout` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`referrer_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
 										   ."`disabled` bit NOT NULL DEFAULT 0,"
 										   ."`flagChangePass` bit NOT NULL DEFAULT 0,"
 										   ."PRIMARY KEY (`login_id`),"
 										   ."UNIQUE KEY `loginname` (`loginname`))")
 				) {
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'Logins', 'error');
+					$install = false;
 				} else {
 					G::msg('Created table '.G::$G['db']['tabl'].'Logins');
 				}
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Roles_Logins` ("
-										   ."`role_id` int(11) NOT NULL DEFAULT '0',"
-										   ."`login_id` int(11) NOT NULL DEFAULT '0',"
-										   ."`grantor_id` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateCreated`  int(11) NOT NULL DEFAULT '0',"
+										   ."`role_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`login_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`grantor_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
 										   ."PRIMARY KEY (`role_id`,`login_id`))")
 				) {
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'Roles_Logins', 'error');
+					$install = false;
 				} else {
 					G::msg('Created table '.G::$G['db']['tabl'].'Roles_Logins');
 				}
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Roles` ("
-										   ."`role_id` int(11) NOT NULL AUTO_INCREMENT,"
+										   ."`role_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
 										   ."`label` varchar(255) NOT NULL,"
 										   ."`description` varchar(255) NOT NULL,"
-										   ."`creator_id` int(11) NOT NULL DEFAULT '0',"
+										   ."`creator_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
 										   ."`disabled` bit NOT NULL DEFAULT 0,"
-										   ."`dateModified` int(11) NOT NULL DEFAULT '0',"
-										   ."`dateCreated` int(11) NOT NULL DEFAULT '0',"
+										   ."`dateModified` int(11) UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
 										   ."PRIMARY KEY (`role_id`),"
 										   ."UNIQUE KEY `label` (`label`))")
 				) {
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'Roles', 'error');
+					$install = false;
 				} else {
 					G::msg('Created table '.G::$G['db']['tabl'].'Roles');
 				}
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."LoginLog` ("
-										   ."`pkey` int(11) NOT NULL AUTO_INCREMENT,"
-										   ."`login_id` int(11) NOT NULL,"
+										   ."`pkey` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
+										   ."`login_id` int(11) UNSIGNED NOT NULL,"
 										   ."`ip` int(11) UNSIGNED NOT NULL,"
 										   ."`ua` varchar(255) NOT NULL,"
-										   ."`iDate` int(11) NOT NULL,"
+										   ."`iDate` int(11) UNSIGNED NOT NULL,"
 										   ."PRIMARY KEY (`pkey`))")
 				) {
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'LoginLog', 'error');
+					$install = false;
 				} else {
 					G::msg('Created table '.G::$G['db']['tabl'].'LoginLog');
 				}
 				if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."ContactLog` ("
-										   ."`id` int(11) NOT NULL AUTO_INCREMENT,"
+										   ."`id` int UNSIGNED NOT NULL AUTO_INCREMENT,"
 										   ."`from` varchar(255) NOT NULL,"
-										   ."`date` int NOT NULL DEFAULT '0',"
+										   ."`date` int UNSIGNED NOT NULL DEFAULT '0',"
 										   ."`subject` varchar(255) NOT NULL,"
 										   ."`to` varchar(255) NOT NULL,"
 										   ."`body` text NOT NULL,"
-										   ."`login_id` int NOT NULL DEFAULT '0',"
+										   ."`IP` int UNSIGNED NOT NULL DEFAULT '0',"
+										   ."`login_id` int UNSIGNED NOT NULL DEFAULT '0',"
 										   ."`flagDismiss` bit NOT NULL DEFAULT 0,"
 										   ."PRIMARY KEY (`id`),"
 										   ."KEY `flagDismiss` (`flagDismiss`))")
 				) {
 					G::msg('Failed to create table '.G::$G['db']['tabl'].'ContactLog', 'error');
+					$install = false;
 				} else {
 					G::msg('Created table '.G::$G['db']['tabl'].'ContactLog');
 				}
 
-				include_once SITE.CORE.'/models/Login.php';
-				Login::prime();//just in case Login was primed earlier
-				$L = new Login(array('loginname'   => $_POST['loginname'],
-									 'password'    => $_POST['password1'],
-									 'email'       => $_POST['siteEmail'],
-									 'referrer_id' => 1));
-				if ($login_id=$L->insert()) {
-					G::msg('Created root user: '.$L->loginname);
-
-					//clear any open session
-					session_start();
-					$_SESSION = array();
-					session_destroy();
-
-					G::$S = new Security();
-					G::$S->authenticate($L->loginname, $L->password);
+				if (!$install) {
+					G::msg('Not all tables could be created, install ended prematurely.', 'error');
 				} else {
-					G::msg('Failed to create root user: '.$L->loginname, 'error');
-				}
+					include_once SITE.CORE.'/models/Login.php';
+					Login::prime();//just in case Login was primed earlier
+					$L = new Login(array('loginname'   => $_POST['loginname'],
+										 'password'    => $_POST['password1'],
+										 'email'       => $_POST['siteEmail'],
+										 'referrer_id' => 1));
+					if ($login_id=$L->insert()) {
+						G::msg('Created root user: '.$L->loginname);
 
-				include_once SITE.CORE.'/models/Role.php';
-				Role::prime();
+						//clear any open session
+						session_start();
+						$_SESSION = array();
+						session_destroy();
 
-				$roles = array(
-					array('label' => 'Admin', 'description' => 'General use admin Role.', 'creator_id' => 1),
-					array('label' => 'Admin/Login', 'description' => 'Can Add/Edit Logins', 'creator_id' => 1),
-					array('label' => 'Admin/Role', 'description' => 'Can Add/Edit Roles', 'creator_id' => 1),
-					array('label' => 'Home/ContactLog', 'description' => 'Can view Contact Log', 'creator_id' => 1),
-					);
-				foreach ($roles as $v) {
-					$R = new Role($v);
-					if ($R->insert()) {
-						G::msg('Created Role: '.$R->label);
-						$R->grant($login_id);
+						G::$S = new Security();
+						G::$S->authenticate($L->loginname, $L->password);
 					} else {
-						G::msg('Failed to create Role: '.$R->label, 'error');
+						G::msg('Failed to create root user: '.$L->loginname, 'error');
 					}
-				}
 
-				$config = sprintf($this->config,
-						$_SERVER['SERVER_NAME'],
-						$_POST['siteEmail'],
-						$_POST['Host'],
-						$_POST['User'],
-						$_POST['Pass'],
-						$_POST['Name'],
-						$_POST['Tabl'],
-						$_POST['User2'],
-						$_POST['Pass2'],
-						$_POST['siteName']
+					include_once SITE.CORE.'/models/Role.php';
+					Role::prime();
+
+					$roles = array(
+						array('label' => 'Admin', 'description' => 'General use admin Role', 'creator_id' => 1),
+						array('label' => 'Admin/Login', 'description' => 'Can Add/Edit Logins', 'creator_id' => 1),
+						array('label' => 'Admin/Role', 'description' => 'Can Add/Edit Roles', 'creator_id' => 1),
+						array('label' => 'Home/ContactLog', 'description' => 'Can view Contact Log', 'creator_id' => 1),
 						);
+					if (isset($_POST['CLI'])) {
+						$roles[] = array('label' => 'Gsh', 'description' => 'Access Graphite Shell', 'creator_id' => 1);
+					}
+					foreach ($roles as $v) {
+						$R = new Role($v);
+						if ($R->insert()) {
+							G::msg('Created Role: '.$R->label);
+							$R->grant($login_id);
+						} else {
+							G::msg('Failed to create Role: '.$R->label, 'error');
+						}
+					}
 
-				$filename = 'config.'.$_SERVER['SERVER_NAME'].'.php';
-				if (file_exists(dirname(SITE).'/siteConfigs')) {
-					$path = dirname(SITE).'/siteConfigs';
-				} else {
-					$path = SITE;
-				}
-				if (file_exists($path.'/'.$filename)) {
-					if (!rename($path.'/'.$filename, $path.'/'.date("YmdHis").$filename)) {
-						G::msg('An existing config file could not be moved. Please copy the below config into '.$path.'/'.$filename);
-						G::$V->config = $config;
-						$install = false;
+					$includePath = "'"
+						.(isset($_POST['HTML5']) ? "/^HTML5;" : '')
+						.(isset($_POST['HTML4']) ? "/^HTML4;" : '')
+						.(isset($_POST['CLI']) ? "/^CLI;" : '')
+						."'.CORE"
+						;
+
+					$config = sprintf($this->config,
+							$_SERVER['SERVER_NAME'],
+							$_POST['siteEmail'],
+							$_POST['Host'],
+							$_POST['User'],
+							$_POST['Pass'],
+							$_POST['Name'],
+							$_POST['Tabl'],
+							$_POST['User2'],
+							$_POST['Pass2'],
+							$_POST['siteName'],
+							$includePath
+							);
+
+					$filename = 'config.'.$_SERVER['SERVER_NAME'].'.php';
+					if (file_exists(dirname(SITE).'/siteConfigs')) {
+						$path = dirname(SITE).'/siteConfigs';
+					} else {
+						$path = SITE;
+					}
+					if (file_exists($path.'/'.$filename)) {
+						if (!rename($path.'/'.$filename, $path.'/'.date("YmdHis").$filename)) {
+							G::msg('An existing config file could not be moved. Please copy the below config into '
+								.$path.'/'.$filename, 'error');
+							G::$V->config = $config;
+							$install = false;
+						}
 					}
 				}
+
 				if ($install) {
 					$f = fopen($path.'/'.$filename, "w");
 					if (!fwrite($f, $config)) {
-						G::msg('The config file could not be written. Please copy the below config into '.$path.'/'.$filename);
+						G::msg('The config file could not be written. Please copy the below config into '
+							.$path.'/'.$filename, 'error');
 						G::$V->config = $config;
 						$install = false;
+					} else {
+						G::msg('The config file was written to '.$path.'/'.$filename);
+						G::msg('Install complete <a href="/">Go Home</a>');
 					}
 				}
 			}
@@ -307,7 +338,7 @@ G::$G['siteEmail'] = '%2$s';
 //controllers, models, templates
 //list in priority order, first found is used
 //for example: G::$G['includePath'] = '/^MyApp;'.CORE;
-G::$G['includePath'] = CORE;
+G::$G['includePath'] = %11$s;
 
 //disable the installer
 G::$G['installer'] = false;
@@ -356,6 +387,7 @@ G::$G['VIEW']['_siteName'] = '%10$s';
 /** **************************************************************************
  * /Settings for the View
  ****************************************************************************/
+
 ENDOFCONFIG;
 
 }

@@ -40,7 +40,16 @@
 		<input id="Pass2b" type="password" name="Pass2b">
 
 	<h3>Installing</h3>
-		<input type="submit" value="Install">
+	<label><input type="checkbox" name="HTML5" value="1"<?php if ($HTML5) {
+			echo ' checked="checked"';
+		} ?>> Enable HTML5 front end?</label>
+	<label><input type="checkbox" name="HTML4" value="1"<?php if ($HTML4) {
+			echo ' checked="checked"';
+		} ?>> Enable HTML4 front end?</label>
+	<label><input type="checkbox" name="CLI" value="1"<?php if ($CLI) {
+			echo ' checked="checked"';
+		} ?>> Enable CLI?</label>
+	<input type="submit" value="Install">
 </div>
 </form>
 <?php get_footer();
