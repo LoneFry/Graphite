@@ -108,6 +108,37 @@ final class G {
 	}
 
 	/**
+	 * Return a newline delimited call stack
+	 *
+	 * @return string call stack
+	 */
+	public static function trace() {
+		// get PHP's trace
+		$d = debug_backtrace();
+		// build printable trace
+		$s = '';
+		for ($i = 0; $i < count($d); $i++) {
+			$s .= "\n";
+			// If the called function is in a class, indicate it
+			if (isset($d[$i]['class'])) {
+				// If the called function is in a subclass, indicate it also
+				if (isset($d[$i]['object']) && get_class($d[$i]['object']) != $d[$i]['class']) {
+					$s .= '['.get_class($d[$i]['object']).']';
+				}
+				$s .= $d[$i]['class'].$d[$i]['type'];
+			}
+			// Indicate the called function
+			if (isset($d[$i]['function'])) {
+				$s .= $d[$i]['function'].'() called at ';
+			}
+			// Indicate the file and line of the current call
+			$s .= $d[$i]['file'].':'.$d[$i]['line'].";";
+		}
+
+		return $s;
+	}
+
+	/**
 	 * close Security and mysqli objects in proper order
 	 * This should be called before PHP cleanup to close things in order
 	 * register_shutdown_function() is one way to do this.
