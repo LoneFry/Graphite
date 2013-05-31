@@ -763,25 +763,17 @@ abstract class Record extends DataModel {
 		return G::$M->query($query);
 	}
 }
-
-
 /*
-
 class Test extends Record {
-	//example custom class variable, used by testCustom() below
-	protected static $labelRE='^\w[\w\_\-\@\.\d]*$';
+	protected static $table = 'Test';
+	protected static $pkey  = 'test_id';
+	protected static $query = '';
 
-	//override the constructor to set the class table and pkey name
-	//*MUST* set static::$pkey before calling parent::__constuct()
-	public function __construct($a=null,$b=null) {
-		static::$table='Test';
-		static::$pkey='test_id';
-		parent::__construct($a,$b);
-	}
+	//example custom class variable, used by testCustom() below
+	protected static $labelRE = '^\w[\w\_\-\@\.\d]*$';
 
 	// vars array - all the information required to work with each record field
 	//  val		the current value in this object instance
-	//  DBval	the current value in the database set in load()
 	//  type	the type, which defines which functions operate on it
 	//  strict	declare whether or reject or adjust violating values
 	//  def		default value, used by defaults() to set sane default values
@@ -789,28 +781,30 @@ class Test extends Record {
 	//  max		highest number, latest date, longest string length
 	//  values	valid choices for an enumeration (e) type variable
 	//  format	string used by PHP's date() to format DateTime (dt) values
-	protected static $vars=array(
-		'test_id' => 		array('type' => 'i' ,'min' => 1),
-		'testCustom' =>   array('type' => 's' ,'strict' => true ,'min' => 3,'max' => 255),
-		'testName' => 	array('type' => 's' ,'def' => '[Default Name]','min' => 3,'max' => 255),
-		'testEnum' => 	array('type' => 'e' ,'def' => 0,'values' => array(0,1,2)),
-		'testIP' => 		array('type' => 'ip'),
-		'testBool' => 	array('type' => 'b'  ,'def' => false),
-		'testDate' => 	array('type' => 'dt','min' => 1,'format' => 'Y-m-d H:i:s'),
-		'testInt' => 		array('type' => 'i' ,'min' => 1),
-		'testFloat' => 	array('type' => 'f' ,'min' => 1),
-		'testBit' => 		array('type' => 'b'  ,'def' => false),
-		'testEmail' => 	array('type' => 'em','def' => '')
+	//  ddl     Data Definition Language used by Record::create()
+	protected static $vars = array(
+		'test_id'    => array('type' => 'i', 'min' => 1, 'ddl' => '`test_id` UNSIGNED TINYINT AUTO_INCREMENT'),
+		'testCustom' => array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
+		'testName'   => array('type' => 's', 'def' => '[Default Name]', 'min' => 3, 'max' => 255),
+		'testEnum'   => array('type' => 'e', 'def' => 0, 'values' => array(0, 1, 2)),
+		'testIP'     => array('type' => 'ip'),
+		'testBool'   => array('type' => 'b', 'def' => false),
+		'testDate'   => array('type' => 'dt', 'min' => 1, 'format' => 'Y-m-d H:i:s'),
+		'testInt'    => array('type' => 'i', 'min' => 1),
+		'testFloat'  => array('type' => 'f', 'min' => 1),
+		'testBit'    => array('type' => 'b', 'def' => false),
+		'testEmail'  => array('type' => 'em', 'def' => ''),
 	);
 
 	//example custom getter/setter
 	// it should be named the same as the registered variable it affects
 	// it should be sure to manipulate only $this->vals[$key]
 	public function testCustom() {
-		if (0<count($a=func_get_args()))
-		if (strlen($a[0])>=3 && preg_match('/'.self::$labelRE.'/', $a[0])) {
-			$this->vals['testCustom']=substr(trim(strip_tags($a[0])),0,255);
-		}
+		if (0 < count($a = func_get_args()))
+			if (strlen($a[0]) >= 3 && preg_match('/'.self::$labelRE.'/', $a[0])) {
+				$this->vals['testCustom'] = substr(trim(strip_tags($a[0])), 0, 255);
+			}
+
 		return $this->vals['testCustom'];
 	}
 }
