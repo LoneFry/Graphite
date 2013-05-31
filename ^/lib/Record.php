@@ -604,6 +604,16 @@ abstract class Record extends DataModel {
 		}
 		return true;
 	}
+
+	/**
+	 * Drop table from database
+	 *
+	 * @return bool
+	 */
+	public static function drop() {
+		$query = "DROP TABLE IF EXISTS `".static::$table."`";
+		return G::$M->query($query);
+	}
 }
 
 
