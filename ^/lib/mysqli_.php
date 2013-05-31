@@ -137,6 +137,49 @@ class mysqli_ extends mysqli {
 	}
 
 	/**
+	 * wrapper for mysqli::query() that returns an array of rows
+	 *
+	 * @param string $query    Query to run
+	 * @param string $keyField Name of field to index returned array by.
+	 *
+	 * @return array Array of rows returned by query
+	 */
+	public function queryToArray($query, $keyField = null) {
+		// If query fails, return false
+		if (false === $result = $this->query($query)) {
+			return false;
+		}
+
+		// If query returns no rows, return empty array
+		if (0 == $this->affected_rows) {
+			$result->close();
+
+			return array();
+		}
+
+		// We have rows, fetch them all into a new array to return
+		$data = array();
+		// Get the first row to verify the keyField
+		$row  = $result->fetch_assoc();
+		if (null !== $keyField && !isset($row[$keyField])) {
+			trigger_error('Invalid keyField specified in '.__METHOD__.', falling back to numeric indexing');
+			$keyField = null;
+		}
+		if (null !== $keyField) {
+			do {
+				$data[$row[$keyField]] = $row;
+			} while ($row = $result->fetch_assoc());
+		} else {
+			do {
+				$data[] = $row;
+			} while ($row = $result->fetch_assoc());
+		}
+		$result->close();
+
+		return $data;
+	}
+
+	/**
 	 * return logged queries
 	 *
 	 * @return array query log
