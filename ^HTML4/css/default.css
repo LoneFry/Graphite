@@ -37,7 +37,7 @@ a[rel~="external"]{background: url(/^HTML4/images/url_icon.gif) no-repeat left c
 .ajas_email_error { background-color: #f99; }
 p.error,div.error {border:2px solid red;padding:10px;background-color:#fee;}
 
-div.G__croak{background:white;color:black;white-space:pre-wrap;font-family:monospace;}
+pre.G__croak{background:white;color:black;white-space:pre-wrap;font-family:monospace;}
 div.G__croak_info{padding-left:5px;border-left:5px solid black;}
 div.G__croak hr{margin:0;}
 div.G__croak_value{padding-left:10px;}
