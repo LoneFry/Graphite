@@ -30,7 +30,7 @@ class View {
 		'footer'   => 'footer.php',
 		'template' => '404.php',
 		);
-	protected $includePath = null;
+	protected $includePath = array();
 
 	public $vals = array(
 		'_meta'   => array(),
@@ -50,13 +50,10 @@ class View {
 		if (isset(G::$G['includePath'])) {
 			foreach (explode(';', G::$G['includePath']) as $v) {
 				$s = realpath(SITE.$v.'/templates');
-				if (file_exists($s)) {
+				if (file_exists($s) && '' != $v) {
 					$this->includePath[] = $s.'/';
 				}
 			}
-		}
-		if (0 == count($this->includePath)) {
-			$this->includePath[] = SITE.CORE.'/templates/';
 		}
 
 		if (isset($cfg['_header'])) {
@@ -314,6 +311,9 @@ class View {
 		}
 
 		//If we got here, we didn't find the template.
+		trigger_error('Specified template ('.$this->templates[$_template]
+			.') not found in includePath.');
+
 		return false;
 	}
 }
