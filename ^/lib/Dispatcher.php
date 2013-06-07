@@ -38,14 +38,15 @@ class Dispatcher {
 	 */
 	function __construct($cfg) {
 		//set hard default for controller paths
-		$this->controllerPath = $this->controller404Path = SITE.CORE.'/controllers/';
+		$this->controllerPath = $this->controller404Path =
+			SITE.CORE.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR;
 
 		//Check for and validate location of Controllers
 		if (isset(G::$G['includePath'])) {
 			foreach (explode(';', G::$G['includePath']) as $v) {
 				$s = realpath(SITE.$v.'/controllers');
 				if (file_exists($s) && '' != $v) {
-					$this->includePath[] = $s.'/';
+					$this->includePath[] = $s.DIRECTORY_SEPARATOR;
 				}
 			}
 		}
