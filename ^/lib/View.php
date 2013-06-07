@@ -51,7 +51,7 @@ class View {
 			foreach (explode(';', G::$G['includePath']) as $v) {
 				$s = realpath(SITE.$v.'/templates');
 				if (file_exists($s) && '' != $v) {
-					$this->includePath[] = $s.'/';
+					$this->includePath[] = $s.DIRECTORY_SEPARATOR;
 				}
 			}
 		}
