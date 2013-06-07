@@ -311,6 +311,9 @@ class View {
 		}
 
 		//If we got here, we didn't find the template.
+		trigger_error('Specified template ('.$this->templates[$_template]
+			.') not found in includePath.');
+
 		return false;
 	}
 }
