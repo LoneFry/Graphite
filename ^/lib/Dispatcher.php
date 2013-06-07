@@ -44,13 +44,13 @@ class Dispatcher {
 		if (isset(G::$G['includePath'])) {
 			foreach (explode(';', G::$G['includePath']) as $v) {
 				$s = realpath(SITE.$v.'/controllers');
-				if (file_exists($s)) {
+				if (file_exists($s) && '' != $v) {
 					$this->includePath[] = $s.'/';
 				}
 			}
 		}
 		if (0 == count($this->includePath)) {
-			$this->includePath[] = SITE.CORE.'/controllers/';
+			$this->includePath[] = $this->controller404Path;
 		}
 
 		//set config default first, incase passed path is not found
