@@ -35,7 +35,7 @@ class AdminController extends Controller {
 	 * @return mixed
 	 */
 	public function do_list($argv) {
-		if (!G::$S->roleTest('Admin/Login') && !G::$S->roleTest('Admin/Role')) {
+		if (!G::$S->roleTest('Admin')) {
 			return parent::do_403($argv);
 		}
 
