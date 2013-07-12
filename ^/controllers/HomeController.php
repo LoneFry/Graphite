@@ -27,7 +27,7 @@ require_once LIB.'/Controller.php';
 class HomeController extends Controller {
     protected $action = 'home';
 
-    /**
+   /**
      * action
      *
      * @param array $argv web request parameters
@@ -91,10 +91,9 @@ class HomeController extends Controller {
                     ."Reply-To: ".$_POST[$from]."\nX-Mailer: PHP/" . phpversion()
                     );
                 G::msg('Your message has been sent.');
-
                 require_once SITE.CORE.'/models/ContactLog.php';
 
-                $C = new ContactLog(array(
+               $C = new ContactLog(array(
                     'from'     => $_POST[$from],
                     'subject'  => $_POST[$subject],
                     'to'       => G::$G['siteEmail'],
@@ -107,6 +106,7 @@ class HomeController extends Controller {
             G::msg('Use the form below . . .');
         }
     }
+
 
     /**
      * action
