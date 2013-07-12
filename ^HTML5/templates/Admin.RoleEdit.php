@@ -34,11 +34,11 @@
             </tr>
             <tr>
                 <th>Created</th>
-	            <td><?php echo $R->dateCreated ? date('r', $R->dateCreated) : 'Never'; ?></td>
+                <td><?php echo $R->dateCreated ? date('r', $R->dateCreated) : 'Never'; ?></td>
             </tr>
             <tr>
                 <th>Modified</th>
-	            <td><?php echo $R->dateModified ? date('r', $R->dateModified) : 'Never'; ?></td>
+                <td><?php echo $R->dateModified ? date('r', $R->dateModified) : 'Never'; ?></td>
             </tr>
             <tr>
                 <td colspan="2">
@@ -63,18 +63,18 @@
             <tbody>
 <?php
 if (is_array($Logins)) {
-	foreach ($Logins as $k => $v) {
+    foreach ($Logins as $k => $v) {
 ?>
-		<tr>
-			<td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if(isset($members[$k]))echo ' checked';?>></td>
-			<td><label for="g<?php echo $k;?>"><?php echo $v->loginname;?></label></td>
-			<td class="subtle"><?php
-				if (isset($members[$k]) && isset($Logins[$members[$k]])) {
-					echo $Logins[$members[$k]]->loginname;
-				}?></td>
-		</tr>
+        <tr>
+            <td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if(isset($members[$k]))echo ' checked';?>></td>
+            <td><label for="g<?php echo $k;?>"><?php echo $v->loginname;?></label></td>
+            <td class="subtle"><?php
+                if (isset($members[$k]) && isset($Logins[$members[$k]])) {
+                    echo $Logins[$members[$k]]->loginname;
+                }?></td>
+        </tr>
 <?php
-	}
+    }
 }
 ?>
             </tbody>
