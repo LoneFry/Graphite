@@ -7,35 +7,35 @@
 </nav>
 <h2>Login Log</h2>
 <table class="list">
-	<thead>
-		<tr>
-			<th>pkey</th>
-			<th>date</th>
-			<th>login_id</th>
-			<th>IP</th>
-			<th>user agent</th>
-		</tr>
-	</thead>
-	<tbody>
+    <thead>
+        <tr>
+            <th>pkey</th>
+            <th>date</th>
+            <th>login_id</th>
+            <th>IP</th>
+            <th>user agent</th>
+        </tr>
+    </thead>
+    <tbody>
 <?php
 if (is_array($log) && count($log)) {
-	foreach ($log as $k => $v) {
+    foreach ($log as $k => $v) {
 ?>
-		<tr>
-			<td><?php html($v->pkey);?></td>
-			<td><?php echo date("r", $v->iDate);?></td>
-			<td><?php echo '<a href="'.CONT.'Admin/LoginEdit/'.$v->login_id.'">'.$v->login_id.'</a>';?></td>
-			<td><?php html($v->ip);?></td>
-			<td><?php html($v->ua);?></td>
-		</tr>
+        <tr>
+            <td><?php html($v->pkey);?></td>
+            <td><?php echo date("r", $v->iDate);?></td>
+            <td><?php echo '<a href="'.CONT.'Admin/LoginEdit/'.$v->login_id.'">'.$v->login_id.'</a>';?></td>
+            <td><?php html($v->ip);?></td>
+            <td><?php html($v->ua);?></td>
+        </tr>
 <?php
-	}
+    }
 } else {
 ?>
-		<tr><td colspan="4">No records found.</td></tr>
+        <tr><td colspan="4">No records found.</td></tr>
 <?php
 }
 ?>
-	</tbody>
+    </tbody>
 </table>
 <?php get_footer();

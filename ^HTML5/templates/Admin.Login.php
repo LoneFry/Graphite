@@ -9,11 +9,11 @@
 <ul>
 <?php
 if (isset($list) && is_array($list)) {
-	foreach ($list as $k => $v) {
+    foreach ($list as $k => $v) {
 ?>
-		<li><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $k;?>"><?php html($v->loginname);?></a></li>
+        <li><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $k;?>"><?php html($v->loginname);?></a></li>
 <?php
-	}
+    }
 }
 ?>
 </ul>
