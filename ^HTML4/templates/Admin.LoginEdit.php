@@ -116,14 +116,14 @@
             <tbody>
 <?php
 if (is_array($Roles)) {
-	foreach ($Roles as $k => $v) {
+    foreach ($Roles as $k => $v) {
 ?>
-		<tr>
-			<td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if ($L->roleTest($v->label)) {echo ' checked';}?>></td>
-			<td><label for="g<?php echo $k;?>"><?php echo $v->label;?></label></td>
-		</tr>
+        <tr>
+            <td><input type="checkbox" name="grant[<?php echo $k;?>]" id="g<?php echo $k;?>" value="1"<?php if ($L->roleTest($v->label)) {echo ' checked';}?>></td>
+            <td><label for="g<?php echo $k;?>"><?php echo $v->label;?></label></td>
+        </tr>
 <?php
-	}
+    }
 }
 ?>
             </tbody>
@@ -133,34 +133,34 @@ if (is_array($Roles)) {
     <div class="fleft" style="border-top:1px solid transparent;">
         <h2>Login Log</h2>
         <table class="listTable">
-			<thead>
-				<tr>
-					<th>pkey</th>
-					<th>date</th>
-					<th>IP</th>
-					<th>user agent</th>
-				</tr>
-			</thead>
-			<tbody>
+            <thead>
+                <tr>
+                    <th>pkey</th>
+                    <th>date</th>
+                    <th>IP</th>
+                    <th>user agent</th>
+                </tr>
+            </thead>
+            <tbody>
 <?php
 if (is_array($log) && count($log)) {
-	foreach ($log as $k => $v) {
+    foreach ($log as $k => $v) {
 ?>
-				<tr>
-					<td><?php html($v->pkey);?></td>
-					<td><?php html($v->iDate);?></td>
-					<td><?php html($v->ip);?></td>
-					<td><?php html($v->ua);?></td>
-				</tr>
+                <tr>
+                    <td><?php html($v->pkey);?></td>
+                    <td><?php html($v->iDate);?></td>
+                    <td><?php html($v->ip);?></td>
+                    <td><?php html($v->ua);?></td>
+                </tr>
 <?php
-	}
+    }
 } else {
 ?>
-		<tr><td colspan="4">No records found.</td></tr>
+        <tr><td colspan="4">No records found.</td></tr>
 <?php
 }
 ?>
-			</tbody>
+            </tbody>
         </table>
     </div>
 

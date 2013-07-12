@@ -24,31 +24,31 @@ var CLI_XHR;
  * @return bool Whether browser should submit form
  */
 function CLI_runCommand(oForm) {
-	var cmd = document.getElementById('prompt').value.split(' ')[0];
-	if (refreshers) {
-		for (f in refreshers) {
-			if (refreshers[f] == cmd) {
-				return true;
-			}
-		}
-	}
-	if (document.getElementById('prompt').disabled) {
-		return false;
-	}
+    var cmd = document.getElementById('prompt').value.split(' ')[0];
+    if (refreshers) {
+        for (f in refreshers) {
+            if (refreshers[f] == cmd) {
+                return true;
+            }
+        }
+    }
+    if (document.getElementById('prompt').disabled) {
+        return false;
+    }
 
-	CLI_XHR = window.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP")
-				:new XMLHttpRequest();
-	var formData = document.getElementById('prompt').value;
-	formData = 'prompt=' + (escape(formData).replace(/\+/g,'%2b'));
+    CLI_XHR = window.ActiveXObject?new ActiveXObject("Microsoft.XMLHTTP")
+                :new XMLHttpRequest();
+    var formData = document.getElementById('prompt').value;
+    formData = 'prompt=' + (escape(formData).replace(/\+/g,'%2b'));
 
-	CLI_XHR.open('POST', '/Gsh?a', true);
-	CLI_XHR.onreadystatechange = CLI_runCommand_;
-	CLI_XHR.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
-	CLI_XHR.setRequestHeader("Content-length", formData.length);
-	CLI_XHR.send(formData);
+    CLI_XHR.open('POST', '/Gsh?a', true);
+    CLI_XHR.onreadystatechange = CLI_runCommand_;
+    CLI_XHR.setRequestHeader("Content-Type", 'application/x-www-form-urlencoded');
+    CLI_XHR.setRequestHeader("Content-length", formData.length);
+    CLI_XHR.send(formData);
 
-	document.getElementById('prompt').disabled = true;
-	return false;
+    document.getElementById('prompt').disabled = true;
+    return false;
 }
 
 /**
@@ -60,14 +60,14 @@ function CLI_runCommand(oForm) {
  * @return void
  */
 function CLI_runCommand_() {
-	if (CLI_XHR.readyState != 4) {
-		return;
-	}
-	document.getElementById('buffer').innerHTML += CLI_XHR.responseText;
-	document.getElementById('prompt').value = '';
-	document.getElementById('prompt').disabled = false;
-	document.getElementById('prompt').focus();
-	document.getElementById('prompt').scrollIntoView();
+    if (CLI_XHR.readyState != 4) {
+        return;
+    }
+    document.getElementById('buffer').innerHTML += CLI_XHR.responseText;
+    document.getElementById('prompt').value = '';
+    document.getElementById('prompt').disabled = false;
+    document.getElementById('prompt').focus();
+    document.getElementById('prompt').scrollIntoView();
 }
 
 /**
@@ -76,11 +76,11 @@ function CLI_runCommand_() {
  * @return void
  */
 function CLI_resize() {
-	var newHeight = window.innerHeight;
-	newHeight -= document.getElementById('header').clientHeight;
-	newHeight -= document.getElementById('footer').clientHeight;
-	document.getElementById('cli').style.height =
-		Math.max(400, newHeight) + 'px';
-	document.getElementById('prompt').style.width =
-		(document.getElementById('cli').clientWidth-document.getElementById('submit').clientWidth - 40) + 'px';
+    var newHeight = window.innerHeight;
+    newHeight -= document.getElementById('header').clientHeight;
+    newHeight -= document.getElementById('footer').clientHeight;
+    document.getElementById('cli').style.height =
+        Math.max(400, newHeight) + 'px';
+    document.getElementById('prompt').style.width =
+        (document.getElementById('cli').clientWidth-document.getElementById('submit').clientWidth - 40) + 'px';
 }

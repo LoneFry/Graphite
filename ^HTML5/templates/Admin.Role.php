@@ -19,17 +19,17 @@
         <tbody>
 <?php
 if (isset($list) && is_array($list)) {
-	foreach ($list as $k => $v) {
+    foreach ($list as $k => $v) {
 ?>
-		<tr class="<?php echo $v->disabled?'subtle':'';?>">
-			<td><?php echo $v->role_id;?></td>
-			<td><a href="<?php echo CONT;?>Admin/RoleEdit/<?php echo $k;?>"><?php html($v->label);?></a></td>
-			<td><?php echo $v->creator_id;?></td>
-			<td><?php echo $v->description;?></td>
-			<td><?php echo $v->disabled?'Disabled':'Enabled';?></td>
-		</tr>
+        <tr class="<?php echo $v->disabled?'subtle':'';?>">
+            <td><?php echo $v->role_id;?></td>
+            <td><a href="<?php echo CONT;?>Admin/RoleEdit/<?php echo $k;?>"><?php html($v->label);?></a></td>
+            <td><?php echo $v->creator_id;?></td>
+            <td><?php echo $v->description;?></td>
+            <td><?php echo $v->disabled?'Disabled':'Enabled';?></td>
+        </tr>
 <?php
-	}
+    }
 }
 ?>
         </tbody>
