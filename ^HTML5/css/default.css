@@ -19,7 +19,7 @@ img { -ms-interpolation-mode: bicubic; }
 /* Begin Graphite general styles */
 body {margin:0;padding:0;border:0;background-color:#fff;color:#000;font:11pt Tahoma,Arial,sans-serif;}
 
-body > header {background-color:#2e2e2e;padding:0 4px 4	px;color:#fff;}
+body > header {background-color:#2e2e2e;padding:0 4px 4px;color:#fff;}
 body > header h1 {margin:0 0 2px 2px;color:#fff;text-shadow:0 0 0.2em #fff;float:left;}
 body > header div#login {margin:6px 0;font-size:0.8em;float:right;}
 body > header nav {padding-top:6px;text-align:center;}
