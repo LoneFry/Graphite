@@ -36,7 +36,7 @@ class HomeController extends Controller {
 	 */
 	public function do_home($argv) {
 		G::$V->_template = 'Home.php';
-		G::$V->_title    = G::$V->_siteName;
+        G::$V->_title    = G::$V->_siteName;
 	}
 
 	/**
@@ -46,10 +46,10 @@ class HomeController extends Controller {
 	 *
 	 * @return mixed
 	 */
-	public function do_contact($argv) {
+	public function do_contact($argv, $post) {
 		G::$V->_template = 'Home.Contact.php';
 		G::$V->_title    = G::$V->_siteName.': Contact';
-		G::$V->seed    =$seed    =(int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
+		G::$V->seed    =$seed    =(int)(isset($post['apple'])?$post['apple']:microtime(true));
 		G::$V->from    =$from    =substr(md5($seed), -6);
 		G::$V->subject =$subject =md5($from);
 		G::$V->message =$message =md5($subject);
@@ -61,44 +61,44 @@ class HomeController extends Controller {
 		</style>
 ';
 
-		if (isset($_POST[$from])
-			&& isset($_POST[$subject])
-			&& isset($_POST[$message])
-			&& isset($_POST[$honey])
-			&& isset($_POST[$honey2])
+		if (isset($post[$from])
+			&& isset($post[$subject])
+			&& isset($post[$message])
+			&& isset($post[$honey])
+			&& isset($post[$honey2])
 		) {
 			$loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
 			$login_id  = G::$S->Login?G::$S->Login->login_id:0;
-			if ('' != $_POST[$honey] || '' != $_POST[$honey2]) {
+			if ('' != $post[$honey] || '' != $post[$honey2]) {
 				G::msg('The field labeled "Leave Blank" was not left blank.  '
 					   .'Your message has not been sent.  '
 					   .'We check this to prevent automated mailers.');
-			} elseif (false !== strpos($_POST[$from], "\n") || false !== strpos($_POST[$from], "\r")) {
+			} elseif (false !== strpos($post[$from], "\n") || false !== strpos($post[$from], "\r")) {
 				G::msg('The email address submitted contains a newline '
 					   .'character.  Your message has not been sent.  '
 					   .'We check this to prevent automated mailers.');
-			} elseif (false !== strpos($_POST[$subject], "\n") || false !== strpos($_POST[$subject], "\r")) {
+			} elseif (false !== strpos($post[$subject], "\n") || false !== strpos($post[$subject], "\r")) {
 				G::msg('The subject submitted contains a newline character.  '
 					   .'Your message has not been sent.  '
 					   .'We check this to prevent automated mailers.');
 			} else {
-				mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$_POST[$subject],
+				mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$post[$subject],
 					'Login Info: '.$loginname.' - '.$login_id."\n"
-					.'Specified Email Address: '.$_POST[$from]."\n"
-					.'Subject: '.$_POST[$subject]."\n"
-					.'Message: '."\n".$_POST[$message],
+					.'Specified Email Address: '.$post[$from]."\n"
+					.'Subject: '.$post[$subject]."\n"
+					.'Message: '."\n".$post[$message],
 					'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
-					."Reply-To: ".$_POST[$from]."\nX-Mailer: PHP/" . phpversion()
+					."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
 					);
 				G::msg('Your message has been sent.');
 
 				require_once SITE.CORE.'/models/ContactLog.php';
 
 				$C = new ContactLog(array(
-					'from'     => $_POST[$from],
-					'subject'  => $_POST[$subject],
+					'from'     => $post[$from],
+					'subject'  => $post[$subject],
 					'to'       => G::$G['siteEmail'],
-					'body'     => $_POST[$message],
+					'body'     => $post[$message],
 					'login_id' => $login_id,
 				), true);
 				$C->save();
