@@ -71,7 +71,7 @@ final class G {
      * @return string
      */
     public static function normalize_special_characters($s) {
-        //‘single’ and “double” quot’s yeah.
+        // ‘single’ and “double” quot’s yeah.
         $s = str_replace(array(
             '“',  // left side double smart quote
             '”',  // right side double smart quote
@@ -157,5 +157,5 @@ final class G {
         }
     }
 }
-//register G::close() to be called at shutdown
+// register G::close() to be called at shutdown
 register_shutdown_function('G::close');

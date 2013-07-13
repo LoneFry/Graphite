@@ -27,12 +27,12 @@ require_once LIB.'/DataModel.php';
  * @see      /^/lib/DataModel.php
  */
 abstract class Record extends DataModel {
-    protected $DBvals = array();//instance DB values of vars defined in $vars
+    protected $DBvals = array();// instance DB values of vars defined in $vars
 
-    //Should be defined in subclasses
-    //protected static $table;//name of table
-    //protected static $pkey;//name of primary key column
-    //protected static $vars=array();//record definition
+    // Should be defined in subclasses
+    // protected static $table;// name of table
+    // protected static $pkey;// name of primary key column
+    // protected static $vars=array();// record definition
 
     /**
      * constructor accepts four prototypes:
@@ -53,7 +53,7 @@ abstract class Record extends DataModel {
             throw new Exception('Record class defined with no table');
         }
 
-        //initialize the values arrays with null values as some tests depend
+        // initialize the values arrays with null values as some tests depend
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k] = null;
         }
@@ -81,10 +81,10 @@ abstract class Record extends DataModel {
      * @return void
      */
     public static function prime() {
-        //Set the class table name by prepending the configured prefix
+        // Set the class table name by prepending the configured prefix
         static::$table = G::$M->tabl.static::$table;
 
-        //Set the query that would be used by load()
+        // Set the query that would be used by load()
         if ('' == static::$query) {
             $keys = array_keys(static::$vars);
             static::$query = 'SELECT t.`'.join('`, t.`', $keys).'` FROM `'.static::$table.'` t';
@@ -197,7 +197,7 @@ abstract class Record extends DataModel {
         $row = $result->fetch_assoc();
         $result->close();
 
-        //data from DB should be filtered with setall to ensure specific types
+        // data from DB should be filtered with setall to ensure specific types
         $this->setAll($row);
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k];
@@ -226,7 +226,7 @@ abstract class Record extends DataModel {
             }
         }
 
-        //if no fields were set, return false
+        // if no fields were set, return false
         if ('' == $query) {
             return null;
         }
@@ -244,7 +244,7 @@ abstract class Record extends DataModel {
         $row = $result->fetch_assoc();
         $result->close();
 
-        //data from DB should be filtered with setall to ensure specific types
+        // data from DB should be filtered with setall to ensure specific types
         $this->setAll($row);
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k];
@@ -278,7 +278,7 @@ abstract class Record extends DataModel {
             }
         }
 
-        //if no fields were set, return false
+        // if no fields were set, return false
         if ('' == $query && $count == null) {
             return null;
         }
@@ -481,7 +481,7 @@ abstract class Record extends DataModel {
                 $save = true;
             }
         }
-        //if save is still false, no fields were set, this is unexpected
+        // if save is still false, no fields were set, this is unexpected
         if (false === $save) {
             return null;
         }
@@ -506,7 +506,7 @@ abstract class Record extends DataModel {
         }
         $this->vals[static::$pkey] = G::$M->insert_id;
 
-        //Subsequent to successful DB commit, update DBvals
+        // Subsequent to successful DB commit, update DBvals
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k];
         }
@@ -542,7 +542,7 @@ abstract class Record extends DataModel {
                 $save = true;
             }
         }
-        //if save is still false, no fields were set, this is unexpected
+        // if save is still false, no fields were set, this is unexpected
         if (false === $save) {
             return null;
         }
@@ -569,7 +569,7 @@ abstract class Record extends DataModel {
             return false;
         }
 
-        //Subsequent to successful DB commit, update DBvals
+        // Subsequent to successful DB commit, update DBvals
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k];
         }
@@ -627,19 +627,19 @@ abstract class Record extends DataModel {
         foreach (static::$vars as $field => $config) {
             if (!isset($config['ddl'])) {
                 switch ($config['type']) {
-                    case 'f': //float
+                    case 'f': // float
                         $config['ddl'] = '`'.$field.'` FLOAT NOT NULL';
                         if (isset($config['def']) && is_numeric($config['def'])) {
                             $config['ddl'] .= ' DEFAULT '.$config['def'];
                         }
                         break;
-                    case 'b': //boolean stored as bit
+                    case 'b': // boolean stored as bit
                         $config['ddl'] = '`'.$field.'` BIT(1) NOT NULL';
                         if (isset($config['def'])) {
                             $config['ddl'] .= ' DEFAULT '.($config['def'] ? '1' : '0');
                         }
                         break;
-                    case 'ip': //IP address stored as int
+                    case 'ip': // IP address stored as int
                         $config['ddl'] = '`'.$field.'` INT UNSIGNED NOT NULL';
                         if (isset($config['def'])) {
                             if (!is_numeric($config['def'])) {
@@ -649,11 +649,11 @@ abstract class Record extends DataModel {
                             }
                         }
                         break;
-                    case 'em': //email address
-                    case 'o': //serialize()'d variables
-                    case 'j': //json_encoded()'d variables
-                    case 'a': //serialized arrays
-                    case 's': //string
+                    case 'em': // email address
+                    case 'o': // serialize()'d variables
+                    case 'j': // json_encoded()'d variables
+                    case 'a': // serialized arrays
+                    case 's': // string
                         if (!isset($config['max']) || !is_numeric($config['max']) || 16777215 < $config['max']) {
                             $config['ddl'] = '`'.$field.'` LONGTEXT NOT NULL';
                         } elseif (65535 < $config['max']) {
@@ -667,8 +667,8 @@ abstract class Record extends DataModel {
                             $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
                         }
                         break;
-                    case 'ts': //int based timestamps
-                        //convert date min/max values to ints and fall through
+                    case 'ts': // int based timestamps
+                        // convert date min/max values to ints and fall through
                         if (isset($config['min']) && !is_numeric($config['min'])) {
                             $config['min'] = strtotime($config['min']);
                         }
@@ -678,8 +678,8 @@ abstract class Record extends DataModel {
                         if (isset($config['def']) && !is_numeric($config['def'])) {
                             $config['def'] = strtotime($config['def']);
                         }
-                        //fall through
-                    case 'i': //integers
+                        // fall through
+                    case 'i': // integers
                         if (isset($config['min']) && is_numeric($config['min']) && 0 <= $config['min']) {
                             if (!isset($config['max']) || !is_numeric($config['max'])) {
                                 $config['ddl'] = '`'.$field.'` INT UNSIGNED NOT NULL';
@@ -713,13 +713,13 @@ abstract class Record extends DataModel {
                             $config['ddl'] .= ' DEFAULT '.$config['def'];
                         }
 
-                        //If the PRIMARY KEY is an INT type, assume AUTO_INCREMENT
-                        //This can be overridden with an explicit DDL
+                        // If the PRIMARY KEY is an INT type, assume AUTO_INCREMENT
+                        // This can be overridden with an explicit DDL
                         if ($field == static::$pkey) {
                             $config['ddl'] .= ' AUTO_INCREMENT';
                         }
                         break;
-                    case 'e': //enums
+                    case 'e': // enums
                         $config['ddl'] = '`'.$field.'` ENUM(';
                         foreach ($config['values'] as $v) {
                             $config['ddl'] .= "'".G::$M->escape_string($v)."',";
@@ -729,8 +729,8 @@ abstract class Record extends DataModel {
                             $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
                         }
                         break;
-                    case 'dt': //datetimes and mysql timestamps
-                        //A column called 'recordChanged' is assumed to be a MySQL timestamp
+                    case 'dt': // datetimes and mysql timestamps
+                        // A column called 'recordChanged' is assumed to be a MySQL timestamp
                         if ('recordChanged' == $field) {
                             $config['ddl'] = '`'.$field.'` TIMESTAMP NOT NULL'
                                 .' DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
@@ -739,7 +739,7 @@ abstract class Record extends DataModel {
 
                         $config['ddl'] = '`'.$field.'` DATETIME NOT NULL';
                         if (isset($config['def'])) {
-                            //This supports more flexible defaults, like '5 days ago'
+                            // This supports more flexible defaults, like '5 days ago'
                             if (!is_numeric($config['def'])) {
                                 $config['def'] = strtotime($config['def']);
                             }
@@ -769,7 +769,7 @@ class Test extends Record {
     protected static $pkey  = 'test_id';
     protected static $query = '';
 
-    //example custom class variable, used by testCustom() below
+    // example custom class variable, used by testCustom() below
     protected static $labelRE = '^\w[\w\_\-\@\.\d]*$';
 
     // vars array - all the information required to work with each record field
@@ -796,7 +796,7 @@ class Test extends Record {
         'testEmail'  => array('type' => 'em', 'def' => ''),
     );
 
-    //example custom getter/setter
+    // example custom getter/setter
     // it should be named the same as the registered variable it affects
     // it should be sure to manipulate only $this->vals[$key]
     public function testCustom() {

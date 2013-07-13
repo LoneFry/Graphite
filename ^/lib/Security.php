@@ -58,29 +58,29 @@ class Security {
                 G::msg('Failed to load login from session, please login again.', 'error');
                 $Login = false;
 
-            //if login disabled, fail
+            // if login disabled, fail
             } elseif ($Login->disabled == 1) {
                 G::msg('Your account is currently disabled.', 'error');
                 $Login = false;
 
-            //if login configured so, test UA hash against last request
+            // if login configured so, test UA hash against last request
             } elseif ($Login->sessionStrength > 0 && $Login->UA!=$this->UA) {
                 G::msg('Your account was authenticated in a different browser, '
                        .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
 
-            //if login configured so, test IP against last request
+            // if login configured so, test IP against last request
             } elseif ($Login->sessionStrength > 1 && $Login->lastIP!=$this->ip) {
                 G::msg('Your account was authenticated from a different computer/IP-address, '
                        .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
 
-            //if we got here, we should have a valid login, update usage data
+            // if we got here, we should have a valid login, update usage data
             } elseif (false !== $Login && 'Login' == get_class($Login)) {
                 $Login->dateActive = NOW;
                 $_SESSION['ua'] = $Login->UA = $this->UA;
                 $_SESSION['ip'] = $Login->lastIP = $this->ip;
-                //move to $this->close()//$Login->save();
+                // move to $this->close()// $Login->save();
 
                 $this->Login = $Login;
             }
@@ -118,7 +118,7 @@ class Security {
         $Login->dateActive = NOW;
         $_SESSION['ua'] = $Login->UA = $this->UA;
         $_SESSION['ip'] = $Login->lastIP = $this->ip;
-        //move to $this->close() $Login->save();
+        // move to $this->close() $Login->save();
 
         $_SESSION['login_id'] = $Login->login_id;
         $_SESSION['loginname'] = $Login->loginname;
@@ -225,14 +225,14 @@ class Security {
      * @return bool|string true if passed|error text if failed
      */
     public static function validate_password($password) {
-        //if there are no policies, everything passes!
+        // if there are no policies, everything passes!
         if (!isset(G::$G['SEC']['passwords'])) {
             return true;
         }
 
         extract(G::$G['SEC']['passwords']);
 
-        //test what a password must be
+        // test what a password must be
         if (isset($require) && is_array($require)) {
             foreach ($require as $v) {
                 if (!preg_match($v[0], $password)) {
@@ -241,7 +241,7 @@ class Security {
             }
         }
 
-        //test what a password must not be
+        // test what a password must not be
         if (isset($deny) && is_array($deny)) {
             foreach ($deny as $v) {
                 $matches = array();

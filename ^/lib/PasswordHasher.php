@@ -76,8 +76,8 @@ class PasswordHasher implements IPasswordHasher {
      * @return string hashed password for storage
      */
     public static function hash_password($password) {
-        //if no hasher is configured, or it is not defined, or it is this class
-        //just use a simple sha1 hash
+        // if no hasher is configured, or it is not defined, or it is this class
+        // just use a simple sha1 hash
         if (!is_array(G::$G['SEC']['hash_class'])
             || !isset(G::$G['SEC']['hash_class'][0])
             || !class_exists(G::$G['SEC']['hash_class'][0])
@@ -102,7 +102,7 @@ class PasswordHasher implements IPasswordHasher {
      * @return string hashed password for storage
      */
     public static function test_password($password, $hash) {
-        //if no hasher is configured, fail
+        // if no hasher is configured, fail
         if (!is_array(G::$G['SEC']['hash_class'])) {
             return false;
         }
@@ -127,7 +127,7 @@ class PasswordHasher implements IPasswordHasher {
      * @return bool true if argument passes any type, false if not
      */
     public static function is_hash($hash) {
-        //if no hasher is configured, fail
+        // if no hasher is configured, fail
         if (!is_array(G::$G['SEC']['hash_class'])) {
             return false;
         }

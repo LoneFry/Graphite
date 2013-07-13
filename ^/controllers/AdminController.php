@@ -160,7 +160,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginEdit.php';
         G::$V->_title    = 'Edit Login';
 
-        //If not passed a number, defer to search/list
+        // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
             return $this->do_Login($argv);
         }
@@ -168,7 +168,7 @@ class AdminController extends Controller {
         $L = new Login($argv[1]);
         $L->load();
 
-        //handle changes to the Login
+        // handle changes to the Login
         if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id &&
             isset($_POST['loginname']) && isset($_POST['realname']) &&
             isset($_POST['pass1']) && isset($_POST['pass2']) &&
@@ -200,7 +200,7 @@ class AdminController extends Controller {
                 G::msg($error, 'error');
                 $update = false;
             } else {
-                //blank means don't change password
+                // blank means don't change password
                 if ($_POST['pass1'] != '') {
                     $L->password = $_POST['pass1'];
                 }
@@ -227,11 +227,11 @@ class AdminController extends Controller {
             }
         }
 
-        //TODO: make a better way to do grants that doesn't involve loading the whole role list
+        // TODO: make a better way to do grants that doesn't involve loading the whole role list
         require_once SITE.CORE.'/models/Role.php';
         $R = new Role();
         $Roles = $R->search(1000, 0, 'label');
-        //handle grant/revoke changes
+        // handle grant/revoke changes
         if (isset($_POST['grant']) && is_array($_POST['grant'])) {
             $i = 0;
             foreach ($_POST['grant'] as $k => $v) {
@@ -336,7 +336,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleEdit.php';
         G::$V->_title    = 'Edit Role';
 
-        //If not passed a number, defer to search/list
+        // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
             return $this->do_Role($argv);
         }
@@ -369,7 +369,7 @@ class AdminController extends Controller {
         G::$V->R = $R;
         $members = $R->getMembers();
 
-        //handle grant/revoke changes
+        // handle grant/revoke changes
         if (isset($_POST['grant']) && is_array($_POST['grant'])) {
             $i = 0;
             foreach ($_POST['grant'] as $k => $v) {
@@ -393,7 +393,7 @@ class AdminController extends Controller {
             G::msg("Revoked Role from $i Logins.");
         }
 
-        //TODO: make a better way to do grants that doesn't involve loading the whole loginlist
+        // TODO: make a better way to do grants that doesn't involve loading the whole loginlist
         $L = new Login();
         G::$V->Logins = $L->search(1000, 0, 'loginname');
         G::$V->members = $members;

@@ -8,7 +8,7 @@
                 }
                 return true;
             }
-        //--></script>
+        // --></script>
             <div class="form">
                 <h3>Contact</h3>
                 <form action="" method="post" onsubmit="return contactValid();">
