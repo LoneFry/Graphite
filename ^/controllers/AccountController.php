@@ -161,8 +161,8 @@ class AccountController extends Controller {
         G::$V->_template = 'Account.Edit.php';
         G::$V->_title    = G::$V->_siteName.' : Account Settings';
 
-        if (isset($_POST['comment']) && isset($_POST['email']) &&
-            isset($_POST['password1']) && isset($_POST['password2'])
+        if (isset($_POST['comment']) && isset($_POST['email'])
+            && isset($_POST['password1']) && isset($_POST['password2'])
         ) {
 
             G::$S->Login->comment = $_POST['comment'];

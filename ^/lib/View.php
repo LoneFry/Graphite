@@ -302,8 +302,8 @@ class View {
 
         // Find the requested template in the include path
         foreach ($this->includePath as $_v) {
-            if (isset($this->templates[$_template]) &&
-                file_exists($_v.$this->templates[$_template])
+            if (isset($this->templates[$_template])
+                && file_exists($_v.$this->templates[$_template])
             ) {
                 include_once $_v.$this->templates[$_template];
                 return true;

@@ -282,10 +282,10 @@ abstract class DataModel {
                 && static::$vars[$k]['strict']
             ) {
                 if (is_numeric($v) && (int)$v == $v
-                     && (!isset(static::$vars[$k]['min'])
+                    && (!isset(static::$vars[$k]['min'])
                         || !is_numeric(static::$vars[$k]['min'])
                         || $v >= static::$vars[$k]['min'])
-                     && (!isset(static::$vars[$k]['max'])
+                    && (!isset(static::$vars[$k]['max'])
                         || !is_numeric(static::$vars[$k]['max'])
                         || $v <= static::$vars[$k]['max'])
                 ) {
@@ -331,10 +331,10 @@ abstract class DataModel {
                 && static::$vars[$k]['strict']
             ) {
                 if (is_numeric($v) && (float)$v == $v
-                     && (!isset(static::$vars[$k]['min'])
+                    && (!isset(static::$vars[$k]['min'])
                         || !is_numeric(static::$vars[$k]['min'])
                         || $v >= static::$vars[$k]['min'])
-                     && (!isset(static::$vars[$k]['max'])
+                    && (!isset(static::$vars[$k]['max'])
                         || !is_numeric(static::$vars[$k]['max'])
                         || $v <= static::$vars[$k]['max'])
                 ) {

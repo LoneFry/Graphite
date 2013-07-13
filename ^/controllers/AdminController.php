@@ -88,11 +88,11 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginAdd.php';
         G::$V->_title    = 'Add Login';
 
-        if (isset($_POST['loginname']) && isset($_POST['realname']) &&
-            isset($_POST['pass1']) && isset($_POST['pass2']) &&
-            isset($_POST['email1']) && isset($_POST['email2']) &&
-            isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $insert = true;
             if ($_POST['email1'] != $_POST['email2']) {
@@ -169,12 +169,12 @@ class AdminController extends Controller {
         $L->load();
 
         // handle changes to the Login
-        if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id &&
-            isset($_POST['loginname']) && isset($_POST['realname']) &&
-            isset($_POST['pass1']) && isset($_POST['pass2']) &&
-            isset($_POST['email1']) && isset($_POST['email2']) &&
-            isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id
+            && isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $update = true;
             $old_loginname = $L->loginname;
@@ -299,8 +299,8 @@ class AdminController extends Controller {
         G::$V->_title    = 'Add Role';
 
         require_once SITE.CORE.'/models/Role.php';
-        if (isset($_POST['label']) && isset($_POST['description']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['label']) && isset($_POST['description'])
+            && isset($_POST['disabled'])
         ) {
             $R = new Role($_POST, true);
 
@@ -346,9 +346,9 @@ class AdminController extends Controller {
         $R->load();
 
         // handle changes to the role
-        if (isset($_POST['role_id']) && $_POST['role_id']==$R->role_id &&
-            isset($_POST['label']) && isset($_POST['description']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['role_id']) && $_POST['role_id']==$R->role_id
+            && isset($_POST['label']) && isset($_POST['description'])
+            && isset($_POST['disabled'])
         ) {
             $R->label = $_POST['label'];
             $R->description = $_POST['description'];
