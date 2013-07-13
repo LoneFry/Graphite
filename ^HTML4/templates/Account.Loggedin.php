@@ -3,7 +3,7 @@
             <p class="tcenter">It looks like you checked in successfully!
                 <br>How about we redirect you <a href="<?php echo str_replace('"', '&quot;', $_URI);?>"><?php html($_Lbl);?></a>?
                 <script type="text/javascript"><!--
-                    window.setTimeout("location.replace('<?php echo str_replace("'", "\\'", $_URI);?>')", 1);//--></script>
+                    window.setTimeout("location.replace('<?php echo str_replace("'", "\\'", $_URI);?>')", 1);// --></script>
             </p>
             <div class="loginForm" id="bodyLogin">
                 Hello, <?php html($_loginname); ?>.

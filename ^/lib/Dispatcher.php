@@ -37,11 +37,11 @@ class Dispatcher {
      * @param array $cfg Configuration array
      */
     function __construct($cfg) {
-        //set hard default for controller paths
+        // set hard default for controller paths
         $this->controllerPath = $this->controller404Path =
             SITE.CORE.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR;
 
-        //Check for and validate location of Controllers
+        // Check for and validate location of Controllers
         if (isset(G::$G['includePath'])) {
             foreach (explode(';', G::$G['includePath']) as $v) {
                 $s = realpath(SITE.$v.'/controllers');
@@ -54,37 +54,37 @@ class Dispatcher {
             $this->includePath[] = $this->controller404Path;
         }
 
-        //set config default first, incase passed path is not found
+        // set config default first, incase passed path is not found
         if (isset($cfg['controller404'])) {
             $this->controller404($cfg['controller404']);
         }
-        //Path based requests take priority, check for path and parse
+        // Path based requests take priority, check for path and parse
         if (isset($cfg['path'])) {
             $a = explode('/', trim($cfg['path'], '/'));
             if (count($a) > 0) {
                 $this->controller(urldecode(array_shift($a)));
             }
-            //argv should contain the rest of the request path, action at [0]
+            // argv should contain the rest of the request path, action at [0]
             $this->argv = $a;
             array_shift($a);
 
-            //If we have other argv, pair them up and add them to the _GET array
-            //Yes, this will result in redundancy: paired and unpaired; intentional
-            //I wonder if this belongs elsewhere
+            // If we have other argv, pair them up and add them to the _GET array
+            // Yes, this will result in redundancy: paired and unpaired; intentional
+            // I wonder if this belongs elsewhere
             if (0 < count($this->argv)) {
                 while (count($a) > 0) {
                     $k = urldecode(array_shift($a));
                     $v = urldecode(array_shift($a));
-                    //Don't let pairings overwrite existing (numeric) indexes
+                    // Don't let pairings overwrite existing (numeric) indexes
                     if (!isset($this->argv[$k])) {
                         $this->argv[$k] = $v;
                     }
                 }
-                //add argv to _GET array without overriding
+                // add argv to _GET array without overriding
                 $_GET = $_GET + $this->argv;
             }
         } else {
-            //If Path was not passed, check for individual configs
+            // If Path was not passed, check for individual configs
             if (isset($cfg['controller'])) {
                 $this->controller($cfg['controller']);
             }

@@ -116,13 +116,13 @@ abstract class Report extends DataModel {
             $query = sprintf(static::$query, implode(' AND ', $query));
         }
 
-        //if an order has been set, add it to the query
+        // if an order has been set, add it to the query
         if (null !== $this->_order) {
             $query .= ' ORDER BY '.$this->_order
                 .($this->_asc ? ' ASC' : ' DESC');
         }
 
-        //add limits also
+        // add limits also
         $query .= ' LIMIT '.$this->_start.', '.$this->_count;
 
         if (false === $result = G::$m->query($query)) {

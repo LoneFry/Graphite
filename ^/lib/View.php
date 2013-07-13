@@ -46,7 +46,7 @@ class View {
      * @param array $cfg Configuration array
      */
     function __construct($cfg) {
-        //Check for and validate location of Controllers
+        // Check for and validate location of Controllers
         if (isset(G::$G['includePath'])) {
             foreach (explode(';', G::$G['includePath']) as $v) {
                 $s = realpath(SITE.$v.'/templates');
@@ -168,7 +168,7 @@ class View {
         if ('' == $file) {
             return '';
         }
-        //Get the realpath of the file, then verify it exists in passed path
+        // Get the realpath of the file, then verify it exists in passed path
         $s = realpath($path.'/'.$file);
         if (false !== strpos($s, $path) && file_exists($s)) {
             return substr($s, strlen($path));
@@ -291,7 +291,7 @@ class View {
      */
     public function render($_template = 'template') {
         extract($this->vals);
-        //To prevent applications from altering these vars, they are set last
+        // To prevent applications from altering these vars, they are set last
         if (G::$S && G::$S->Login) {
             $_login_id  = G::$S->Login->login_id;
             $_loginname = G::$S->Login->loginname;
@@ -300,7 +300,7 @@ class View {
             $_loginname = 'world';
         }
 
-        //Find the requested template in the include path
+        // Find the requested template in the include path
         foreach ($this->includePath as $_v) {
             if (isset($this->templates[$_template]) &&
                 file_exists($_v.$this->templates[$_template])
@@ -310,7 +310,7 @@ class View {
             }
         }
 
-        //If we got here, we didn't find the template.
+        // If we got here, we didn't find the template.
         return false;
     }
 }

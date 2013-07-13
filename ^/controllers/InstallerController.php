@@ -217,7 +217,7 @@ class InstallerController extends Controller {
                     G::msg('Not all tables could be created, install ended prematurely.', 'error');
                 } else {
                     include_once SITE.CORE.'/models/Login.php';
-                    Login::prime();//just in case Login was primed earlier
+                    Login::prime();// just in case Login was primed earlier
                     $L = new Login(array('loginname'   => $_POST['loginname'],
                                          'password'    => $_POST['password1'],
                                          'email'       => $_POST['siteEmail'],
@@ -225,7 +225,7 @@ class InstallerController extends Controller {
                     if ($login_id=$L->insert()) {
                         G::msg('Created root user: '.$L->loginname);
 
-                        //clear any open session
+                        // clear any open session
                         session_start();
                         $_SESSION = array();
                         session_destroy();
@@ -343,16 +343,16 @@ class InstallerController extends Controller {
 /** **************************************************************************
  * General settings
  ****************************************************************************/
-G::$G['MODE'] = 'prd'; //prd,tst,dev... used to flag debug behaviors
+G::$G['MODE'] = 'prd'; // prd,tst,dev... used to flag debug behaviors
 G::$G['siteEmail'] = '%2$s';
 
-//Include Path: a list of paths under the webroot to check for included
-//controllers, models, templates
-//list in priority order, first found is used
-//for example: G::$G['includePath'] = '/^MyApp;'.CORE;
+// Include Path: a list of paths under the webroot to check for included
+// controllers, models, templates
+// list in priority order, first found is used
+// for example: G::$G['includePath'] = '/^MyApp;'.CORE;
 G::$G['includePath'] = %11$s;
 
-//disable the installer
+// disable the installer
 G::$G['installer'] = false;
 /** **************************************************************************
  * /General settings
@@ -370,7 +370,7 @@ G::$G['db'] = array(
     'tabl' => '%7$s',
     'log'  => false
 );
-//leave ['ro']['user'] blank to indicate only RW credentials used
+// leave ['ro']['user'] blank to indicate only RW credentials used
 G::$G['db']['ro'] = array(
     'host' => G::$G['db']['host'],
     'user' => '%8$s',
@@ -394,7 +394,7 @@ G::$G['CON']['controller'] = 'Home';
 /** **************************************************************************
  * Settings for the View
  ****************************************************************************/
-//display vars
+// display vars
 G::$G['VIEW']['_siteName'] = '%10$s';
 /** **************************************************************************
  * /Settings for the View
