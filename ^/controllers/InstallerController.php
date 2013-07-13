@@ -57,14 +57,14 @@ class InstallerController extends Controller {
 </style>
 ';
 
-        if (isset($_POST['siteName']) && isset($_POST['loginname']) &&
-           isset($_POST['password1']) && isset($_POST['password2']) &&
-           isset($_POST['siteEmail']) &&
-           isset($_POST['Host']) && isset($_POST['User']) &&
-           isset($_POST['Pass']) && isset($_POST['Passb']) &&
-           isset($_POST['Tabl']) &&
-           isset($_POST['User2']) &&
-           isset($_POST['Pass2']) && isset($_POST['Pass2b'])
+        if (isset($_POST['siteName']) && isset($_POST['loginname'])
+            && isset($_POST['password1']) && isset($_POST['password2'])
+            && isset($_POST['siteEmail'])
+            && isset($_POST['Host']) && isset($_POST['User'])
+            && isset($_POST['Pass']) && isset($_POST['Passb'])
+            && isset($_POST['Tabl'])
+            && isset($_POST['User2'])
+            && isset($_POST['Pass2']) && isset($_POST['Pass2b'])
         ) {
             G::$V->siteName = $_POST['siteName'];
             G::$V->loginname = $_POST['loginname'];
