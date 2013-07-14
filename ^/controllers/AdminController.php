@@ -60,7 +60,7 @@ class AdminController extends Controller {
 
         if (isset($argv[1])) {
             $l = Login::forInitial($argv[1]);
-            if ($l && 1<count($l)) {
+            if ($l && 1 < count($l)) {
                 G::$V->list = $l;
             } elseif ($l && 1 == count($l)) {
                 $L = array_shift($l);
@@ -127,7 +127,7 @@ class AdminController extends Controller {
                 $insert = false;
             }
 
-            if ($insert && $result=$L->insert()) {
+            if ($insert && $result = $L->insert()) {
                 G::msg('Login Added');
                 return $this->do_LoginEdit(array($L->login_id));
             } elseif ($insert && (null === $result)) {
@@ -169,7 +169,7 @@ class AdminController extends Controller {
         $L->load();
 
         // handle changes to the Login
-        if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id
+        if (isset($_POST['login_id']) && $_POST['login_id'] == $L->login_id
             && isset($_POST['loginname']) && isset($_POST['realname'])
             && isset($_POST['pass1']) && isset($_POST['pass2'])
             && isset($_POST['email1']) && isset($_POST['email2'])
@@ -304,7 +304,7 @@ class AdminController extends Controller {
         ) {
             $R = new Role($_POST, true);
 
-            if ($result=$R->insert()) {
+            if ($result = $R->insert()) {
                 G::msg('Role Added');
                 return $this->do_RoleEdit(array($R->role_id));
             } elseif (null === $result) {
@@ -346,7 +346,7 @@ class AdminController extends Controller {
         $R->load();
 
         // handle changes to the role
-        if (isset($_POST['role_id']) && $_POST['role_id']==$R->role_id
+        if (isset($_POST['role_id']) && $_POST['role_id'] == $R->role_id
             && isset($_POST['label']) && isset($_POST['description'])
             && isset($_POST['disabled'])
         ) {

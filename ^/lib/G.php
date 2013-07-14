@@ -23,13 +23,12 @@
  * @link     http://g.lonefry.com
  */
 final class G {
-    static
-        $M,            // mysqli object
-        $m,            // mysqli object with read-only connection
-        $V,            // View object
-        $C,            // (Controller) Dispatcher object
-        $S,            // Security / Session object
-        $G = array();  // Graphite configuration array
+    public static $M;            // mysqli object
+    public static $m;            // mysqli object with read-only connection
+    public static $V;            // View object
+    public static $C;            // (Controller) Dispatcher object
+    public static $S;            // Security / Session object
+    public static $G = array();  // Graphite configuration array
 
     private static $_msg = array();
 
@@ -97,10 +96,17 @@ final class G {
         $d = debug_backtrace();
         echo '<pre class="G__croak">'
             .'<div class="G__croak_info"><b>'.__METHOD__.'()</b> called'
-            .(isset($d[1])?' in <b>'.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'].'()</b>':'')
+            .(isset($d[1])
+                ? ' in <b>'.(isset($d[1]['class'])
+                    ? $d[1]['class'].$d[1]['type']
+                    : ''
+                    ).$d[1]['function'].'()</b>'
+                : '')
             .' at <b>'.$d[0]['file'].':'.$d[0]['line'].'</b></div>'
             .'<hr><div class="G__croak_value">';
+        // @codingStandardsIgnoreStart
         var_dump($v);
+        // @codingStandardsIgnoreEnd
         echo '</div></pre>';
         if ($die) {
             exit;
@@ -146,14 +152,14 @@ final class G {
      * @return void
      */
     public static function close() {
-        if (G::$S) {
-            G::$S->close();
+        if (self::$S) {
+            self::$S->close();
         }
-        if (G::$M) {
-            G::$M->close();
+        if (self::$M) {
+            self::$M->close();
         }
-        if (G::$m) {
-            G::$m->close();
+        if (self::$m) {
+            self::$m->close();
         }
     }
 }

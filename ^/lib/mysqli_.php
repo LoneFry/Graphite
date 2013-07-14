@@ -113,7 +113,7 @@ class mysqli_ extends mysqli {
         // Call mysqli's query() method, with call stack in comment
         $result = parent::query($q);
         // [0][0] totals the time of all queries
-        self::$_aQueries[0][0] += $t = microtime(true)-$t;
+        self::$_aQueries[0][0] += $t = microtime(true) - $t;
 
         // finish assembling the call stack
         for ($i = 2; $i < count($d); $i++) {
@@ -127,7 +127,9 @@ class mysqli_ extends mysqli {
             $t[] = $this->errno;
             // report error on PHP error log
             if (self::$_log >= 2) {
+                // @codingStandardsIgnoreStart
                 trigger_error(print_r($t, 1));
+                // @codingStandardsIgnoreEnd
             }
         }
         // append to log
@@ -207,7 +209,9 @@ class mysqli_ extends mysqli {
                 return $this->_open;
             default:
                 $d = debug_backtrace();
-                trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'], E_USER_NOTICE);
+                trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'],
+                    E_USER_NOTICE);
+
                 return null;
         }
     }

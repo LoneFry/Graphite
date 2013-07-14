@@ -28,33 +28,29 @@ class HomeController extends Controller {
     protected $action = 'home';
 
     /**
-     * action
-     *
-     * @param array $argv web request parameters
+     * Display default Home page
      *
      * @return mixed
      */
-    public function do_home($argv) {
+    public function do_home() {
         G::$V->_template = 'Home.php';
         G::$V->_title    = G::$V->_siteName;
     }
 
     /**
-     * action
-     *
-     * @param array $argv web request parameters
+     * Display contact form
      *
      * @return mixed
      */
-    public function do_contact($argv) {
+    public function do_contact() {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed    =$seed    =(int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
-        G::$V->from    =$from    =substr(md5($seed), -6);
-        G::$V->subject =$subject =md5($from);
-        G::$V->message =$message =md5($subject);
-        G::$V->honey   =$honey   =md5($message);
-        G::$V->honey2  =$honey2  =md5($honey);
+        G::$V->seed    = $seed    = (int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
+        G::$V->from    = $from    = substr(md5($seed), -6);
+        G::$V->subject = $subject = md5($from);
+        G::$V->message = $message = md5($subject);
+        G::$V->honey   = $honey   = md5($message);
+        G::$V->honey2  = $honey2  = md5($honey);
         G::$V->_head .= '
         <style type="text/css">
             .c'.$honey.' {display:none;}
@@ -109,7 +105,7 @@ class HomeController extends Controller {
     }
 
     /**
-     * action
+     * Display log of submissions to the contact form
      *
      * @param array $argv web request parameters
      *
@@ -127,4 +123,3 @@ class HomeController extends Controller {
         G::$V->log = ContactLog::some(100, 0, 'id', true);
     }
 }
-

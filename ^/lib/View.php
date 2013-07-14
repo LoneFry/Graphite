@@ -187,7 +187,7 @@ class View {
      */
     public function setTemplate($template, $file) {
         foreach ($this->includePath as $dir) {
-            if (false !== $s=$this->in_realpath($dir, $file)) {
+            if (false !== $s = $this->in_realpath($dir, $file)) {
                 $this->templates[$template] = $s;
                 break;
             }

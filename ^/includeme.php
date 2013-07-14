@@ -32,14 +32,14 @@ require_once SITE.CORE.'/config.php';
 
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
 define('CONT', G::$G['CON']['URL']);// for use in URLs
-if ('dev'==MODE) {
+if ('dev' == MODE) {
     error_reporting(E_ALL | E_STRICT);
 }
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);
 }
 
-// if not DB host was specified, don't load DB or DB-based Security
+// if no DB host was specified, don't load DB or DB-based Security
 if ('' == G::$G['db']['host']) {
     return;
 }
@@ -108,4 +108,3 @@ if (isset(G::$G['includePath'])) {
         }
     }
 }
-

@@ -222,7 +222,7 @@ class InstallerController extends Controller {
                                          'password'    => $_POST['password1'],
                                          'email'       => $_POST['siteEmail'],
                                          'referrer_id' => 1));
-                    if ($login_id=$L->insert()) {
+                    if ($login_id = $L->insert()) {
                         G::msg('Created root user: '.$L->loginname);
 
                         // clear any open session
@@ -325,7 +325,7 @@ class InstallerController extends Controller {
     }
 
 
-    protected $config=<<<'ENDOFCONFIG'
+    protected $config = <<<'ENDOFCONFIG'
 <?php
 /** **************************************************************************
  * Project     : Graphite

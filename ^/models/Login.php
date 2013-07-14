@@ -72,9 +72,9 @@ class Login extends Record {
             .'GROUP_CONCAT(r.label) as roles '
             .'FROM `'.G::$G['db']['tabl'].'Logins` t '
             .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles_Logins` rl '
-                .'ON t.login_id=rl.login_id '
+                .'ON t.login_id = rl.login_id '
             .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles` r '
-                .'ON r.role_id=rl.role_id';
+                .'ON r.role_id = rl.role_id';
     }
 
     /**
@@ -152,7 +152,7 @@ class Login extends Record {
      */
     public function loginname() {
         if (0 < count($a = func_get_args())) {
-            if (strlen($a[0])>=static::$vars['loginname']['min']
+            if (strlen($a[0]) >= static::$vars['loginname']['min']
                 && preg_match('/'.self::$labelRE.'/', $a[0])
             ) {
                 $this->vals['loginname'] = substr($a[0], 0, static::$vars['loginname']['max']);

@@ -32,7 +32,7 @@ abstract class Record extends DataModel {
     // Should be defined in subclasses
     // protected static $table;// name of table
     // protected static $pkey;// name of primary key column
-    // protected static $vars=array();// record definition
+    // protected static $vars = array();// record definition
 
     /**
      * constructor accepts four prototypes:
@@ -185,9 +185,9 @@ abstract class Record extends DataModel {
         }
 
         // embed pkey value into instance SELECT query, then run
-        $query=static::$query." WHERE t.`".static::$pkey."`='%d'";
-        $query=sprintf($query, $this->vals[static::$pkey]);
-        if (false === $result=G::$m->query($query)) {
+        $query = static::$query." WHERE t.`".static::$pkey."` = '%d'";
+        $query = sprintf($query, $this->vals[static::$pkey]);
+        if (false === $result = G::$m->query($query)) {
             return false;
         }
         if (0 == $result->num_rows) {
@@ -219,9 +219,9 @@ abstract class Record extends DataModel {
         foreach (static::$vars as $k => $v) {
             if (null !== $this->vals[$k]) {
                 if ('b' == static::$vars[$k]['type']) {
-                    $query .= " AND t.`$k`=".($this->vals[$k]?'1':'0');
+                    $query .= " AND t.`$k` = ".($this->vals[$k]?'1':'0');
                 } else {
-                    $query .= " AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+                    $query .= " AND t.`$k` = '".G::$m->escape_string($this->vals[$k])."'";
                 }
             }
         }
@@ -271,9 +271,9 @@ abstract class Record extends DataModel {
         foreach (static::$vars as $k => $v) {
             if (null !== $this->vals[$k]) {
                 if ('b' == static::$vars[$k]['type']) {
-                    $query .= " AND t.`$k`=".($this->vals[$k]?'1':'0');
+                    $query .= " AND t.`$k` = ".($this->vals[$k]?'1':'0');
                 } else {
-                    $query .= " AND t.`$k`='".G::$m->escape_string($this->vals[$k])."'";
+                    $query .= " AND t.`$k` = '".G::$m->escape_string($this->vals[$k])."'";
                 }
             }
         }
@@ -285,9 +285,13 @@ abstract class Record extends DataModel {
 
         $query = static::$query." WHERE 1 ".$query
             .' GROUP BY `'.static::$pkey.'`'
-            .(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
-            .('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-            .(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
+            .(null !== $order && array_key_exists($order, static::$vars)
+                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
+                : '')
+            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
+            .(is_numeric($count) && is_numeric($start)
+                ? ' LIMIT '.((int)$start).','.((int)$count)
+                : '')
             ;
         if (false === $result = G::$m->query($query)) {
             return false;
@@ -314,12 +318,17 @@ abstract class Record extends DataModel {
      *
      * @return array collection of objects found in search
      */
-    protected static function search_where($where = "WHERE 1", $count = null, $start = 0, $order = null, $desc = false) {
+    protected static function search_where($where = "WHERE 1", $count = null, $start = 0, $order = null, $desc = false
+    ) {
         $query = static::$query.' '.$where
             .' GROUP BY `'.static::$pkey.'`'
-            .(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
-            .('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-            .(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
+            .(null !== $order && array_key_exists($order, static::$vars)
+                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
+                : '')
+            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
+            .(is_numeric($count) && is_numeric($start)
+                ? ' LIMIT '.((int)$start).','.((int)$count)
+                : '')
             ;
         if (false === $result = G::$m->query($query)) {
             return false;
@@ -347,9 +356,13 @@ abstract class Record extends DataModel {
     public static function some($count = null, $start = 0, $order = null, $desc = false) {
         $query = static::$query
             .' GROUP BY `'.static::$pkey.'`'
-            .(null !== $order && array_key_exists($order, static::$vars) ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc'):'')
-            .('rand()'==$order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-            .(is_numeric($count) && is_numeric($start) ? ' LIMIT '.((int)$start).','.((int)$count):'')
+            .(null !== $order && array_key_exists($order, static::$vars)
+                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
+                : '')
+            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
+            .(is_numeric($count) && is_numeric($start)
+                ? ' LIMIT '.((int)$start).','.((int)$count)
+                : '')
             ;
         if (false === $result = G::$m->query($query)) {
             return false;
@@ -401,7 +414,9 @@ abstract class Record extends DataModel {
         if (1 > count($a)) {
             return array();
         }
-        return static::search_where("WHERE t.`".static::$pkey."` IN (".implode(',', $a).")", $count, $start, $order, $desc);
+        $where = "WHERE t.`".static::$pkey."` IN (".implode(',', $a).")";
+
+        return static::search_where($where, $count, $start, $order, $desc);
     }
 
     /**
@@ -493,9 +508,9 @@ abstract class Record extends DataModel {
                 || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
             ) {
                 if ('b' == static::$vars[$k]['type']) {
-                    $query .= " `$k`=".($this->vals[$k]?'1':'0').',';
+                    $query .= " `$k` = ".($this->vals[$k]?'1':'0').',';
                 } else {
-                    $query .= " `$k`='".G::$M->escape_string($this->vals[$k])."',";
+                    $query .= " `$k` = '".G::$M->escape_string($this->vals[$k])."',";
                 }
             }
         }
@@ -554,17 +569,17 @@ abstract class Record extends DataModel {
                 || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
             ) {
                 if (null === $this->vals[$k]) {
-                    $query .= '`'.$k."`=NULL,";
+                    $query .= '`'.$k."` = NULL,";
                 } elseif ('b' == static::$vars[$k]['type']) {
-                    $query .= '`'.$k.'`='.($this->vals[$k]?'1':'0').',';
+                    $query .= '`'.$k.'` = '.($this->vals[$k]?'1':'0').',';
                 } else {
-                    $query .= '`'.$k."`='".G::$M->escape_string($this->vals[$k])."',";
+                    $query .= '`'.$k."` = '".G::$M->escape_string($this->vals[$k])."',";
                 }
             }
         }
 
         $query = substr($query, 0, -1)
-            ." WHERE `".static::$pkey."`='".G::$M->escape_string($this->vals[static::$pkey])."' LIMIT 1";
+            ." WHERE `".static::$pkey."` = '".G::$M->escape_string($this->vals[static::$pkey])."' LIMIT 1";
         if (false === G::$M->query($query)) {
             return false;
         }
@@ -598,7 +613,7 @@ abstract class Record extends DataModel {
         }
         $this->ondelete();
         $query = 'DELETE FROM `'.static::$table.'` '
-            ." WHERE `".static::$pkey."`='".G::$M->escape_string($this->vals[static::$pkey])."' LIMIT 1";
+            ." WHERE `".static::$pkey."` = '".G::$M->escape_string($this->vals[static::$pkey])."' LIMIT 1";
         if (false === G::$M->query($query)) {
             return false;
         }
