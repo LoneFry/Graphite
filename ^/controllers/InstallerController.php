@@ -12,9 +12,9 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
-require_once LIB.'/mysqli_.php';
-require_once LIB.'/Security.php';
+require_once SITE.'/^/lib/Controller.php';
+require_once SITE.'/^/lib/mysqli_.php';
+require_once SITE.'/^/lib/Security.php';
 
 /**
  * InstallerController class - Aids Graphite setup by initializing DB and config
@@ -216,7 +216,7 @@ class InstallerController extends Controller {
                 if (!$install) {
                     G::msg('Not all tables could be created, install ended prematurely.', 'error');
                 } else {
-                    include_once SITE.CORE.'/models/Login.php';
+                    include_once SITE.'/^/models/Login.php';
                     Login::prime();// just in case Login was primed earlier
                     $L = new Login(array('loginname'   => $_POST['loginname'],
                                          'password'    => $_POST['password1'],
@@ -236,7 +236,7 @@ class InstallerController extends Controller {
                         G::msg('Failed to create root user: '.$L->loginname, 'error');
                     }
 
-                    include_once SITE.CORE.'/models/Role.php';
+                    include_once SITE.'/^/models/Role.php';
                     Role::prime();
 
                     $roles = array(
@@ -262,7 +262,7 @@ class InstallerController extends Controller {
                         .(isset($_POST['HTML5']) ? "/^HTML5;" : '')
                         .(isset($_POST['HTML4']) ? "/^HTML4;" : '')
                         .(isset($_POST['CLI']) ? "/^CLI;" : '')
-                        ."'.CORE"
+                        ."/^'"
                         ;
 
                     $config = sprintf($this->config,
@@ -349,7 +349,7 @@ G::$G['siteEmail'] = '%2$s';
 // Include Path: a list of paths under the webroot to check for included
 // controllers, models, templates
 // list in priority order, first found is used
-// for example: G::$G['includePath'] = '/^MyApp;'.CORE;
+// for example: G::$G['includePath'] = '/^MyApp;/^';
 G::$G['includePath'] = %11$s;
 
 // disable the installer

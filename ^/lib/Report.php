@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/DataModel.php';
+require_once SITE.'/^/lib/DataModel.php';
 
 /**
  * Report class - For reporting that is not conducive to Active Record Model

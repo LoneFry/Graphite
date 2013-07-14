@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.CORE.'/models/Login.php';
+require_once SITE.'/^/models/Login.php';
 
 /**
  * Security class - for authenticating and managing current user.
@@ -127,7 +127,7 @@ class Security {
 
         session_regenerate_id();
 
-        include_once SITE.CORE.'/models/LoginLog.php';
+        include_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $Login->login_id, 'ua' => $this->ua), true);
         $LL->save();
 

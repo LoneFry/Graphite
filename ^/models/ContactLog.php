@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Record.php';
+require_once SITE.'/^/lib/Record.php';
 
 /**
  * ContactLog class - AR class for submissions to the Contact form

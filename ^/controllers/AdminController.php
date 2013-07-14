@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
+require_once SITE.'/^/lib/Controller.php';
 
 /**
  * AdminController class - performs Administrative actions
@@ -228,7 +228,7 @@ class AdminController extends Controller {
         }
 
         // TODO: make a better way to do grants that doesn't involve loading the whole role list
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         $R = new Role();
         $Roles = $R->search(1000, 0, 'label');
         // handle grant/revoke changes
@@ -257,7 +257,7 @@ class AdminController extends Controller {
         G::$V->letters = Login::initials();
         G::$V->referrer = $L->getReferrer();
 
-        require_once SITE.CORE.'/models/LoginLog.php';
+        require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $L->login_id));
         G::$V->log = $LL->search(100, 0, 'pkey', true);
 
@@ -278,7 +278,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.Role.php';
         G::$V->_title    = 'Select Role';
 
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         $l = new Role();
         G::$V->list = $l->search(50, 0, 'label');
     }
@@ -298,7 +298,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleAdd.php';
         G::$V->_title    = 'Add Role';
 
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         if (isset($_POST['label']) && isset($_POST['description'])
             && isset($_POST['disabled'])
         ) {
@@ -341,7 +341,7 @@ class AdminController extends Controller {
             return $this->do_Role($argv);
         }
 
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         $R = new Role($argv[1]);
         $R->load();
 
@@ -416,7 +416,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginLog.php';
         G::$V->_title    = G::$V->_siteName.': Login Log';
 
-        require_once SITE.CORE.'/models/LoginLog.php';
+        require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog();
         G::$V->log = $LL->search(100, 0, 'pkey', true);
     }

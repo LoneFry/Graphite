@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/PasswordHasher.php';
+require_once SITE.'/^/lib/PasswordHasher.php';
 
 /**
  * PBKDF2PasswordHasher class - PBKDF2 Password Hashing plugin
