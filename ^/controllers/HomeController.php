@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
+require_once SITE.'/^/lib/Controller.php';
 
 /**
  * HomeController class - A default Home and Contact page Controller class
@@ -88,7 +88,7 @@ class HomeController extends Controller {
                     );
                 G::msg('Your message has been sent.');
 
-                require_once SITE.CORE.'/models/ContactLog.php';
+                require_once SITE.'/^/models/ContactLog.php';
 
                 $C = new ContactLog(array(
                     'from'     => $_POST[$from],
@@ -119,7 +119,7 @@ class HomeController extends Controller {
         G::$V->_template = 'Home.ContactLog.php';
         G::$V->_title    = G::$V->_siteName.': Contact Log';
 
-        require_once SITE.CORE.'/models/ContactLog.php';
+        require_once SITE.'/^/models/ContactLog.php';
         G::$V->log = ContactLog::some(100, 0, 'id', true);
     }
 }

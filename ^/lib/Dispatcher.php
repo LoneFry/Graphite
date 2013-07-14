@@ -39,7 +39,7 @@ class Dispatcher {
     function __construct($cfg) {
         // set hard default for controller paths
         $this->controllerPath = $this->controller404Path =
-            SITE.CORE.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR;
+            SITE.DIRECTORY_SEPARATOR.'^'.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR;
 
         // Check for and validate location of Controllers
         if (isset(G::$G['includePath'])) {
@@ -155,7 +155,7 @@ class Dispatcher {
         if (null === $argv) {
             $argv = $this->argv;
         }
-        require_once LIB.'/Controller.php';
+        require_once SITE.'/^/lib/Controller.php';
         require_once $this->controllerPath.$this->controller.'Controller.php';
         $Controller = $this->controller.'Controller';
         $Controller = new $Controller($argv);
