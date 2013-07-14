@@ -64,13 +64,13 @@ class Security {
                 $Login = false;
 
             // if login configured so, test UA hash against last request
-            } elseif ($Login->sessionStrength > 0 && $Login->UA!=$this->UA) {
+            } elseif ($Login->sessionStrength > 0 && $Login->UA != $this->UA) {
                 G::msg('Your account was authenticated in a different browser, '
                        .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
 
             // if login configured so, test IP against last request
-            } elseif ($Login->sessionStrength > 1 && $Login->lastIP!=$this->ip) {
+            } elseif ($Login->sessionStrength > 1 && $Login->lastIP != $this->ip) {
                 G::msg('Your account was authenticated from a different computer/IP-address, '
                        .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
@@ -149,7 +149,7 @@ class Security {
             // Be thorough, also delete the session cookie
             if (ini_get("session.use_cookies") && !headers_sent()) {
                 $params = session_get_cookie_params();
-                setcookie(session_name(), '', NOW-86400, $params["path"],
+                setcookie(session_name(), '', NOW - 86400, $params["path"],
                     $params["domain"], $params["secure"], $params["httponly"]);
             }
             session_destroy();

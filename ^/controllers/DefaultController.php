@@ -30,11 +30,9 @@ class DefaultController extends Controller {
     /**
      * default action for handling 404 errors
      *
-     * @param array $argv request parameters
-     *
-     * @return void
+     * @return mixed
      */
-    public function do_404($argv) {
+    public function do_404() {
         header("HTTP/1.0 404 File Not Found");
         G::$V->_template = '404.php';
         G::$V->_title    = 'Requested Page Not Found';
@@ -43,14 +41,11 @@ class DefaultController extends Controller {
     /**
      * default action for handling 500 errors
      *
-     * @param array $argv request parameters
-     *
-     * @return void
+     * @return mixed
      */
-    public function do_500($argv) {
+    public function do_500() {
         header("HTTP/1.0 500 Internal Server Error");
         G::$V->_template = '500.php';
         G::$V->_title    = 'Internal Server Error';
     }
 }
-

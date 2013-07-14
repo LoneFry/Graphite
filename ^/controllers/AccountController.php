@@ -28,17 +28,15 @@ class AccountController extends Controller {
     protected $action = 'login';
 
     /**
-     * action
-     *
-     * @param array $argv web request parameters
+     * Process Login form
      *
      * @return mixed
      */
-    public function do_login($argv) {
+    public function do_login() {
         G::$V->_template = 'Account.Login.php';
         G::$V->_title    = G::$V->_siteName.' : Check-in';
 
-        G::$V->msg='';
+        G::$V->msg = '';
         if (isset($_POST['l']) && isset($_POST['p'])) {
             G::$V->l = $_POST['l'];
             if (G::$S->authenticate($_POST['l'], $_POST['p'])) {
@@ -58,13 +56,11 @@ class AccountController extends Controller {
     }
 
     /**
-     * action
-     *
-     * @param array $argv web request parameters
+     * Logout, end session
      *
      * @return mixed
      */
-    public function do_logout($argv) {
+    public function do_logout() {
         G::$V->_template = 'Account.Logout.php';
         G::$V->_title    = G::$V->_siteName.' : Check-out';
 
@@ -75,13 +71,11 @@ class AccountController extends Controller {
     }
 
     /**
-     * action
-     *
-     * @param array $argv web request parameters
+     * Password Recovery option
      *
      * @return mixed
      */
-    public function do_recover($argv) {
+    public function do_recover() {
         G::$V->_template = 'Account.Recover.php';
         G::$V->_title    = G::$V->_siteName.' : Recover Password';
 
@@ -102,7 +96,7 @@ class AccountController extends Controller {
                     .htmlspecialchars($_POST['loginname'])
                     .'</b>, please try again.';
             } else {
-                $Login->password = $password='resetMe'.floor(rand(100, 999));
+                $Login->password = $password = 'resetMe'.floor(rand(100, 999));
                 $Login->flagChangePass = 1;
                 $r = $Login->save();
                 if (false === $r) {
@@ -111,8 +105,10 @@ class AccountController extends Controller {
                     G::$V->msg = 'No changes detected, not trying to update your account.';
                 } else {
                     $to = $Login->email;
-                    $message = "\n\nA password reset has been requested for your [".G::$V->_siteName."] account.  "
-                        ."The temporary password is below.  After you login you will be required to change your password."
+                    $message = "\n\nA password reset has been requested for"
+                        ." your [".G::$V->_siteName."] account.  "
+                        ."The temporary password is below.  After you login"
+                        ." you will be required to change your password."
                         ."\n\nLoginName: ".$Login->loginname
                         ."\nPassword: ".$password
                         ."\n\nIf you have any questions, please reply to this email to contact support.";
@@ -145,7 +141,7 @@ class AccountController extends Controller {
     }
 
     /**
-     * action
+     * Edit current user's settings
      *
      * @param array $argv web request parameters
      *

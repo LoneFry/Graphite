@@ -67,7 +67,7 @@ abstract class Report extends DataModel {
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b set defaults
      */
-    public function __construct($a=null, $b=null) {
+    public function __construct($a = null, $b = null) {
         if (!isset(static::$query) || '' == static::$query) {
             throw new Exception('Report class defined with no query.');
         }

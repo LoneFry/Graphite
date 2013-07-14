@@ -89,7 +89,7 @@ abstract class DataModel {
      *  @return array Record values
      */
     public function getAll() {
-        $a=array();
+        $a = array();
         foreach (static::$vars as $k => $v) {
             if (method_exists($this, $k)) {
                 $a[$k] = $this->$k();
@@ -407,7 +407,8 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _dt($k) {
-        if (!isset(static::$vars[$k])) {// $k is a valid var?
+        // $k is a valid var?
+        if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
                 .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
@@ -667,9 +668,9 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                $tmp = (1==ord($v)
+                $tmp = (1 == ord($v)
                     ? true
-                    : (0==ord($v)
+                    : (0 == ord($v)
                         ? false
                         : filter_var($v, FILTER_VALIDATE_BOOLEAN,
                             FILTER_NULL_ON_FAILURE)

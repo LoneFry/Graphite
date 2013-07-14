@@ -43,7 +43,7 @@ class ContactLog extends Record {
         self::$vars['date']['def'] = time();
     }
 
-    protected static $vars=array(
+    protected static $vars = array(
         'id'          => array('type' => 'i' , 'min' => 1),
         'from'        => array('type' => 'em', 'max' => 255),
         'date'        => array('type' => 'ts', 'min' => 0),
