@@ -18,7 +18,7 @@ if (is_array($log) && count($log)) {
 ?>
         <tr>
             <td><?php html($v->id);?></td>
-            <td><?php html($v->date);?></td>
+            <td><?php echo date("r", $v->date); ?></td>
             <td><?php html($v->from);?></td>
             <td><?php html($v->subject);?></td>
             <td><?php html($v->body);?></td>

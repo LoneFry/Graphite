@@ -13,41 +13,37 @@
  */
 
 define('NOW', microtime(true));
-//the root of this website
+// the root of this website
 define('SITE', dirname(dirname(__FILE__)));
-//the RELATIVE path of the core files
-define('CORE', substr(dirname(__FILE__), strlen(SITE)));
-//the ABSOLUTE path of the lib includes
-define('LIB', SITE.CORE.'/lib');
-//Graphite Version indicator, for scripts interacting herewith
+// Graphite Version indicator, for scripts interacting herewith
 define('GVER', 5);
 
-//to save from having to work around magic quotes, just refuse to work with it
+// to save from having to work around magic quotes, just refuse to work with it
 if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
-require_once LIB.'/G.php';
-require_once SITE.CORE.'/config.php';
+require_once SITE.'/^/lib/G.php';
+require_once SITE.'/^/config.php';
 
-define('MODE', G::$G['MODE']);      //controls a few things that assist dev
-define('CONT', G::$G['CON']['URL']);//for use in URLs
-if ('dev'==MODE) {
+define('MODE', G::$G['MODE']);      // controls a few things that assist dev
+define('CONT', G::$G['CON']['URL']);// for use in URLs
+if ('dev' == MODE) {
     error_reporting(E_ALL | E_STRICT);
 }
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);
 }
 
-//if not DB host was specified, don't load DB or DB-based Security
+// if no DB host was specified, don't load DB or DB-based Security
 if ('' == G::$G['db']['host']) {
     return;
 }
 
-require_once LIB.'/mysqli_.php';
-require_once LIB.'/Security.php';
+require_once SITE.'/^/lib/mysqli_.php';
+require_once SITE.'/^/lib/Security.php';
 
-//setup DB connection or fail.
+// setup DB connection or fail.
 G::$m = G::$M = new mysqli_(G::$G['db']['host'],
                             G::$G['db']['user'],
                             G::$G['db']['pass'],
@@ -72,7 +68,7 @@ if (isset(G::$G['db']['ro'])
         G::$m = G::$M;
     }
 }
-//If we could not connect to database, display appropriate error
+// If we could not connect to database, display appropriate error
 if (!G::$M->open) {
     G::msg('Could not connect to read/write database!', 'error');
     if (!G::$m->open) {
@@ -108,4 +104,3 @@ if (isset(G::$G['includePath'])) {
         }
     }
 }
-

@@ -35,5 +35,5 @@
                 }
                 return true;
             }
-        //--></script>
+        // --></script>
 <?php get_footer();

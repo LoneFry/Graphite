@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/PasswordHasher.php';
+require_once SITE.'/^/lib/PasswordHasher.php';
 
 /**
  * SHA1PasswordHasher class - Simple SHA1 based Password Hashing plugin

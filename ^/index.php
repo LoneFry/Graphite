@@ -13,8 +13,8 @@
  */
 
 require_once __DIR__.'/includeme.php';
-require_once LIB.'/Dispatcher.php';
-require_once LIB.'/View.php';
+require_once SITE.'/^/lib/Dispatcher.php';
+require_once SITE.'/^/lib/View.php';
 
 G::$C = new Dispatcher(G::$G['CON']);
 G::$V = new View(G::$G['VIEW']);

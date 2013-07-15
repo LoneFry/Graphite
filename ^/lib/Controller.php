@@ -35,7 +35,7 @@ abstract class Controller {
      *
      * @param array $argv request parameters
      *
-     * @return void
+     * @return mixed
      */
     public function __construct($argv = array()) {
         if (is_array($argv)) {
@@ -49,11 +49,9 @@ abstract class Controller {
     /**
      * default action for handling 403 errors
      *
-     * @param array $argv request parameters
-     *
      * @return mixed
      */
-    public function do_403($argv) {
+    public function do_403() {
         header("HTTP/1.0 403 Forbidden");
         G::$V->_template = '403.php';
         G::$V->_title    = 'Permission Denied';
@@ -110,7 +108,8 @@ abstract class Controller {
                 break;
         }
 
-       $this->$func($argv, $params);
+       return $this->$func($argv, $params);
+
     }
 
 

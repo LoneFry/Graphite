@@ -12,10 +12,10 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Record.php';
-require_once LIB.'/PasswordHasher.php';
-require_once LIB.'/SHA1PasswordHasher.php';
-require_once LIB.'/PBKDF2PasswordHasher.php';
+require_once SITE.'/^/lib/Record.php';
+require_once SITE.'/^/lib/PasswordHasher.php';
+require_once SITE.'/^/lib/SHA1PasswordHasher.php';
+require_once SITE.'/^/lib/PBKDF2PasswordHasher.php';
 
 /**
  * Login class - for managing site users, including current user.
@@ -72,9 +72,9 @@ class Login extends Record {
             .'GROUP_CONCAT(r.label) as roles '
             .'FROM `'.G::$G['db']['tabl'].'Logins` t '
             .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles_Logins` rl '
-                .'ON t.login_id=rl.login_id '
+                .'ON t.login_id = rl.login_id '
             .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles` r '
-                .'ON r.role_id=rl.role_id';
+                .'ON r.role_id = rl.role_id';
     }
 
     /**
@@ -152,7 +152,7 @@ class Login extends Record {
      */
     public function loginname() {
         if (0 < count($a = func_get_args())) {
-            if (strlen($a[0])>=static::$vars['loginname']['min']
+            if (strlen($a[0]) >= static::$vars['loginname']['min']
                 && preg_match('/'.self::$labelRE.'/', $a[0])
             ) {
                 $this->vals['loginname'] = substr($a[0], 0, static::$vars['loginname']['max']);
@@ -208,7 +208,7 @@ class Login extends Record {
      * @return array Array indexed by letter containing counts per letter
      */
     public static function initials() {
-        //get login counts per letter
+        // get login counts per letter
         $letters = array('A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'E' => 0,
                          'F' => 0, 'G' => 0, 'H' => 0, 'I' => 0, 'J' => 0,
                          'K' => 0, 'L' => 0, 'M' => 0, 'N' => 0, 'O' => 0,

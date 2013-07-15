@@ -22,11 +22,11 @@ G::$G['timezone'] = 'America/New_York';
 G::$G['siteEmail'] = 'apache@localhost';
 G::$G['contactFormSubject'] = 'Contact form message: ';
 G::$G['MODE'] = 'prd';
-//includePath relative to SITE
-//each class will append it's own sub directory to each path
-G::$G['includePath'] = CORE.'HTML5;'.CORE;
+// includePath relative to SITE
+// each class will append it's own sub directory to each path
+G::$G['includePath'] = '/^HTML5;/^';
 
-//enable the installer -- reverse this when installed
+// enable the installer -- reverse this when installed
 G::$G['installer'] = true;
 /** **************************************************************************
  * /General settings
@@ -58,13 +58,13 @@ G::$G['db']['ro'] = array(
 /** **************************************************************************
  * Settings for Security
  ****************************************************************************/
-//Classes to use to produce and test password hash
+// Classes to use to produce and test password hash
 G::$G['SEC']['hash_class'] = array(
     'PBKDF2PasswordHasher',
     'SHA1PasswordHasher',
 );
 
-//parameters for the PBKDF2 hashword generation method
+// parameters for the PBKDF2 hashword generation method
 G::$G['SEC']['PBKDF2'] = array(
     'algo'       => 'sha256',
     'iterations' => 1024,
@@ -75,8 +75,8 @@ G::$G['SEC']['PBKDF2'] = array(
     ),
 );
 
-//password policies for use by Security::validate_password()
-//Security::validate_password() should be called when users change passwords
+// password policies for use by Security::validate_password()
+// Security::validate_password() should be called when users change passwords
 G::$G['SEC']['passwords'] = array(
     // valid passwords must match these regular expressions
     // If they do not match, the error is returned
@@ -96,11 +96,11 @@ G::$G['SEC']['passwords'] = array(
     'enforce_in_admin' => !true,
 );
 // Examples of useful patterns
-//G::$G['SEC']['passwords']['require'][] = array(
+// G::$G['SEC']['passwords']['require'][] = array(
 //    '/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/',
 //    'Password must be at least eight characters long and contain digits and letters.'
 //    );
-//G::$G['SEC']['passwords']['require'][] = array(
+// G::$G['SEC']['passwords']['require'][] = array(
 //    '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/',
 //    'Password must be at least eight characters long and contain digits, lower and upper letters, and symbols.'
 //    );
@@ -112,15 +112,15 @@ G::$G['SEC']['passwords'] = array(
 /** **************************************************************************
  * Settings for the Dispatcher
  ****************************************************************************/
-//Paths
+// Paths
 G::$G['CON']['URL'] = '/';
 
-//Defaults
+// Defaults
 G::$G['CON']['controller'] = 'Installer';
 G::$G['CON']['controller404'] = 'Default';
 G::$G['CON']['controller500'] = 'Default';
 
-//Passed Values
+// Passed Values
 if (isset($_GET['controller'])) {
     G::$G['CON']['controller'] = $_GET['_controller'];
 }
@@ -148,12 +148,12 @@ if (isset($_SERVER['PATH_INFO'])) {
 /** **************************************************************************
  * Settings for the View
  ****************************************************************************/
-//Paths
+// Paths
 G::$G['VIEW']['header'] = 'header.php';
 G::$G['VIEW']['footer'] = 'footer.php';
 G::$G['VIEW']['template'] = '404.php';
 
-//display vars
+// display vars
 G::$G['VIEW']['_siteName'] = 'Graphite Site';
 G::$G['VIEW']['_siteURL'] = 'http://'.$_SERVER['SERVER_NAME'];
 G::$G['VIEW']['_loginURL'] = G::$G['CON']['URL'].'Account/login';
@@ -169,7 +169,7 @@ G::$G['VIEW']['_script'] = array(
 G::$G['VIEW']['_link'] = array(
     array('rel' => 'shortcut icon','type' => 'image/vnd.microsoft.icon','href' => '/favicon.ico'),
 );
-//login redirection vars
+// login redirection vars
 G::$G['VIEW']['_URI'] = isset($_POST['_URI']) ? $_POST['_URI'] : $_SERVER['REQUEST_URI'];
 G::$G['VIEW']['_Lbl'] = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'to the page you requested';
 

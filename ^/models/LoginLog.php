@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Record.php';
+require_once SITE.'/^/lib/Record.php';
 
 /**
  * LoginLog class - AR class for logging log-ins

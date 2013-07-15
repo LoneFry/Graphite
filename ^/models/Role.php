@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Record.php';
+require_once SITE.'/^/lib/Record.php';
 
 /**
  * Role class - for managing site roles/responsibilities
@@ -29,7 +29,7 @@ class Role extends Record {
     protected static $pkey  = 'role_id';
     protected static $query = '';
 
-    protected static $vars=array(
+    protected static $vars = array(
         'role_id' =>         array('type' => 'i', 'min' => 1),
         'label' =>           array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
         'description' =>     array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
@@ -58,7 +58,7 @@ class Role extends Record {
      */
     public function oninsert() {
         $this->__set('dateCreated', NOW);
-        if ($this->__get('creator_id')<1) {
+        if ($this->__get('creator_id') < 1) {
             $this->__set('creator_id', G::$S->Login->login_id);
         }
     }
@@ -97,13 +97,13 @@ class Role extends Record {
         if ($detail == 'loginname') {
             $query = "SELECT l.`login_id`, l.`loginname` "
                 ."FROM `".G::$G['db']['tabl']."Logins` l, `".G::$G['db']['tabl']."Roles_Logins` rl "
-                ."WHERE l.`login_id`=rl.`login_id` AND rl.`role_id`=".$this->__get('role_id')
+                ."WHERE l.`login_id` = rl.`login_id` AND rl.`role_id` = ".$this->__get('role_id')
                 ." ORDER BY l.`loginname`"
             ;
         } else {
             $query = "SELECT rl.`login_id`, rl.`grantor_id` "
                 ."FROM `".G::$G['db']['tabl']."Roles_Logins` rl "
-                ."WHERE rl.`role_id`=".$this->__get('role_id')
+                ."WHERE rl.`role_id` = ".$this->__get('role_id')
             ;
         }
         if (false === $result = G::$m->query($query)) {
@@ -153,7 +153,7 @@ class Role extends Record {
             return false;
         }
         $query = "DELETE FROM `".G::$G['db']['tabl']."Roles_Logins` "
-            ."WHERE `role_id`=".$this->__get('role_id')." AND `login_id`=".$login_id;
+            ."WHERE `role_id` = ".$this->__get('role_id')." AND `login_id` = ".$login_id;
         if (G::$M->query($query)) {
             return true;
         }

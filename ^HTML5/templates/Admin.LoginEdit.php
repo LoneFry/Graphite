@@ -144,7 +144,7 @@ if (is_array($log) && count($log)) {
 ?>
                 <tr>
                     <td><?php html($v->pkey);?></td>
-                    <td><?php html($v->iDate);?></td>
+                    <td><?php echo date("r", $v->iDate); ?></td>
                     <td><?php html($v->ip);?></td>
                     <td><?php html($v->ua);?></td>
                 </tr>

@@ -12,9 +12,9 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
-require_once LIB.'/mysqli_.php';
-require_once LIB.'/Security.php';
+require_once SITE.'/^/lib/Controller.php';
+require_once SITE.'/^/lib/mysqli_.php';
+require_once SITE.'/^/lib/Security.php';
 
 /**
  * InstallerController class - Aids Graphite setup by initializing DB and config
@@ -57,14 +57,14 @@ class InstallerController extends Controller {
 </style>
 ';
 
-        if (isset($_POST['siteName']) && isset($_POST['loginname']) &&
-           isset($_POST['password1']) && isset($_POST['password2']) &&
-           isset($_POST['siteEmail']) &&
-           isset($_POST['Host']) && isset($_POST['User']) &&
-           isset($_POST['Pass']) && isset($_POST['Passb']) &&
-           isset($_POST['Tabl']) &&
-           isset($_POST['User2']) &&
-           isset($_POST['Pass2']) && isset($_POST['Pass2b'])
+        if (isset($_POST['siteName']) && isset($_POST['loginname'])
+            && isset($_POST['password1']) && isset($_POST['password2'])
+            && isset($_POST['siteEmail'])
+            && isset($_POST['Host']) && isset($_POST['User'])
+            && isset($_POST['Pass']) && isset($_POST['Passb'])
+            && isset($_POST['Tabl'])
+            && isset($_POST['User2'])
+            && isset($_POST['Pass2']) && isset($_POST['Pass2b'])
         ) {
             G::$V->siteName = $_POST['siteName'];
             G::$V->loginname = $_POST['loginname'];
@@ -216,16 +216,16 @@ class InstallerController extends Controller {
                 if (!$install) {
                     G::msg('Not all tables could be created, install ended prematurely.', 'error');
                 } else {
-                    include_once SITE.CORE.'/models/Login.php';
-                    Login::prime();//just in case Login was primed earlier
+                    include_once SITE.'/^/models/Login.php';
+                    Login::prime();// just in case Login was primed earlier
                     $L = new Login(array('loginname'   => $_POST['loginname'],
                                          'password'    => $_POST['password1'],
                                          'email'       => $_POST['siteEmail'],
                                          'referrer_id' => 1));
-                    if ($login_id=$L->insert()) {
+                    if ($login_id = $L->insert()) {
                         G::msg('Created root user: '.$L->loginname);
 
-                        //clear any open session
+                        // clear any open session
                         session_start();
                         $_SESSION = array();
                         session_destroy();
@@ -236,7 +236,7 @@ class InstallerController extends Controller {
                         G::msg('Failed to create root user: '.$L->loginname, 'error');
                     }
 
-                    include_once SITE.CORE.'/models/Role.php';
+                    include_once SITE.'/^/models/Role.php';
                     Role::prime();
 
                     $roles = array(
@@ -262,7 +262,7 @@ class InstallerController extends Controller {
                         .(isset($_POST['HTML5']) ? "/^HTML5;" : '')
                         .(isset($_POST['HTML4']) ? "/^HTML4;" : '')
                         .(isset($_POST['CLI']) ? "/^CLI;" : '')
-                        ."'.CORE"
+                        ."/^'"
                         ;
 
                     $config = sprintf($this->config,
@@ -325,7 +325,7 @@ class InstallerController extends Controller {
     }
 
 
-    protected $config=<<<'ENDOFCONFIG'
+    protected $config = <<<'ENDOFCONFIG'
 <?php
 /** **************************************************************************
  * Project     : Graphite
@@ -343,16 +343,16 @@ class InstallerController extends Controller {
 /** **************************************************************************
  * General settings
  ****************************************************************************/
-G::$G['MODE'] = 'prd'; //prd,tst,dev... used to flag debug behaviors
+G::$G['MODE'] = 'prd'; // prd,tst,dev... used to flag debug behaviors
 G::$G['siteEmail'] = '%2$s';
 
-//Include Path: a list of paths under the webroot to check for included
-//controllers, models, templates
-//list in priority order, first found is used
-//for example: G::$G['includePath'] = '/^MyApp;'.CORE;
+// Include Path: a list of paths under the webroot to check for included
+// controllers, models, templates
+// list in priority order, first found is used
+// for example: G::$G['includePath'] = '/^MyApp;/^';
 G::$G['includePath'] = %11$s;
 
-//disable the installer
+// disable the installer
 G::$G['installer'] = false;
 /** **************************************************************************
  * /General settings
@@ -370,7 +370,7 @@ G::$G['db'] = array(
     'tabl' => '%7$s',
     'log'  => false
 );
-//leave ['ro']['user'] blank to indicate only RW credentials used
+// leave ['ro']['user'] blank to indicate only RW credentials used
 G::$G['db']['ro'] = array(
     'host' => G::$G['db']['host'],
     'user' => '%8$s',
@@ -394,7 +394,7 @@ G::$G['CON']['controller'] = 'Home';
 /** **************************************************************************
  * Settings for the View
  ****************************************************************************/
-//display vars
+// display vars
 G::$G['VIEW']['_siteName'] = '%10$s';
 /** **************************************************************************
  * /Settings for the View

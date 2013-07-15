@@ -52,7 +52,7 @@ abstract class DataModel {
      * @param bool           $b set defaults
      */
     public function __construct($a = null, $b = null) {
-        //initialize the values array with null values as some tests depend
+        // initialize the values array with null values as some tests depend
         foreach (static::$vars as $k => $v) {
             $this->vals[$k] = null;
         }
@@ -89,7 +89,7 @@ abstract class DataModel {
      *  @return array Record values
      */
     public function getAll() {
-        $a=array();
+        $a = array();
         foreach (static::$vars as $k => $v) {
             if (method_exists($this, $k)) {
                 $a[$k] = $this->$k();
@@ -117,7 +117,7 @@ abstract class DataModel {
     public function setAll($a, $guard = false) {
         foreach (static::$vars as $k => $v) {
             if (!isset($a[$k])) {
-                //field not passed
+                // field not passed
                 continue;
             }
             if ($guard && isset($v['guard']) && $v['guard']) {
@@ -175,7 +175,7 @@ abstract class DataModel {
             return $this->$k($v);
         }
 
-        //$k is a valid var, with a type?
+        // $k is a valid var, with a type?
         if (!isset(static::$vars[$k]['type'])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -209,7 +209,7 @@ abstract class DataModel {
             return $this->$k();
         }
 
-        //$k is a valid var, with a val?
+        // $k is a valid var, with a val?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __get(): '.$k
@@ -268,7 +268,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _i($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -282,10 +282,10 @@ abstract class DataModel {
                 && static::$vars[$k]['strict']
             ) {
                 if (is_numeric($v) && (int)$v == $v
-                     && (!isset(static::$vars[$k]['min'])
+                    && (!isset(static::$vars[$k]['min'])
                         || !is_numeric(static::$vars[$k]['min'])
                         || $v >= static::$vars[$k]['min'])
-                     && (!isset(static::$vars[$k]['max'])
+                    && (!isset(static::$vars[$k]['max'])
                         || !is_numeric(static::$vars[$k]['max'])
                         || $v <= static::$vars[$k]['max'])
                 ) {
@@ -317,7 +317,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _f($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -331,10 +331,10 @@ abstract class DataModel {
                 && static::$vars[$k]['strict']
             ) {
                 if (is_numeric($v) && (float)$v == $v
-                     && (!isset(static::$vars[$k]['min'])
+                    && (!isset(static::$vars[$k]['min'])
                         || !is_numeric(static::$vars[$k]['min'])
                         || $v >= static::$vars[$k]['min'])
-                     && (!isset(static::$vars[$k]['max'])
+                    && (!isset(static::$vars[$k]['max'])
                         || !is_numeric(static::$vars[$k]['max'])
                         || $v <= static::$vars[$k]['max'])
                 ) {
@@ -366,7 +366,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _e($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -407,7 +407,8 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _dt($k) {
-        if (!isset(static::$vars[$k])) {//$k is a valid var?
+        // $k is a valid var?
+        if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
                 .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
@@ -421,7 +422,7 @@ abstract class DataModel {
             } else {
                 $format = static::$dateFormat;
             }
-            //don't clobber passed-in typestamps
+            // don't clobber passed-in typestamps
             if (!is_numeric($v)) {
                 $v = strtotime($v);
             }
@@ -465,7 +466,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _ts($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -475,7 +476,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
-            //don't clobber passed-in typestamps
+            // don't clobber passed-in typestamps
             if (!is_numeric($v)) {
                 $v = strtotime($v);
             }
@@ -519,7 +520,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _s($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -568,7 +569,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _em($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -622,7 +623,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _ip($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -632,7 +633,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
-            //support entry of converted IPs
+            // support entry of converted IPs
             if (is_numeric($v)) {
                 $v = long2ip($v);
             }
@@ -654,7 +655,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _b($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -667,9 +668,9 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                $tmp = (1==ord($v)
+                $tmp = (1 == ord($v)
                     ? true
-                    : (0==ord($v)
+                    : (0 == ord($v)
                         ? false
                         : filter_var($v, FILTER_VALIDATE_BOOLEAN,
                             FILTER_NULL_ON_FAILURE)
@@ -697,7 +698,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _o($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -735,7 +736,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _j($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -773,7 +774,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _a($k) {
-        //$k is a valid var?
+        // $k is a valid var?
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via __set(): '.$k
@@ -788,7 +789,7 @@ abstract class DataModel {
             if (is_string($a[1]) && $a[1] == serialize(false)) {
                 $v = false;
             } elseif (is_string($a[1]) && false !== $v = @unserialize($a[1])) {
-                //$v = unserialize($a[1]); // set in above conditional
+                // $v = unserialize($a[1]); // set in above conditional
             } else {
                 $v = $a[1];
             }
@@ -796,7 +797,7 @@ abstract class DataModel {
                 $v = array($v);
             }
 
-            //IF we have a whitelist, filter supplied value
+            // IF we have a whitelist, filter supplied value
             if (isset(static::$vars[$k]['values'])
                 && is_array(static::$vars[$k]['values'])
                 && count(static::$vars[$k]['values'])
@@ -815,7 +816,7 @@ abstract class DataModel {
             }
             $v = serialize($v);
 
-            //IF value does not exceed column length
+            // IF value does not exceed column length
             if (!isset(static::$vars[$k]['max'])
                 || !is_numeric(static::$vars[$k]['max'])
                 || strlen($v) <= static::$vars[$k]['max']

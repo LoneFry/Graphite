@@ -82,7 +82,7 @@ class GshController extends CLIController {
      * @return mixed
      */
     public function action() {
-        if (0<count($a = func_get_args())) {
+        if (0 < count($a = func_get_args())) {
             if ('404' == parent::action($a[0])
                 && isset(G::$G['CLI'][$a[0]][0])
             ) {
@@ -99,7 +99,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_sh($argv=array()) {
+    public function do_sh($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -136,7 +136,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_clear($argv=array()) {
+    public function do_clear($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -152,7 +152,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_date($argv=array()) {
+    public function do_date($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -166,7 +166,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_echo($argv=array()) {
+    public function do_echo($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -181,7 +181,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_help($argv=array()) {
+    public function do_help($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -201,11 +201,13 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_argv($argv=array()) {
+    public function do_argv($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
+        // @codingStandardsIgnoreStart
         $this->_println(print_r($argv, 1));
+        // @codingStandardsIgnoreEnd
     }
 
     /**
@@ -215,7 +217,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_404($argv=array()) {
+    public function do_404($argv = array()) {
         if (!G::$S->roleTest($this->role)) {
             return parent::do_404($argv);
         }
@@ -229,7 +231,7 @@ class GshController extends CLIController {
      *
      * @return mixed
      */
-    public function do_403($argv=array()) {
+    public function do_403($argv = array()) {
         if (isset($_GET['a'])) {
             if (!G::$S->Login) {
                 $this->_println('Your session has expired.  Log in and try again.');

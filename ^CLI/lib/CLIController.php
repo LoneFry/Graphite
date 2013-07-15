@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
+require_once SITE.'/^/lib/Controller.php';
 
 /**
  * CLIController class - Command Line Interface Controller base class

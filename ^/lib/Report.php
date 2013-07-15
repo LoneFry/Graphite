@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/DataModel.php';
+require_once SITE.'/^/lib/DataModel.php';
 
 /**
  * Report class - For reporting that is not conducive to Active Record Model
@@ -67,7 +67,7 @@ abstract class Report extends DataModel {
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b set defaults
      */
-    public function __construct($a=null, $b=null) {
+    public function __construct($a = null, $b = null) {
         if (!isset(static::$query) || '' == static::$query) {
             throw new Exception('Report class defined with no query.');
         }
@@ -116,13 +116,13 @@ abstract class Report extends DataModel {
             $query = sprintf(static::$query, implode(' AND ', $query));
         }
 
-        //if an order has been set, add it to the query
+        // if an order has been set, add it to the query
         if (null !== $this->_order) {
             $query .= ' ORDER BY '.$this->_order
                 .($this->_asc ? ' ASC' : ' DESC');
         }
 
-        //add limits also
+        // add limits also
         $query .= ' LIMIT '.$this->_start.', '.$this->_count;
 
         if (false === $result = G::$m->query($query)) {

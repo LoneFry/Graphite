@@ -12,7 +12,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once LIB.'/Controller.php';
+require_once SITE.'/^/lib/Controller.php';
 
 /**
  * AdminController class - performs Administrative actions
@@ -60,7 +60,7 @@ class AdminController extends Controller {
 
         if (isset($argv[1])) {
             $l = Login::forInitial($argv[1]);
-            if ($l && 1<count($l)) {
+            if ($l && 1 < count($l)) {
                 G::$V->list = $l;
             } elseif ($l && 1 == count($l)) {
                 $L = array_shift($l);
@@ -88,11 +88,11 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginAdd.php';
         G::$V->_title    = 'Add Login';
 
-        if (isset($_POST['loginname']) && isset($_POST['realname']) &&
-            isset($_POST['pass1']) && isset($_POST['pass2']) &&
-            isset($_POST['email1']) && isset($_POST['email2']) &&
-            isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $insert = true;
             if ($_POST['email1'] != $_POST['email2']) {
@@ -127,7 +127,7 @@ class AdminController extends Controller {
                 $insert = false;
             }
 
-            if ($insert && $result=$L->insert()) {
+            if ($insert && $result = $L->insert()) {
                 G::msg('Login Added');
                 return $this->do_LoginEdit(array($L->login_id));
             } elseif ($insert && (null === $result)) {
@@ -160,7 +160,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginEdit.php';
         G::$V->_title    = 'Edit Login';
 
-        //If not passed a number, defer to search/list
+        // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
             return $this->do_Login($argv);
         }
@@ -168,13 +168,13 @@ class AdminController extends Controller {
         $L = new Login($argv[1]);
         $L->load();
 
-        //handle changes to the Login
-        if (isset($_POST['login_id']) && $_POST['login_id']==$L->login_id &&
-            isset($_POST['loginname']) && isset($_POST['realname']) &&
-            isset($_POST['pass1']) && isset($_POST['pass2']) &&
-            isset($_POST['email1']) && isset($_POST['email2']) &&
-            isset($_POST['sessionStrength']) && isset($_POST['flagChangePass']) &&
-            isset($_POST['disabled'])
+        // handle changes to the Login
+        if (isset($_POST['login_id']) && $_POST['login_id'] == $L->login_id
+            && isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $update = true;
             $old_loginname = $L->loginname;
@@ -200,7 +200,7 @@ class AdminController extends Controller {
                 G::msg($error, 'error');
                 $update = false;
             } else {
-                //blank means don't change password
+                // blank means don't change password
                 if ($_POST['pass1'] != '') {
                     $L->password = $_POST['pass1'];
                 }
@@ -227,11 +227,11 @@ class AdminController extends Controller {
             }
         }
 
-        //TODO: make a better way to do grants that doesn't involve loading the whole role list
-        require_once SITE.CORE.'/models/Role.php';
+        // TODO: make a better way to do grants that doesn't involve loading the whole role list
+        require_once SITE.'/^/models/Role.php';
         $R = new Role();
         $Roles = $R->search(1000, 0, 'label');
-        //handle grant/revoke changes
+        // handle grant/revoke changes
         if (isset($_POST['grant']) && is_array($_POST['grant'])) {
             $i = 0;
             foreach ($_POST['grant'] as $k => $v) {
@@ -257,7 +257,7 @@ class AdminController extends Controller {
         G::$V->letters = Login::initials();
         G::$V->referrer = $L->getReferrer();
 
-        require_once SITE.CORE.'/models/LoginLog.php';
+        require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $L->login_id));
         G::$V->log = $LL->search(100, 0, 'pkey', true);
 
@@ -278,7 +278,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.Role.php';
         G::$V->_title    = 'Select Role';
 
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         $l = new Role();
         G::$V->list = $l->search(50, 0, 'label');
     }
@@ -298,13 +298,13 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleAdd.php';
         G::$V->_title    = 'Add Role';
 
-        require_once SITE.CORE.'/models/Role.php';
-        if (isset($_POST['label']) && isset($_POST['description']) &&
-            isset($_POST['disabled'])
+        require_once SITE.'/^/models/Role.php';
+        if (isset($_POST['label']) && isset($_POST['description'])
+            && isset($_POST['disabled'])
         ) {
             $R = new Role($_POST, true);
 
-            if ($result=$R->insert()) {
+            if ($result = $R->insert()) {
                 G::msg('Role Added');
                 return $this->do_RoleEdit(array($R->role_id));
             } elseif (null === $result) {
@@ -336,19 +336,19 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleEdit.php';
         G::$V->_title    = 'Edit Role';
 
-        //If not passed a number, defer to search/list
+        // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
             return $this->do_Role($argv);
         }
 
-        require_once SITE.CORE.'/models/Role.php';
+        require_once SITE.'/^/models/Role.php';
         $R = new Role($argv[1]);
         $R->load();
 
         // handle changes to the role
-        if (isset($_POST['role_id']) && $_POST['role_id']==$R->role_id &&
-            isset($_POST['label']) && isset($_POST['description']) &&
-            isset($_POST['disabled'])
+        if (isset($_POST['role_id']) && $_POST['role_id'] == $R->role_id
+            && isset($_POST['label']) && isset($_POST['description'])
+            && isset($_POST['disabled'])
         ) {
             $R->label = $_POST['label'];
             $R->description = $_POST['description'];
@@ -369,7 +369,7 @@ class AdminController extends Controller {
         G::$V->R = $R;
         $members = $R->getMembers();
 
-        //handle grant/revoke changes
+        // handle grant/revoke changes
         if (isset($_POST['grant']) && is_array($_POST['grant'])) {
             $i = 0;
             foreach ($_POST['grant'] as $k => $v) {
@@ -393,7 +393,7 @@ class AdminController extends Controller {
             G::msg("Revoked Role from $i Logins.");
         }
 
-        //TODO: make a better way to do grants that doesn't involve loading the whole loginlist
+        // TODO: make a better way to do grants that doesn't involve loading the whole loginlist
         $L = new Login();
         G::$V->Logins = $L->search(1000, 0, 'loginname');
         G::$V->members = $members;
@@ -416,7 +416,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginLog.php';
         G::$V->_title    = G::$V->_siteName.': Login Log';
 
-        require_once SITE.CORE.'/models/LoginLog.php';
+        require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog();
         G::$V->log = $LL->search(100, 0, 'pkey', true);
     }

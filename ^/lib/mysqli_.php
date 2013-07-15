@@ -70,7 +70,7 @@ class mysqli_ extends mysqli {
      */
     public function __destruct() {
         $this->close();
-        //mysqli::__destruct does not exist, yet...
+        // mysqli::__destruct does not exist, yet...
         method_exists('mysqli', '__destruct') && parent::__destruct();
     }
 
@@ -98,41 +98,43 @@ class mysqli_ extends mysqli {
             return parent::query($query);
         }
 
-        //get the last few functions on the call stack
+        // get the last few functions on the call stack
         $d = debug_backtrace();
-        //assemble call stack
+        // assemble call stack
         $s = $d[0]['file'].':'.$d[0]['line'];
         if (isset($d[1])) {
             $s .= ' - '.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'];
         }
-        //query as sent to database
+        // query as sent to database
         $q = '/* '.$this->escape_string(substr($s, strrpos($s, '/'))).' */ '.$query;
 
-        //start time
+        // start time
         $t = microtime(true);
-        //Call mysqli's query() method, with call stack in comment
+        // Call mysqli's query() method, with call stack in comment
         $result = parent::query($q);
-        //[0][0] totals the time of all queries
-        self::$_aQueries[0][0] += $t = microtime(true)-$t;
+        // [0][0] totals the time of all queries
+        self::$_aQueries[0][0] += $t = microtime(true) - $t;
 
-        //finish assembling the call stack
+        // finish assembling the call stack
         for ($i = 2; $i < count($d); $i++) {
             $s .= ' - '.(isset($d[$i]['class'])?$d[$i]['class'].$d[$i]['type']:'').$d[$i]['function'];
         }
-        //assemble log: query time, query, call stack, rows affected/selected
+        // assemble log: query time, query, call stack, rows affected/selected
         $t = array($t, $query, $s, $this->affected_rows);
-        //if there was an error, log that too
+        // if there was an error, log that too
         if ($this->errno) {
             $t[] = $this->error;
             $t[] = $this->errno;
-            //report error on PHP error log
+            // report error on PHP error log
             if (self::$_log >= 2) {
+                // @codingStandardsIgnoreStart
                 trigger_error(print_r($t, 1));
+                // @codingStandardsIgnoreEnd
             }
         }
-        //append to log
+        // append to log
         self::$_aQueries[] = $t;
-        //return result as normal
+        // return result as normal
         return $result;
     }
 
@@ -207,7 +209,9 @@ class mysqli_ extends mysqli {
                 return $this->_open;
             default:
                 $d = debug_backtrace();
-                trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'], E_USER_NOTICE);
+                trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'],
+                    E_USER_NOTICE);
+
                 return null;
         }
     }
