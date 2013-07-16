@@ -27,15 +27,22 @@ require_once SITE.'/^/lib/Controller.php';
 class HomeController extends Controller {
     protected $action = 'home';
 
-<<<<<<< HEAD
-   /**
-     * action
+    /**
+     * Constructor
      *
-     * @param array $argv web request parameters
-=======
+     * @param array $argv Incoming data from get and mod/rewrite.
+     *
+     * @internal param \argv $Array
+     *
+     * @return \HomeController
+     */
+    public function __construct($argv) {
+        parent::__construct($argv);
+        require_once SITE.'/^/models/ContactLog.php';
+    }
+
     /**
      * Display default Home page
->>>>>>> 44ed78846ec56124a2c5e8cafff85ccb39396cbd
      *
      * @return mixed
      */
@@ -47,12 +54,15 @@ class HomeController extends Controller {
     /**
      * Display contact form
      *
+     * @param array $argv Incoming data from get and mod/rewrite.
+     * @param array $post Post data.
+     *
      * @return mixed
      */
-    public function do_contact() {
+    public function do_contact($argv, $post) {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed    = $seed    = (int)(isset($_POST['apple'])?$_POST['apple']:microtime(true));
+        G::$V->seed    = $seed    = (int)(isset($post['apple'])?$post['apple']:microtime(true));
         G::$V->from    = $from    = substr(md5($seed), -6);
         G::$V->subject = $subject = md5($from);
         G::$V->message = $message = md5($subject);
@@ -64,51 +74,43 @@ class HomeController extends Controller {
         </style>
 ';
 
-        if (isset($_POST[$from])
-            && isset($_POST[$subject])
-            && isset($_POST[$message])
-            && isset($_POST[$honey])
-            && isset($_POST[$honey2])
+        if (isset($post[$from])
+            && isset($post[$subject])
+            && isset($post[$message])
+            && isset($post[$honey])
+            && isset($post[$honey2])
         ) {
-            $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
-            $login_id  = G::$S->Login?G::$S->Login->login_id:0;
-            if ('' != $_POST[$honey] || '' != $_POST[$honey2]) {
+            if ('' != $post[$honey] || '' != $post[$honey2]) {
                 G::msg('The field labeled "Leave Blank" was not left blank.  '
                        .'Your message has not been sent.  '
                        .'We check this to prevent automated mailers.');
-            } elseif (false !== strpos($_POST[$from], "\n") || false !== strpos($_POST[$from], "\r")) {
+            } elseif (false !== strpos($post[$from], "\n")
+                || false !== strpos($post[$from], "\r")) {
                 G::msg('The email address submitted contains a newline '
                        .'character.  Your message has not been sent.  '
                        .'We check this to prevent automated mailers.');
-            } elseif (false !== strpos($_POST[$subject], "\n") || false !== strpos($_POST[$subject], "\r")) {
+            } elseif (false !== strpos($post[$subject], "\n")
+                || false !== strpos($post[$subject], "\r")) {
                 G::msg('The subject submitted contains a newline character.  '
                        .'Your message has not been sent.  '
                        .'We check this to prevent automated mailers.');
             } else {
-                mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$_POST[$subject],
-                    'Login Info: '.$loginname.' - '.$login_id."\n"
-                    .'Specified Email Address: '.$_POST[$from]."\n"
-                    .'Subject: '.$_POST[$subject]."\n"
-                    .'Message: '."\n".$_POST[$message],
-                    'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
-                    ."Reply-To: ".$_POST[$from]."\nX-Mailer: PHP/" . phpversion()
-                    );
+                $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
+                $login_id  = G::$S->Login?G::$S->Login->login_id:0;
+
+                $this->mailer($post, $from, $subject, $message,
+                              $loginname, $login_id);
                 G::msg('Your message has been sent.');
-<<<<<<< HEAD
-                require_once SITE.CORE.'/models/ContactLog.php';
-=======
 
-                require_once SITE.'/^/models/ContactLog.php';
->>>>>>> 44ed78846ec56124a2c5e8cafff85ccb39396cbd
-
-               $C = new ContactLog(array(
-                    'from'     => $_POST[$from],
-                    'subject'  => $_POST[$subject],
+                $ContactLog = new ContactLog(array(
+                    'from'     => $post[$from],
+                    'subject'  => $post[$subject],
                     'to'       => G::$G['siteEmail'],
-                    'body'     => $_POST[$message],
+                    'body'     => $post[$message],
                     'login_id' => $login_id,
                 ), true);
-                $C->save();
+
+                $ContactLog->save();
             }
         } else {
             G::msg('Use the form below . . .');
@@ -131,7 +133,31 @@ class HomeController extends Controller {
         G::$V->_template = 'Home.ContactLog.php';
         G::$V->_title    = G::$V->_siteName.': Contact Log';
 
-        require_once SITE.'/^/models/ContactLog.php';
         G::$V->log = ContactLog::some(100, 0, 'id', true);
     }
+
+    /**
+     * Mailer
+     *
+     * @param array  $post      Post Array
+     * @param string $from      From Key
+     * @param string $subject   Subject Key
+     * @param string $message   Message Key
+     * @param string $loginName User's login
+     * @param string $loginId   Users' ID
+     *
+     * @return mixed
+     */
+    private function mailer($post, $from, $subject, $message,
+                            $loginName, $loginId) {
+        mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$post[$subject],
+            'Login Info: '.$loginName.' - '.$loginId."\n"
+            .'Specified Email Address: '.$post[$from]."\n"
+            .'Subject: '.$post[$subject]."\n"
+            .'Message: '."\n".$post[$message],
+            'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
+            ."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
+        );
+    }
+
 }
