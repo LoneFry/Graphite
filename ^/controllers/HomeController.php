@@ -39,6 +39,7 @@ class HomeController extends Controller {
      * action
      *
      * @param array $argv web request parameters
+     * @param array $post Post request variable.
      *
      * @return mixed
      */

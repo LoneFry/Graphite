@@ -87,12 +87,14 @@ abstract class Controller {
             $argv = $this->argv;
         }
         $func = 'do_'.$this->action;
+
         // non-numeric $_GET keys override $argv keys
         foreach ($_GET as $key => $val) {
             if (!is_numeric($key)) {
                 $argv[$key] = $val;
             }
         }
+
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 $params = $_GET;
