@@ -12,8 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/Controller.php';
-
 /**
  * AccountController class - performs user account related actions
  *
