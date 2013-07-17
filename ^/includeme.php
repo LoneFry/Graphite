@@ -23,11 +23,17 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
+
 require_once SITE.'/^/lib/G.php';
 require_once SITE.'/^/config.php';
 
+require_once SITE.'/^/lib/AutoLoader.php';
+spl_autoload_register(array('AutoLoader', 'loadClass'));
+
+
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
 define('CONT', G::$G['CON']['URL']);// for use in URLs
+
 if ('dev' == MODE) {
     error_reporting(E_ALL | E_STRICT);
 }
@@ -39,9 +45,6 @@ if (isset(G::$G['timezone'])) {
 if ('' == G::$G['db']['host']) {
     return;
 }
-
-require_once SITE.'/^/lib/mysqli_.php';
-require_once SITE.'/^/lib/Security.php';
 
 // setup DB connection or fail.
 G::$m = G::$M = new mysqli_(G::$G['db']['host'],

@@ -12,7 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/DataModel.php';
 
 /**
  * Record class - used as a base class for Active Record Model classes
