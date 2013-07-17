@@ -155,6 +155,7 @@ class Dispatcher {
         if (null === $argv) {
             $argv = $this->argv;
         }
+        Localizer::getLib($this->controller);
         $Controller = $this->controller.'Controller';
         $Controller = new $Controller($argv);
         if (method_exists($Controller, 'do_'.$Controller->action)) {
