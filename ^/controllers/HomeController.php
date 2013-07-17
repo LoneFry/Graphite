@@ -69,7 +69,7 @@ class HomeController extends Controller {
             $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
             $login_id  = G::$S->Login?G::$S->Login->login_id:0;
             if ('' != $post[$honey] || '' != $post[$honey2]) {
-                G::msg(Locallizer::translate('home.contact.msg.honeynotempty'));
+                G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
             } elseif (false !== strpos($post[$from], "\n") || false !== strpos($post[$from], "\r")) {
                 G::msg(Localizer::translate('home.contact.msg.fromnewline'));
             } elseif (false !== strpos($post[$subject], "\n") || false !== strpos($post[$subject], "\r")) {
