@@ -25,6 +25,7 @@ G::$G['MODE'] = 'prd';
 // includePath relative to SITE
 // each class will append it's own sub directory to each path
 G::$G['includePath'] = '/^HTML5;/^';
+G::$G['language'] = 'en_us';
 
 // enable the installer -- reverse this when installed
 G::$G['installer'] = true;
