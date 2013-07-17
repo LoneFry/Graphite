@@ -6,7 +6,7 @@
  *
  * @category Graphite
  * @package  Core
- * @author   Cris Bettis <cris.bettis@bettercarpeople.com>
+ * @author   Cris Bettis <apt142@gmail.com>
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  *
@@ -22,7 +22,7 @@
  *
  * @category Graphite
  * @package  Core
- * @author   Cris Bettis <cris.bettis@bettercarpeople.com>
+ * @author   Cris Bettis <apt142@gmail.com>
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
