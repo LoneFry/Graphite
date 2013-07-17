@@ -12,8 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/Record.php';
-
 /**
  * Role class - for managing site roles/responsibilities
  *

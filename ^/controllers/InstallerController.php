@@ -12,10 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/Controller.php';
-require_once SITE.'/^/lib/mysqli_.php';
-require_once SITE.'/^/lib/Security.php';
-
 /**
  * InstallerController class - Aids Graphite setup by initializing DB and config
  *

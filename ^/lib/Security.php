@@ -12,8 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/models/Login.php';
-
 /**
  * Security class - for authenticating and managing current user.
  *
