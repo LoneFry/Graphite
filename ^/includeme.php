@@ -28,6 +28,8 @@ require_once SITE.'/^/config.php';
 require_once SITE.'/^/lib/AutoLoader.php';
 spl_autoload_register(array('AutoLoader', 'loadClass'));
 
+Localizer::setLanguage(G::$G['language']);
+
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
 define('CONT', G::$G['CON']['URL']);// for use in URLs
 
