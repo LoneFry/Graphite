@@ -45,12 +45,14 @@ class HomeController extends Controller {
     public function do_contact($argv, $post) {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed    =$seed    =(int)(isset($post['apple'])?$post['apple']:microtime(true));
-        G::$V->from    =$from    =substr(md5($seed), -6);
-        G::$V->subject =$subject =md5($from);
-        G::$V->message =$message =md5($subject);
-        G::$V->honey   =$honey   =md5($message);
-        G::$V->honey2  =$honey2  =md5($honey);
+        G::$V->seed      = $seed    = (int)(isset($post['apple'])
+            ? $post['apple']
+            : microtime(true));
+        G::$V->from      = $from    = substr(md5($seed), -6);
+        G::$V->subject   = $subject = md5($from);
+        G::$V->message   = $message = md5($subject);
+        G::$V->honey     = $honey   = md5($message);
+        G::$V->honey2    = $honey2  = md5($honey);
         G::$V->_head .= '
         <style type="text/css">
             .c'.$honey.' {display:none;}

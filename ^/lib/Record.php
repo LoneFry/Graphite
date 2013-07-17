@@ -12,7 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-
 /**
  * Record class - used as a base class for Active Record Model classes
  *  an example extension is at bottom of file

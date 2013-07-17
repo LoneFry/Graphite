@@ -23,13 +23,10 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
-
 require_once SITE.'/^/lib/G.php';
 require_once SITE.'/^/config.php';
-
 require_once SITE.'/^/lib/AutoLoader.php';
 spl_autoload_register(array('AutoLoader', 'loadClass'));
-
 
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
 define('CONT', G::$G['CON']['URL']);// for use in URLs
