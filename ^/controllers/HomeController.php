@@ -69,17 +69,11 @@ class HomeController extends Controller {
             $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
             $login_id  = G::$S->Login?G::$S->Login->login_id:0;
             if ('' != $post[$honey] || '' != $post[$honey2]) {
-                G::msg('The field labeled "Leave Blank" was not left blank.  '
-                       .'Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
             } elseif (false !== strpos($post[$from], "\n") || false !== strpos($post[$from], "\r")) {
-                G::msg('The email address submitted contains a newline '
-                       .'character.  Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.fromnewline'));
             } elseif (false !== strpos($post[$subject], "\n") || false !== strpos($post[$subject], "\r")) {
-                G::msg('The subject submitted contains a newline character.  '
-                       .'Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
             } else {
                 mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$post[$subject],
                     'Login Info: '.$loginname.' - '.$login_id."\n"
@@ -89,8 +83,7 @@ class HomeController extends Controller {
                     'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
                     ."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
                     );
-                G::msg('Your message has been sent.');
-
+                G::msg(Localizer::translate('home.contact.msg.sent'));
                 $C = new ContactLog(array(
                     'from'     => $post[$from],
                     'subject'  => $post[$subject],
@@ -101,7 +94,7 @@ class HomeController extends Controller {
                 $C->save();
             }
         } else {
-            G::msg('Use the form below . . .');
+            G::msg(Localizer::translate('home.contact.msg.useform'));
         }
     }
 
