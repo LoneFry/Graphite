@@ -155,8 +155,7 @@ class Dispatcher {
         if (null === $argv) {
             $argv = $this->argv;
         }
-        require_once SITE.'/^/lib/Controller.php';
-        require_once $this->controllerPath.$this->controller.'Controller.php';
+        Localizer::loadLib($this->controller);
         $Controller = $this->controller.'Controller';
         $Controller = new $Controller($argv);
         if (method_exists($Controller, 'do_'.$Controller->action)) {
@@ -164,7 +163,6 @@ class Dispatcher {
         }
 
         // else use 404 controller
-        require_once $this->controller404Path.$this->controller404.'Controller.php';
         $Controller = $this->controller404.'Controller';
         $Controller = new $Controller($argv);
         return $Controller->act();

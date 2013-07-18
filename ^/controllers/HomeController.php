@@ -12,8 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/Controller.php';
-
 /**
  * HomeController class - A default Home and Contact page Controller class
  *
@@ -62,12 +60,14 @@ class HomeController extends Controller {
     public function do_contact($argv, $post) {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed    = $seed    = (int)(isset($post['apple'])?$post['apple']:microtime(true));
-        G::$V->from    = $from    = substr(md5($seed), -6);
-        G::$V->subject = $subject = md5($from);
-        G::$V->message = $message = md5($subject);
-        G::$V->honey   = $honey   = md5($message);
-        G::$V->honey2  = $honey2  = md5($honey);
+        G::$V->seed      = $seed    = (int)(isset($post['apple'])
+            ? $post['apple']
+            : microtime(true));
+        G::$V->from      = $from    = substr(md5($seed), -6);
+        G::$V->subject   = $subject = md5($from);
+        G::$V->message   = $message = md5($subject);
+        G::$V->honey     = $honey   = md5($message);
+        G::$V->honey2    = $honey2  = md5($honey);
         G::$V->_head .= '
         <style type="text/css">
             .c'.$honey.' {display:none;}
@@ -81,19 +81,13 @@ class HomeController extends Controller {
             && isset($post[$honey2])
         ) {
             if ('' != $post[$honey] || '' != $post[$honey2]) {
-                G::msg('The field labeled "Leave Blank" was not left blank.  '
-                       .'Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
             } elseif (false !== strpos($post[$from], "\n")
                 || false !== strpos($post[$from], "\r")) {
-                G::msg('The email address submitted contains a newline '
-                       .'character.  Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.fromnewline'));
             } elseif (false !== strpos($post[$subject], "\n")
                 || false !== strpos($post[$subject], "\r")) {
-                G::msg('The subject submitted contains a newline character.  '
-                       .'Your message has not been sent.  '
-                       .'We check this to prevent automated mailers.');
+                G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
             } else {
                 $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
                 $login_id  = G::$S->Login?G::$S->Login->login_id:0;
@@ -109,11 +103,10 @@ class HomeController extends Controller {
                     'body'     => $post[$message],
                     'login_id' => $login_id,
                 ), true);
-
                 $ContactLog->save();
             }
         } else {
-            G::msg('Use the form below . . .');
+            G::msg(Localizer::translate('home.contact.msg.useform'));
         }
     }
 

@@ -12,11 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-<<<<<<< HEAD
-=======
-require_once SITE.'/^/lib/Controller.php';
-
->>>>>>> 44ed78846ec56124a2c5e8cafff85ccb39396cbd
 /**
  * AccountController class - performs user account related actions
  *

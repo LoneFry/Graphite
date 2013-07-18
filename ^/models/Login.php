@@ -12,11 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-require_once SITE.'/^/lib/Record.php';
-require_once SITE.'/^/lib/PasswordHasher.php';
-require_once SITE.'/^/lib/SHA1PasswordHasher.php';
-require_once SITE.'/^/lib/PBKDF2PasswordHasher.php';
-
 /**
  * Login class - for managing site users, including current user.
  *
