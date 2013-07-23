@@ -34,19 +34,6 @@ class HomeControllerTest extends UnitTest {
     protected $controller;
 
     /**
-     * One time setup for this controller.
-     *
-     * @return mixed
-     */
-    public static function setUpBeforeClass() {
-        require_once LIB.'/Controller.php';
-        require_once SITE.CORE.'/controllers/HomeController.php';
-        require_once SITE.'/^/lib/Record.php';
-        require_once SITE.'/^/models/ContactLog.php';
-
-    }
-
-    /**
      * Resets the fixtures between each run.
      *
      * @return mixed
@@ -56,7 +43,6 @@ class HomeControllerTest extends UnitTest {
 
         // Duplicate the controller but mock Mailer.
         $this->controller = $this->getMockBuilder('HomeController')
-            ->setConstructorArgs(array(array() ))
             ->disableOriginalConstructor()
             ->setMethods(array('mailer'))
             ->getMock();
@@ -72,15 +58,12 @@ class HomeControllerTest extends UnitTest {
      *
      * @return mixed
      */
-    /*
     public function testDo_home() {
         $this->controller->do_home(array());
 
         $this->assertEquals(G::$V->_template, 'Home.php');
         $this->assertEquals(G::$V->_title, G::$V->_siteName);
     }
-    */
-
 
     /**
      * Test the GET request on the do_contact action
@@ -125,19 +108,13 @@ class HomeControllerTest extends UnitTest {
 
 
         // Possible responses
-        $notBlankMsg = 'The field labeled "Leave Blank" was not left blank.  '
-            .'Your message has not been sent.  '
-            .'We check this to prevent automated mailers.';
+        $notBlankMsg = 'home.contact.msg.honeynotempty';
 
-        $newLineMsg = 'The email address submitted contains a newline '
-            .'character.  Your message has not been sent.  '
-            .'We check this to prevent automated mailers.';
+        $newLineMsg = 'home.contact.msg.fromnewline';
 
-        $newLineMsgSubject = 'The subject submitted contains a newline character.  '
-            .'Your message has not been sent.  '
-            .'We check this to prevent automated mailers.';
+        $newLineMsgSubject = 'home.contact.msg.subjectnewline';
 
-        $okMsg = 'Your message has been sent.';
+        $okMsg = 'home.contact.msg.sent';
 
         // Fake a post object
         $post = array(
@@ -175,27 +152,16 @@ class HomeControllerTest extends UnitTest {
         $this->assertEquals($newLineMsgSubject, G::$_msg[0][0]);
 
         // Test for everything is on hold because of program structure.
-        /*
+
         G::$_msg = array();
 
-        $ContactLog = $this->getMockBuilder('ContactLog')
-            ->disableOriginalConstructor()
-            ->setMethods(array('save'))
-            ->getMock();
-
-        $ContactLog->expects($this->any())
-            ->method('save')
-            ->will($this->returnValue(null));
-
-        var_dump($ContactLog);
-        //die;
 
         $this->controller->do_contact(
             array(),
             $post
         );
         $this->assertEquals($okMsg, G::$_msg[0][0]);
-        */
+
     }
 
 }

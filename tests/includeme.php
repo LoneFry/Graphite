@@ -32,8 +32,14 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
-require_once TEST_ROOT.'/mocks/G.php';
+
+require_once TEST_ROOT.'/mocks/lib/G.php';
 require_once TEST_ROOT.'/config.php';
+require_once SITE.'/^/lib/AutoLoader.php';
+spl_autoload_register(array('AutoLoader', 'loadClass'));
+AutoLoader::addDirectory(TEST_ROOT.'/mocks', true);
+
+
 
 
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
@@ -42,10 +48,6 @@ define('CONT', G::$G['CON']['URL']);// for use in URLs
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);
 }
-
-require_once LIB.'/View.php';
-require_once LIB.'/mysqli_.php';
-require_once LIB.'/Security.php';
 
 $_SERVER['REMOTE_ADDR'] = 'testing.overnightbdc.com';
 
@@ -69,9 +71,12 @@ class UnitTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
         // Setup Stuff
 
+        $mysqliMock = new mysqli_();
+
         // Mock out security object
         G::$S = $this->getMockBuilder('Security')
             ->disableOriginalConstructor()
+            ->setMethods(array('roleTest'))
             ->getMock();
         // Mock out view object
         G::$V = $this->getMockBuilder('View')
@@ -82,14 +87,10 @@ class UnitTest extends PHPUnit_Framework_TestCase {
         // $this->getMock('View', array('render'));
 
         // Mock out read sql object
-        G::$m = $this->getMockBuilder('mysqli_')
-            ->disableOriginalConstructor()
-            ->getMock();
+        G::$m = $mysqliMock;
 
         // Mock out write sql object
-        G::$M = $this->getMockBuilder('mysqli_')
-            ->disableOriginalConstructor()
-            ->getMock();
+        G::$M = $mysqliMock;
 
     }
 

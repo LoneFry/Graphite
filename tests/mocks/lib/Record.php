@@ -26,7 +26,7 @@
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
  */
-abstract class Record { //extends DataModel {
+abstract class Record extends DataModel {
     protected $DBvals = array();// instance DB values of vars defined in $vars
 
     /**
@@ -42,14 +42,6 @@ abstract class Record { //extends DataModel {
      * @throws Exception
      */
     public function __construct($a = null, $b = null) {
-        // Ensure that a pkey is defined in subclasses
-        if (!isset(static::$pkey) || !isset(static::$vars[static::$pkey])) {
-            throw new Exception('Record class defined with no pkey, or pkey not registered');
-        }
-        if (!isset(static::$table)) {
-            throw new Exception('Record class defined with no table');
-        }
-
         // initialize the values arrays with null values as some tests depend
         foreach (static::$vars as $k => $v) {
             $this->DBvals[$k] = $this->vals[$k] = null;
@@ -317,10 +309,6 @@ abstract class Record { //extends DataModel {
      * @return mixed value returned by delegated method
      */
     public function save() {
-        if (null === $this->vals[static::$pkey]) {
-            return $this->insert();
-        }
-        return $this->update();
     }
 
     /**

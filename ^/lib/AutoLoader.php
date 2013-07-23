@@ -28,8 +28,7 @@
  */
 
 class AutoLoader {
-
-    static private $classNames = array();
+    static public $classNames = array();
 
     /**
      * Index the file path based on the file name minus the .php extension.
@@ -44,13 +43,7 @@ class AutoLoader {
         // the end if there is a conflict.
         $dirs = array_reverse(explode(';', G::$G['includePath']));
         foreach ($dirs as $dir) {
-            exec('find ' . SITE . $dir
-                . ' -path "*/controllers/*" -name "*.php"'
-                . ' -o -path "*/lib/*"  -name "*.php"'
-                . ' -o -path "*/models/*" -name "*.php"'
-                . ' -o -path "*/reports/*" -name "*.php"',
-                $output
-            );
+            $output = static::getDirListing($dir);
             foreach ($output as $file) {
                 $className = substr(
                     $file,
@@ -60,6 +53,24 @@ class AutoLoader {
                 self::$classNames[$className] = $file;
             }
         }
+    }
+
+    /**
+     * Finds all the files that we would load by default.
+     *
+     * @param string $dir Directory to be index
+     *
+     * @return mixed
+     */
+    public static function getDirListing($dir) {
+        exec('find ' . SITE . $dir
+            . ' -path "*/controllers/*" -name "*.php"'
+            . ' -o -path "*/lib/*"  -name "*.php"'
+            . ' -o -path "*/models/*" -name "*.php"'
+            . ' -o -path "*/reports/*" -name "*.php"',
+            $output
+        );
+        return $output;
     }
 
     /**

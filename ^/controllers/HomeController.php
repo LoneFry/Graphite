@@ -94,7 +94,7 @@ class HomeController extends Controller {
 
                 $this->mailer($post, $from, $subject, $message,
                               $loginname, $login_id);
-                G::msg('Your message has been sent.');
+                G::msg(Localizer::translate('home.contact.msg.sent'));
 
                 $ContactLog = new ContactLog(array(
                     'from'     => $post[$from],
