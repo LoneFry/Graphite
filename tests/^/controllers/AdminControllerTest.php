@@ -123,7 +123,6 @@ class AdminControllerTest extends UnitTest {
      * Tests the do_list action
      *
      * @return mixed
-     *
      */
     public function testDo_loginGetEdit() {
         G::$V->list = null;

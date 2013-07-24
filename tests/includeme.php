@@ -36,6 +36,8 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
 require_once TEST_ROOT.'/mocks/lib/G.php';
 require_once TEST_ROOT.'/config.php';
 require_once SITE.'/^/lib/AutoLoader.php';
+AutoLoader::registerDirectory();
+
 spl_autoload_register(array('AutoLoader', 'loadClass'));
 AutoLoader::addDirectory(TEST_ROOT.'/mocks', true);
 
