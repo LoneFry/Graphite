@@ -3,7 +3,7 @@
         <form action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post" onsubmit="return contactValid();" id="Home_Contact">
             <div class="c<?php echo $from; ?>">
                 <div><label for="i<?php echo $from; ?>">Your Email Address:</label></div>
-                <div><input type="text" id="i<?php echo $from; ?>" name="<?php echo $from; ?>" size="40"><label id="i<?php echo $from; ?>Msg" for="i<?php echo $from; ?>"></label></div>
+                <div><input type="text" id="i<?php echo $from; ?>" name="<?php echo $from; ?>" size="40" class="js-validate-email"></div>
             </div>
             <div class="c<?php echo $subject; ?>">
                 <div><label for="i<?php echo $subject; ?>">Subject:</label></div>
@@ -25,12 +25,9 @@
                 <div><input type="submit" value="Send Message"></div>
             </div>
         </form>
-        <script type="text/javascript" src="/^HTML5/js/ajas.Email.js"></script>
         <script type="text/javascript"><!--
             function contactValid() {
-                if(ajas.Email.validate(document.getElementById('i<?php echo $from; ?>'))) {
-                    return true;
-                } else {
+                if(false === validateEmail(document.getElementById('i<?php echo $from; ?>').value)) {
                     return confirm('Your email address appears to be invalid.\nIf you don\'t use a valid address, we cannot respond.\n\nPress OK to send anyway.\nPress Cancel to go back and correct it.');
                 }
                 return true;

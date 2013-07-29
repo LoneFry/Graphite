@@ -71,6 +71,7 @@ class HomeController extends Controller {
             .c'.$honey.' {display:none;}
         </style>
 ';
+        G::$V->_script('/^/js/validate-email.min.js');
 
         if (isset($request[$from])
             && isset($request[$subject])

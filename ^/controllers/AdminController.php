@@ -88,6 +88,7 @@ class AdminController extends Controller {
 
         G::$V->_template = 'Admin.LoginAdd.php';
         G::$V->_title    = 'Add Login';
+        G::$V->_script('/^/js/validate-email.min.js');
 
         if (isset($request['loginname']) && isset($request['realname'])
             && isset($request['pass1']) && isset($request['pass2'])
@@ -193,6 +194,7 @@ class AdminController extends Controller {
 
         G::$V->_template = 'Admin.LoginEdit.php';
         G::$V->_title    = 'Edit Login';
+        G::$V->_script('/^/js/validate-email.min.js');
 
         // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {

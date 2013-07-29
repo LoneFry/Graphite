@@ -1,9 +1,7 @@
 <?php get_header(); ?>
         <script type="text/javascript"><!--
             function contactValid() {
-                if(ajas.Email.validate(document.getElementById('i<?php echo $from; ?>'))) {
-                    return true;
-                } else {
+                if(false === validateEmail(document.getElementById('i<?php echo $from; ?>').value)) {
                     return confirm('Your email address appears to be invalid.\nIf you don\'t use a valid address, we cannot respond.\n\nPress OK to send anyway.\nPress Cancel to go back and correct it.');
                 }
                 return true;
@@ -15,7 +13,7 @@
                     <table id="contactForm"><!-- yes, I am about to use a table for layout in this form. -->
                         <tr class="c<?php echo $from; ?>">
                             <th valign="top"><label for="i<?php echo $from; ?>">Your Email Address:</label></th>
-                            <td valign="top"><input type="text" id="i<?php echo $from; ?>" name="<?php echo $from; ?>" size="40"><label id="i<?php echo $from; ?>Msg" for="i<?php echo $from; ?>"></label></td>
+                            <td valign="top"><input type="text" id="i<?php echo $from; ?>" name="<?php echo $from; ?>" size="40" class="js-validate-email"></td>
                         </tr>
                         <tr class="c<?php echo $subject; ?>">
                             <th valign="top"><label for="i<?php echo $subject; ?>">Subject:</label></th>
@@ -39,5 +37,4 @@
                     </table>
                 </form>
             </div>
-        <script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
 <?php get_footer();

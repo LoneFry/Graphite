@@ -30,13 +30,13 @@
             </tr>
             <tr>
                 <th>E-Mail Address</th>
-                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
+                <td><input type="text" name="email1" id="email1" value="<?php html($L->email);?>" class="js-validate-email-stricter">
                         <label class="msg" for="email1" id="email1Msg"></label>
                 </td>
             </tr>
             <tr>
                 <th>Confirm E-Mail Address</th>
-                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" onblur="ajas.Email.magic(this,true,true);">
+                <td><input type="text" name="email2" id="email2" value="<?php html($L->email);?>" class="js-validate-email-stricter">
                         <label class="msg" for="email2" id="email2Msg"></label>
                 </td>
             </tr>
@@ -165,6 +165,4 @@ if (is_array($log) && count($log)) {
     </div>
 
 </form>
-
-<script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
 <?php get_footer();
