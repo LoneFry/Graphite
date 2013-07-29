@@ -161,7 +161,4 @@ if (is_array($log) && count($log)) {
     </div>
 
 </form>
-
-
-<script type="text/javascript" src="/^HTML4/js/ajas.Email.js"></script>
 <?php get_footer();

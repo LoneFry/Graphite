@@ -9,6 +9,9 @@
  * @link     http://g.lonefry.com
  */
 
+/* CSS recommended for validate-email https://github.com/tyleruebele/validate-email */
+.js-validate-email-error{background-image:url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAABbElEQVR42oVTsYoCMRANrIVwloJgZWFhIV5hY7d/IRaChSBWomCjlZ9gZXGIxSFiJVaH3A/YWIiFWMh+guUVFvtuJtndbHbjXeCx2bz3JslkRojEAFD3ff+DvleCF+AarNXFq0HkG4k+cbsB4zFQrQKlkgLPeY04qSFt0uwQvjCbAZkMwEv5PDAaAZ2O+mcwxxrWkiceYIHlUgsZhwOi0euZHGvJE5rfcb8D2awpulx0gMnE5FjLHvIKeafh0BQwVisdoNlM8+Rhr5BZLpfTgm5XmZ9PoFhM8+whr5CiJMmo1UBbkMSz8yKwvgzg0MM8HsB2+28AD5WKXXA+A9OpnWMPX0Emsd+3n4DN7bY9AHnCJLryScICCrFeqyRyHlotk2OtekY3rIWNrLC46HjUzzgYmJyqxk2yD74xn+uTNBrA6QTs90ChoHcmjdTa+iFqJj5yLqd35Dmv6WZy/upKl7Aj/Og7yPkuunNs/AKI0GRZNeIfCAAAAABJRU5ErkJggg==);background-repeat:no-repeat;background-position:right top;border-color:red;}
+
 body {margin:0;padding:0;border:0;background-color:#fff;color:#000;font:11pt Tahoma,Arial,sans-serif;}
 
 h1{color:#000;font:bold   22pt Georgia,Palatino,sans-serif;}
@@ -34,7 +37,6 @@ a[rel~="external"]{background: url(/^HTML4/images/url_icon.gif) no-repeat left c
 .left {float:left !important;text-align:left !important;}
 .clear {clear:both;}
 .error {color:red;}
-.ajas_email_error { background-color: #f99; }
 p.error,div.error {border:2px solid red;padding:10px;background-color:#fee;}
 
 pre.G__croak{background:white;color:black;white-space:pre-wrap;font-family:monospace;}
