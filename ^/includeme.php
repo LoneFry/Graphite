@@ -26,7 +26,6 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
 require_once SITE.'/^/lib/G.php';
 require_once SITE.'/^/config.php';
 require_once SITE.'/^/lib/AutoLoader.php';
-AutoLoader::registerDirectory();
 spl_autoload_register(array('AutoLoader', 'loadClass'));
 
 Localizer::setLanguage(G::$G['language']);

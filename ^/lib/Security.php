@@ -53,22 +53,24 @@ class Security {
         if (isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id']) && 0 < $_SESSION['login_id']) {
             $Login = new Login(array('login_id' => $_SESSION['login_id']));
             if (false === $Login->load()) {
-                G::msg(Localizer::translate('security.error.loginloadfail'), 'error');
+                G::msg('Failed to load login from session, please login again.', 'error');
                 $Login = false;
 
             // if login disabled, fail
             } elseif ($Login->disabled == 1) {
-                G::msg(Localizer::translate('security.error.accountdisabled'), 'error');
+                G::msg('Your account is currently disabled.', 'error');
                 $Login = false;
 
             // if login configured so, test UA hash against last request
             } elseif ($Login->sessionStrength > 0 && $Login->UA != $this->UA) {
-                G::msg(Localizer::translate('security.error.mulibrowser'), 'error');
+                G::msg('Your account was authenticated in a different browser, '
+                       .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
 
             // if login configured so, test IP against last request
             } elseif ($Login->sessionStrength > 1 && $Login->lastIP != $this->ip) {
-                G::msg(Localizer::translate('security.error.multicomputer'), 'error');
+                G::msg('Your account was authenticated from a different computer/IP-address, '
+                       .'and multiple logins are disabled for your account.', 'error');
                 $Login = false;
 
             // if we got here, we should have a valid login, update usage data
@@ -102,7 +104,7 @@ class Security {
         }
 
         if ($Login->disabled) {
-            G::msg(Localizer::translate('security.error.disabledaccount'), 'error');
+            G::msg('Your account is currently disabled.', 'error');
             return false;
         }
 

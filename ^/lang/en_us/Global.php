@@ -14,17 +14,6 @@
 
 return $_LANG = array(
     'global.dollar' => '$%.2f',
+    'global.companyname' => 'Example Company',
 
-
-    // Security Object Stuff
-    'security.error.loginloadfail' => 'Failed to load login from session,'
-        . ' please login again.',
-    'security.error.mulibrowser' => 'Your account was authenticated in a'
-        . ' different browser, and multiple logins are disabled for your'
-        . ' account.',
-    'security.error.multicomputer' => 'Your account was authenticated from'
-        . ' a different computer/IP-address, and multiple logins are disabled'
-        . ' for your account.',
-    'security.error.accountdisabled' => 'Your account is currently disabled.',
-    'security.error.disabledaccount' => 'Your account is currently disabled.',
 );

@@ -62,7 +62,7 @@ class AdminController extends Controller {
                 G::$V->list = $l;
             } elseif ($l && 1 == count($l)) {
                 $L = array_shift($l);
-                return $this->do_LoginEdit(array($L->login_id), array());
+                return $this->do_LoginEdit(array($L->login_id));
             }
         } else {
             $l = new Login();
@@ -75,11 +75,10 @@ class AdminController extends Controller {
      * action
      *
      * @param array $argv web request parameters
-     * @param array $post post request array
      *
      * @return mixed
      */
-    public function do_LoginAdd($argv, $post) {
+    public function do_LoginAdd($argv) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -87,87 +86,55 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginAdd.php';
         G::$V->_title    = 'Add Login';
 
-        if (isset($post['loginname']) && isset($post['realname'])
-            && isset($post['pass1']) && isset($post['pass2'])
-            && isset($post['email1']) && isset($post['email2'])
-            && isset($post['sessionStrength']) && isset($post['flagChangePass'])
-            && isset($post['disabled'])
+        if (isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $insert = true;
-            if ($post['email1'] != $post['email2']) {
-                G::msg(
-                    Localizer::translate('admin.loginadd.msg.emailmismatch'),
-                    'error'
-                );
+            if ($_POST['email1'] != $_POST['email2']) {
+                G::msg('While Adding: The two email address fields do not match, which one is correct?', 'error');
                 $insert = false;
             }
-            $post['email'] = $post['email1'];
+            $_POST['email'] = $_POST['email1'];
 
-            if ('' == $post['pass1']) {
-                G::msg(
-                    Localizer::translate('admin.loginadd.msg.passwordempty'),
-                    'error'
-                );
+            if ('' == $_POST['pass1']) {
+                G::msg('While Adding: You must specify a password.', 'error');
                 $insert = false;
-            } elseif ($post['pass1'] != $post['pass2']) {
-                G::msg(
-                    Localizer::translate('admin.loginadd.msg.passwordmismatch'),
-                    'error'
-                );
+            } elseif ($_POST['pass1'] != $_POST['pass2']) {
+                G::msg('While Adding: The two password fields do not match, which one is correct?', 'error');
                 $insert = false;
             } elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
                 && G::$G['SEC']['passwords']['enforce_in_admin']
-                && true !== $error = Security::validate_password($post['pass1'])
+                && true !== $error = Security::validate_password($_POST['pass1'])
             ) {
                 G::msg($error, 'error');
                 $insert = false;
             } else {
-                $post['password'] = $post['pass1'];
+                $_POST['password'] = $_POST['pass1'];
             }
 
-            $L = new Login($post, true);
+            $L = new Login($_POST, true);
             if (!$L->loginname) {
-                G::msg(
-                    Localizer::translate(
-                        'admin.loginadd.msg.loginnameinvalid',
-                        htmlspecialchars($post['loginname'])
-                    ),
-                    'error'
-                );
+                G::msg('While Adding: Invalid loginname supplied: '.htmlspecialchars($_POST['loginname']), 'error');
                 $insert = false;
             }
             if (!$L->email) {
-                G::msg(
-                    Localizer::translate(
-                        'admin.loginadd.msg.emailinvalid',
-                        htmlspecialchars($post['email'])
-                    ),
-                    'error'
-                );
+                G::msg('While Adding: Invalid email supplied: '.htmlspecialchars($_POST['email']), 'error');
                 $insert = false;
             }
 
             if ($insert && $result = $L->insert()) {
-                G::msg(Localizer::translate('admin.loginadd.msg.success'));
+                G::msg('Login Added');
                 return $this->do_LoginEdit(array($L->login_id));
             } elseif ($insert && (null === $result)) {
-                G::msg(
-                    Localizer::translate('admin.loginadd.msg.nochange')
-                );
+                G::msg('Nothing to save.  Try making a change this time.');
             } else {
                 if (G::$M->errno == 1062) {
-                    G::msg(
-                        Localizer::translate(
-                            'admin.loginadd.msg.loginnameexists',
-                            $L->loginname
-                        ),
-                        'error'
-                    );
+                    G::msg('Loginname already exists: '.$L->loginname, 'error');
                 }
-                G::msg(
-                    Localizer::translate('admin.loginadd.msg.fail'),
-                    'error'
-                );
+                G::msg('Login Add Failed', 'error');
             }
         } else {
             $L = new Login(true);
@@ -180,11 +147,10 @@ class AdminController extends Controller {
      * action
      *
      * @param array $argv web request parameters
-     * @param array $post post request array
      *
      * @return mixed
      */
-    public function do_LoginEdit($argv, $post) {
+    public function do_LoginEdit($argv) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -201,112 +167,86 @@ class AdminController extends Controller {
         $L->load();
 
         // handle changes to the Login
-        if (isset($post['login_id']) && $post['login_id'] == $L->login_id
-            && isset($post['loginname']) && isset($post['realname'])
-            && isset($post['pass1']) && isset($post['pass2'])
-            && isset($post['email1']) && isset($post['email2'])
-            && isset($post['sessionStrength']) && isset($post['flagChangePass'])
-            && isset($post['disabled'])
+        if (isset($_POST['login_id']) && $_POST['login_id'] == $L->login_id
+            && isset($_POST['loginname']) && isset($_POST['realname'])
+            && isset($_POST['pass1']) && isset($_POST['pass2'])
+            && isset($_POST['email1']) && isset($_POST['email2'])
+            && isset($_POST['sessionStrength']) && isset($_POST['flagChangePass'])
+            && isset($_POST['disabled'])
         ) {
             $update = true;
             $old_loginname = $L->loginname;
             $old_email = $L->email;
-            $L->loginname = $post['loginname'];
-            $L->realname = $post['realname'];
-            $L->email = $post['email1'];
-            $L->sessionStrength = $post['sessionStrength'];
-            $L->flagChangePass = $post['flagChangePass'];
-            $L->disabled = $post['disabled'];
+            $L->loginname = $_POST['loginname'];
+            $L->realname = $_POST['realname'];
+            $L->email = $_POST['email1'];
+            $L->sessionStrength = $_POST['sessionStrength'];
+            $L->flagChangePass = $_POST['flagChangePass'];
+            $L->disabled = $_POST['disabled'];
 
-            if ($old_loginname == $L->loginname && $old_loginname != $post['loginname']) {
-                G::msg(
-                    Localizer::translate(
-                        'admin.loginedit.msg.logininvalid',
-                        htmlspecialchars($post['loginname'])
-                    ),
-                    'error'
-                );
+            if ($old_loginname == $L->loginname && $old_loginname != $_POST['loginname']) {
+                G::msg('While Editing: Invalid loginname supplied: '.htmlspecialchars($_POST['loginname']), 'error');
                 $update = false;
             }
-            if ($post['pass1'] != $post['pass2']) {
-                G::msg(
-                    Localizer::translate('admin.loginedit.msg.passwordmismatch'),
-                    'error'
-                );
+            if ($_POST['pass1'] != $_POST['pass2']) {
+                G::msg('While Editing: The two password fields do not match, which one is correct?', 'error');
                 $update = false;
             } elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
                 && G::$G['SEC']['passwords']['enforce_in_admin']
-                && true !== $error = Security::validate_password($post['pass1'])
+                && true !== $error = Security::validate_password($_POST['pass1'])
             ) {
                 G::msg($error, 'error');
                 $update = false;
             } else {
                 // blank means don't change password
-                if ($post['pass1'] != '') {
-                    $L->password = $post['pass1'];
+                if ($_POST['pass1'] != '') {
+                    $L->password = $_POST['pass1'];
                 }
             }
 
-            if ($post['email1'] != $post['email2']) {
-                G::msg(
-                    Localizer::translate('admin.loginedit.msg.emailmismatch'),
-                    'error'
-                );
+            if ($_POST['email1'] != $_POST['email2']) {
+                G::msg('While Editing: The two email address fields do not match, which one is correct?', 'error');
                 $update = false;
             }
-            if ($old_email == $L->email && $old_email != $post['email1']) {
-                G::msg(
-                    Localizer::translate(
-                        'admin.loginedit.msg.emailinvalid',
-                        htmlspecialchars($post['email1'])
-                    ),
-                    'error'
-                );
+            if ($old_email == $L->email && $old_email != $_POST['email1']) {
+                G::msg('While Editing: Invalid email supplied: '.htmlspecialchars($_POST['email1']), 'error');
                 $update = false;
             }
 
             if ($update && $result = $L->update()) {
-                G::msg(Localizer::translate('admin.loginedit.msg.success'));
+                G::msg('Login Edited');
             } elseif ($update && (null === $result)) {
-                G::msg(Localizer::translate('admin.loginedit.msg.nochange'));
+                G::msg('No changes to Login detected.');
             } else {
                 if (G::$M->errno == 1062) {
-                    G::msg(
-                        Localizer::translate(
-                            'admin.loginedit.msg.loginnameexists',
-                            htmlspecialchars($post['email1'])
-                        ),
-                        'error'
-                    );
+                    G::msg('Loginname already exists: '.$L->loginname, 'error');
                 }
-                G::msg(
-                    Localizer::translate('admin.loginedit.msg.fail'),
-                    'error'
-                );
+                G::msg('Login Edit Failed', 'error');
             }
         }
 
         // TODO: make a better way to do grants that doesn't involve loading the whole role list
+        require_once SITE.'/^/models/Role.php';
         $R = new Role();
         $Roles = $R->search(1000, 0, 'label');
         // handle grant/revoke changes
-        if (isset($post['grant']) && is_array($post['grant'])) {
+        if (isset($_POST['grant']) && is_array($_POST['grant'])) {
             $i = 0;
-            foreach ($post['grant'] as $k => $v) {
+            foreach ($_POST['grant'] as $k => $v) {
                 if (1 == $v && !$L->roleTest($Roles[$k]->label)) {
                     $Roles[$k]->grant($L->login_id);
                     $i++;
                 }
             }
-            G::msg(Localizer::translate('admin.loginedit.msg.grantroles', $i));
+            G::msg("Granted $i Roles to Login.");
             $i = 0;
             foreach ($Roles as $k => $v) {
-                if ($L->roleTest($Roles[$k]->label) && !isset($post['grant'][$k])) {
+                if ($L->roleTest($Roles[$k]->label) && !isset($_POST['grant'][$k])) {
                     $Roles[$k]->revoke($L->login_id);
                     $i++;
                 }
             }
-            G::msg(Localizer::translate('admin.loginedit.msg.revokeroles', $i));
+            G::msg("Revoked $i Roles from Login.");
             $L->load();
         }
 
@@ -315,6 +255,7 @@ class AdminController extends Controller {
         G::$V->letters = Login::initials();
         G::$V->referrer = $L->getReferrer();
 
+        require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $L->login_id));
         G::$V->log = $LL->search(100, 0, 'pkey', true);
 
@@ -335,6 +276,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.Role.php';
         G::$V->_title    = 'Select Role';
 
+        require_once SITE.'/^/models/Role.php';
         $l = new Role();
         G::$V->list = $l->search(50, 0, 'label');
     }
@@ -354,6 +296,7 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleAdd.php';
         G::$V->_title    = 'Add Role';
 
+        require_once SITE.'/^/models/Role.php';
         if (isset($_POST['label']) && isset($_POST['description'])
             && isset($_POST['disabled'])
         ) {
@@ -396,6 +339,7 @@ class AdminController extends Controller {
             return $this->do_Role($argv);
         }
 
+        require_once SITE.'/^/models/Role.php';
         $R = new Role($argv[1]);
         $R->load();
 
