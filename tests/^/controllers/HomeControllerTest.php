@@ -106,7 +106,6 @@ class HomeControllerTest extends UnitTest {
         $viewVars['honey'] = md5($viewVars['message']);
         $viewVars['honey2'] = md5($viewVars['honey']);
 
-
         // Possible responses
         $notBlankMsg = 'home.contact.msg.honeynotempty';
 
@@ -126,11 +125,9 @@ class HomeControllerTest extends UnitTest {
             $viewVars['honey2']  => 'honey2'
         );
 
-
         // Tests honeys with data.
         $this->controller->do_contact(array(), $post);
         $this->assertEquals(G::$_msg[0][0], $notBlankMsg);
-
 
         $post[$viewVars['honey']]  = '';
         $post[$viewVars['honey2']] = '';
@@ -139,7 +136,7 @@ class HomeControllerTest extends UnitTest {
         G::$_msg = array();
         $this->controller->do_contact(
             array(),
-            array_merge($post, array($viewVars['from'] =>"from\n"))
+            array_merge($post, array($viewVars['from'] => "from\n"))
         );
         $this->assertEquals($newLineMsg, G::$_msg[0][0]);
 
@@ -147,7 +144,7 @@ class HomeControllerTest extends UnitTest {
         G::$_msg = array();
         $this->controller->do_contact(
             array(),
-            array_merge($post, array($viewVars['subject'] =>"subject\n"))
+            array_merge($post, array($viewVars['subject'] => "subject\n"))
         );
         $this->assertEquals($newLineMsgSubject, G::$_msg[0][0]);
 
@@ -155,13 +152,10 @@ class HomeControllerTest extends UnitTest {
 
         G::$_msg = array();
 
-
         $this->controller->do_contact(
             array(),
             $post
         );
         $this->assertEquals($okMsg, G::$_msg[0][0]);
-
     }
-
 }

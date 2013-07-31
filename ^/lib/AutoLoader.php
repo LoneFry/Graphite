@@ -26,24 +26,8 @@
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
-
 class AutoLoader {
     protected static $classNames = array();
-
-    /**
-     * Finds the file name sans extension.
-     *
-     * @param string $path The path to parse
-     *
-     * @return string
-     */
-    private static function getFileName($path) {
-        return substr(
-            $path,
-            strrpos($path, '/') + 1,
-            strrpos($path, '.') - strrpos($path, '/') - 1
-        );
-    }
 
     /**
      * Index the file path based on the file name minus the .php extension.
@@ -60,7 +44,7 @@ class AutoLoader {
         foreach ($dirs as $dir) {
             $output = static::getDirListing($dir);
             foreach ($output as $file) {
-                $className = static::getFileName($file);
+                $className = basename($file, '.php');
                 static::$classNames[$className] = $file;
             }
         }
@@ -108,7 +92,7 @@ class AutoLoader {
      * @return void
      */
     public static function addFile($path, $overwrite = false) {
-        $className = static::getFileName($path);
+        $className = basename($path, '.php');
         // If it is already registered don't overwrite
         if (true == $overwrite || !isset(static::$classNames[$className])) {
             static::$classNames[$className] = $path;
@@ -142,7 +126,6 @@ class AutoLoader {
         }
     }
 
-
     /**
      * Locates a class and loads it.
      *
@@ -155,6 +138,4 @@ class AutoLoader {
             require_once static::$classNames[$className];
         }
     }
-
 }
-

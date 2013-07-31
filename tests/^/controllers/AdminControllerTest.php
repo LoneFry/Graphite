@@ -74,7 +74,6 @@ class AdminControllerTest extends UnitTest {
      * Tests the do_list action
      *
      * @return mixed
-     *
      */
     public function testDo_list() {
         $this->controller->do_list(array());
@@ -87,7 +86,6 @@ class AdminControllerTest extends UnitTest {
      * Tests the do_list action
      *
      * @return mixed
-     *
      */
     public function testDo_loginNoLetter() {
         G::$V->list = null;
@@ -146,7 +144,6 @@ class AdminControllerTest extends UnitTest {
 
         $this->assertEquals('Admin.LoginAdd.php', G::$V->_template);
         $this->assertEquals('Add Login', G::$V->_title);
-
 
         $this->assertTrue(is_a(G::$V->L, 'Login'));
         $this->assertEquals(array('A', 'B', 'C'), G::$V->letters);
@@ -285,17 +282,6 @@ class AdminControllerTest extends UnitTest {
         // Make passwords match
         $post['pass2'] = $post['pass1'];
 
-        /*
-        // Test Invalid Login name
-        $post['loginname'] = 7;
-        $msg = 'admin.loginedit.msg.loginnameinvalid';
-        $returnSets[] = array($post, $msg);
-        // Make username correct
-        $post['loginname'] = 'loginname';
-        */
-
-        // @TODO: Make a dataset for loginname collision
-
         // Test All Valid
         // Mocks return null from db so nochange is what you'll get.
         $msg = 'admin.loginedit.msg.success';
@@ -325,8 +311,5 @@ class AdminControllerTest extends UnitTest {
             }
         }
         $this->assertTrue($found);
-
-
     }
 }
-

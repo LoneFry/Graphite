@@ -149,7 +149,7 @@ class AdminController extends Controller {
 
             if ($insert && $result = $L->insert()) {
                 G::msg(Localizer::translate('admin.loginadd.msg.success'));
-                return $this->do_LoginEdit(array($L->login_id));
+                return $this->do_LoginEdit(array($L->login_id), array());
             } elseif ($insert && (null === $result)) {
                 G::msg(
                     Localizer::translate('admin.loginadd.msg.nochange')
@@ -475,4 +475,3 @@ class AdminController extends Controller {
         G::$V->log = $LL->search(100, 0, 'pkey', true);
     }
 }
-

@@ -1,6 +1,6 @@
 <?php
 /**
- * ${NAME}
+ * AutoLoaderTest
  *
  * PHP version 5
  *
@@ -15,9 +15,7 @@ require_once dirname(__FILE__).'/../../includeme.php';
 
 
 /**
- * AdminController class unit test
- *
- * PHP version 5
+ * AutoLoader class unit test
  *
  * @category PHPUNIT
  * @package  Core

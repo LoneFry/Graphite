@@ -28,21 +28,18 @@ class HomeController extends Controller {
     /**
      * Constructor
      *
-     * @param array $argv Incoming data from get and mod/rewrite.
-     *
-     * @internal param \argv $Array
+     * @param array $argv Incoming data from get and mod/rewrite
      *
      * @return \HomeController
      */
     public function __construct($argv) {
         parent::__construct($argv);
-        require_once SITE.'/^/models/ContactLog.php';
     }
 
     /**
      * Display default Home page
      *
-     * @return mixed
+     * @return void
      */
     public function do_home() {
         G::$V->_template = 'Home.php';
@@ -83,10 +80,12 @@ class HomeController extends Controller {
             if ('' != $post[$honey] || '' != $post[$honey2]) {
                 G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
             } elseif (false !== strpos($post[$from], "\n")
-                || false !== strpos($post[$from], "\r")) {
+                || false !== strpos($post[$from], "\r")
+            ) {
                 G::msg(Localizer::translate('home.contact.msg.fromnewline'));
             } elseif (false !== strpos($post[$subject], "\n")
-                || false !== strpos($post[$subject], "\r")) {
+                || false !== strpos($post[$subject], "\r")
+            ) {
                 G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
             } else {
                 $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';

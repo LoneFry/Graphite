@@ -39,7 +39,6 @@ final class G {
 
     }
 
-
     /**
      * log messages for output later
      *
@@ -117,4 +116,3 @@ final class G {
     public static function close() {
     }
 }
-

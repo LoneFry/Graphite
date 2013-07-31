@@ -63,4 +63,3 @@ class SHA1PasswordHasher implements IPasswordHasher {
         return preg_match('/[0-9a-f]{40}/i', $hash);
     }
 }
-
