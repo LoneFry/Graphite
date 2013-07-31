@@ -29,11 +29,12 @@ class InstallerController extends Controller {
      * install action - receives configuration details from user and writes
      * out configuration file
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_install($argv) {
+    public function do_install($argv = array(), $request = array()) {
         if (true !== G::$G['installer']) {
             G::msg('Installer Disabled', 'error');
             return parent::do_403($argv);
@@ -53,65 +54,65 @@ class InstallerController extends Controller {
 </style>
 ';
 
-        if (isset($_POST['siteName']) && isset($_POST['loginname'])
-            && isset($_POST['password1']) && isset($_POST['password2'])
-            && isset($_POST['siteEmail'])
-            && isset($_POST['Host']) && isset($_POST['User'])
-            && isset($_POST['Pass']) && isset($_POST['Passb'])
-            && isset($_POST['Tabl'])
-            && isset($_POST['User2'])
-            && isset($_POST['Pass2']) && isset($_POST['Pass2b'])
+        if (isset($request['siteName']) && isset($request['loginname'])
+            && isset($request['password1']) && isset($request['password2'])
+            && isset($request['siteEmail'])
+            && isset($request['Host']) && isset($request['User'])
+            && isset($request['Pass']) && isset($request['Passb'])
+            && isset($request['Tabl'])
+            && isset($request['User2'])
+            && isset($request['Pass2']) && isset($request['Pass2b'])
         ) {
-            G::$V->siteName = $_POST['siteName'];
-            G::$V->loginname = $_POST['loginname'];
-            G::$V->siteEmail = $_POST['siteEmail'];
-            G::$V->Host = $_POST['Host'];
-            G::$V->User = $_POST['User'];
-            G::$V->Name = $_POST['Name'];
-            G::$V->Tabl = $_POST['Tabl'];
-            G::$V->User2 = $_POST['User2'];
-            G::$V->HTML5 = isset($_POST['HTML5']);
-            G::$V->HTML4 = isset($_POST['HTML4']);
-            G::$V->CLI = isset($_POST['CLI']);
+            G::$V->siteName = $request['siteName'];
+            G::$V->loginname = $request['loginname'];
+            G::$V->siteEmail = $request['siteEmail'];
+            G::$V->Host = $request['Host'];
+            G::$V->User = $request['User'];
+            G::$V->Name = $request['Name'];
+            G::$V->Tabl = $request['Tabl'];
+            G::$V->User2 = $request['User2'];
+            G::$V->HTML5 = isset($request['HTML5']);
+            G::$V->HTML4 = isset($request['HTML4']);
+            G::$V->CLI = isset($request['CLI']);
 
             $install = true;
-            if ($_POST['password1'] != $_POST['password2']) {
+            if ($request['password1'] != $request['password2']) {
                 G::msg('Root Login Passwords Don\'t Match, try again.', 'error');
                 $install = false;
             }
-            if ($_POST['Pass'] != $_POST['Passb']) {
+            if ($request['Pass'] != $request['Passb']) {
                 G::msg('Database Read/Write Passwords Don\'t Match, try again.', 'error');
                 $install = false;
             }
-            if ($_POST['Pass2'] != $_POST['Pass2b']) {
+            if ($request['Pass2'] != $request['Pass2b']) {
                 G::msg('Database Read-Only Passwords Don\'t Match, try again.', 'error');
                 $install = false;
             }
-            if (false === filter_var($_POST['siteEmail'], FILTER_VALIDATE_EMAIL)) {
+            if (false === filter_var($request['siteEmail'], FILTER_VALIDATE_EMAIL)) {
                 G::msg('Invalid Site Email provided, try again.', 'error');
                 $install = false;
             }
             ob_start();
-            G::$M = new mysqli_($_POST['Host'],
-                                $_POST['User'],
-                                $_POST['Pass'],
-                                $_POST['Name'],
+            G::$M = new mysqli_($request['Host'],
+                                $request['User'],
+                                $request['Pass'],
+                                $request['Name'],
                                 null,
                                 null,
-                                $_POST['Tabl'],
+                                $request['Tabl'],
                                 true);
             if (mysqli_connect_error()) {
                 G::msg('Unable to connect to Database with Read/Write details, try again.', 'error');
                 $install = false;
             }
-            if ('' != $_POST['User2'] && '' != $_POST['Pass2']) {
-                G::$m = new mysqli_($_POST['Host'],
-                                    $_POST['User2'],
-                                    $_POST['Pass2'],
-                                    $_POST['Name'],
+            if ('' != $request['User2'] && '' != $request['Pass2']) {
+                G::$m = new mysqli_($request['Host'],
+                                    $request['User2'],
+                                    $request['Pass2'],
+                                    $request['Name'],
                                     null,
                                     null,
-                                    $_POST['Tabl'],
+                                    $request['Tabl'],
                                     true);
                 if (mysqli_connect_error()) {
                     G::msg('Unable to connect to Database with Read-Only details, try again.', 'error');
@@ -122,7 +123,7 @@ class InstallerController extends Controller {
             }
             G::msg(ob_get_clean());
             if ($install) {
-                G::$G['db']['tabl'] = G::$M->escape_string($_POST['Tabl']);
+                G::$G['db']['tabl'] = G::$M->escape_string($request['Tabl']);
                 if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` ("
                                            ."`login_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
                                            ."`loginname` varchar(255) NOT NULL,"
@@ -214,9 +215,9 @@ class InstallerController extends Controller {
                 } else {
                     include_once SITE.'/^/models/Login.php';
                     Login::prime();// just in case Login was primed earlier
-                    $L = new Login(array('loginname'   => $_POST['loginname'],
-                                         'password'    => $_POST['password1'],
-                                         'email'       => $_POST['siteEmail'],
+                    $L = new Login(array('loginname'   => $request['loginname'],
+                                         'password'    => $request['password1'],
+                                         'email'       => $request['siteEmail'],
                                          'referrer_id' => 1));
                     if ($login_id = $L->insert()) {
                         G::msg('Created root user: '.$L->loginname);
@@ -241,7 +242,7 @@ class InstallerController extends Controller {
                         array('label' => 'Admin/Role', 'description' => 'Can Add/Edit Roles', 'creator_id' => 1),
                         array('label' => 'Home/ContactLog', 'description' => 'Can view Contact Log', 'creator_id' => 1),
                         );
-                    if (isset($_POST['CLI'])) {
+                    if (isset($request['CLI'])) {
                         $roles[] = array('label' => 'Gsh', 'description' => 'Access Graphite Shell', 'creator_id' => 1);
                     }
                     foreach ($roles as $v) {
@@ -255,23 +256,23 @@ class InstallerController extends Controller {
                     }
 
                     $includePath = "'"
-                        .(isset($_POST['HTML5']) ? "/^HTML5;" : '')
-                        .(isset($_POST['HTML4']) ? "/^HTML4;" : '')
-                        .(isset($_POST['CLI']) ? "/^CLI;" : '')
+                        .(isset($request['HTML5']) ? "/^HTML5;" : '')
+                        .(isset($request['HTML4']) ? "/^HTML4;" : '')
+                        .(isset($request['CLI']) ? "/^CLI;" : '')
                         ."/^'"
                         ;
 
                     $config = sprintf($this->config,
                             $_SERVER['SERVER_NAME'],
-                            $_POST['siteEmail'],
-                            $_POST['Host'],
-                            $_POST['User'],
-                            $_POST['Pass'],
-                            $_POST['Name'],
-                            $_POST['Tabl'],
-                            $_POST['User2'],
-                            $_POST['Pass2'],
-                            $_POST['siteName'],
+                            $request['siteEmail'],
+                            $request['Host'],
+                            $request['User'],
+                            $request['Pass'],
+                            $request['Name'],
+                            $request['Tabl'],
+                            $request['User2'],
+                            $request['Pass2'],
+                            $request['siteName'],
                             $includePath
                             );
 

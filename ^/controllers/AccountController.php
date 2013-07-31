@@ -28,16 +28,19 @@ class AccountController extends Controller {
     /**
      * Process Login form
      *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
      * @return mixed
      */
-    public function do_login() {
+    public function do_login($argv = array(), $request = array()) {
         G::$V->_template = 'Account.Login.php';
         G::$V->_title    = G::$V->_siteName.' : Check-in';
 
         G::$V->msg = '';
-        if (isset($_POST['l']) && isset($_POST['p'])) {
-            G::$V->l = $_POST['l'];
-            if (G::$S->authenticate($_POST['l'], $_POST['p'])) {
+        if (isset($request['l']) && isset($request['p'])) {
+            G::$V->l = $request['l'];
+            if (G::$S->authenticate($request['l'], $request['p'])) {
                 G::$V->_template = 'Account.Loggedin.php';
             } else {
                 G::$V->msg = 'Login Failed.';
@@ -47,33 +50,39 @@ class AccountController extends Controller {
         } else {
             G::$V->l = '';
         }
-        G::$V->_URI = isset($_POST['_URI']) ? $_POST['_URI']
-                    : (isset($_GET['_URI']) ? $_GET['_URI'] : CONT);
-        G::$V->_Lbl = isset($_POST['_Lbl']) ? $_POST['_Lbl']
-                    : (isset($_GET['_Lbl']) ? $_GET['_Lbl'] : 'Home');
+        G::$V->_URI = isset($request['_URI']) ? $request['_URI']
+                    : isset($argv['_URI']) ? $argv['_URI'] : CONT;
+        G::$V->_Lbl = isset($request['_Lbl']) ? $request['_Lbl']
+                    : isset($argv['_Lbl']) ? $argv['_Lbl'] : 'Home';
     }
 
     /**
      * Logout, end session
      *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
      * @return mixed
      */
-    public function do_logout() {
+    public function do_logout($argv = array(), $request = array()) {
         G::$V->_template = 'Account.Logout.php';
         G::$V->_title    = G::$V->_siteName.' : Check-out';
 
         G::$S->deauthenticate();
 
-        G::$V->_URI = isset($_POST['_URI']) ? $_POST['_URI'] : CONT;
-        G::$V->_Lbl = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'Home';
+        G::$V->_URI = isset($request['_URI']) ? $request['_URI'] : CONT;
+        G::$V->_Lbl = isset($request['_Lbl']) ? $request['_Lbl'] : 'Home';
     }
 
     /**
      * Password Recovery option
      *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
      * @return mixed
      */
-    public function do_recover() {
+    public function do_recover($argv = array(), $request = array()) {
         G::$V->_template = 'Account.Recover.php';
         G::$V->_title    = G::$V->_siteName.' : Recover Password';
 
@@ -82,16 +91,16 @@ class AccountController extends Controller {
             G::$V->msg = "You are already Checked-in as <b>"
                             .G::$S->Login->loginname."</b>.";
         }
-        if (isset($_POST['loginname'])) {
-            $Login = new Login(array('email' => $_POST['loginname']));
+        if (isset($request['loginname'])) {
+            $Login = new Login(array('email' => $request['loginname']));
             $Login->fill();
             if (0 == $Login->login_id) {
-                $Login = new Login(array('loginname' => $_POST['loginname']));
+                $Login = new Login(array('loginname' => $request['loginname']));
                 $Login->fill();
             }
             if (0 == $Login->login_id) {
                 G::$V->msg = 'Unable to find <b>'
-                    .htmlspecialchars($_POST['loginname'])
+                    .htmlspecialchars($request['loginname'])
                     .'</b>, please try again.';
             } else {
                 $Login->password = $password = 'resetMe'.floor(rand(100, 999));
@@ -141,11 +150,12 @@ class AccountController extends Controller {
     /**
      * Edit current user's settings
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_edit($argv) {
+    public function do_edit($argv = array(), $request = array()) {
         if (!G::$S->Login) {
             G::$V->_URI = CONT.'Account/edit';
             G::$V->_Lbl = 'Account Settings';
@@ -155,22 +165,22 @@ class AccountController extends Controller {
         G::$V->_template = 'Account.Edit.php';
         G::$V->_title    = G::$V->_siteName.' : Account Settings';
 
-        if (isset($_POST['comment']) && isset($_POST['email'])
-            && isset($_POST['password1']) && isset($_POST['password2'])
+        if (isset($request['comment']) && isset($request['email'])
+            && isset($request['password1']) && isset($request['password2'])
         ) {
 
-            G::$S->Login->comment = $_POST['comment'];
-            G::$S->Login->email = $_POST['email'];
-            if ('' != $_POST['password1']) {
-                $error = Security::validate_password($_POST['password1']);
-                if ($_POST['password1'] != $_POST['password2']) {
+            G::$S->Login->comment = $request['comment'];
+            G::$S->Login->email = $request['email'];
+            if ('' != $request['password1']) {
+                $error = Security::validate_password($request['password1']);
+                if ($request['password1'] != $request['password2']) {
                     G::msg('Passwords do not match, please try again.', 'error');
-                } elseif (G::$S->Login->test_password($_POST['password1'])) {
+                } elseif (G::$S->Login->test_password($request['password1'])) {
                     G::msg('You cannot re-use your old password!', 'error');
                 } elseif (true !== $error) {
                     G::msg($error, 'error');
                 } else {
-                    G::$S->Login->password = $_POST['password1'];
+                    G::$S->Login->password = $request['password1'];
                     G::$S->Login->flagChangePass = 0;
                     $pass = true;
                 }
