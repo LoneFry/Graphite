@@ -75,7 +75,7 @@ abstract class Controller {
         return $this->action;
     }
 
-    /**
+   /**
      * perform previously specified action
      *
      * @param array $argv Arguments list to pass to action
@@ -94,7 +94,6 @@ abstract class Controller {
                 $argv[$key] = $val;
             }
         }
-
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 $params = $_GET;
@@ -106,9 +105,9 @@ abstract class Controller {
                 $params = array();
                 break;
         }
-
         return $this->$func($argv, $params);
     }
+
 
     /**
      * __set magic method

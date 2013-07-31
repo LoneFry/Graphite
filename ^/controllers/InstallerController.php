@@ -399,5 +399,3 @@ G::$G['VIEW']['_siteName'] = '%10$s';
 ENDOFCONFIG;
 
 }
-
-

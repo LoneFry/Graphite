@@ -1,6 +1,6 @@
 <?php
 /**
- * ${NAME}
+ * Home Language File
  *
  * PHP version 5
  *

@@ -26,9 +26,20 @@ class HomeController extends Controller {
     protected $action = 'home';
 
     /**
+     * Constructor
+     *
+     * @param array $argv Incoming data from get and mod/rewrite
+     *
+     * @return \HomeController
+     */
+    public function __construct($argv) {
+        parent::__construct($argv);
+    }
+
+    /**
      * Display default Home page
      *
-     * @return mixed
+     * @return void
      */
     public function do_home() {
         G::$V->_template = 'Home.php';
@@ -38,8 +49,8 @@ class HomeController extends Controller {
     /**
      * Display contact form
      *
-     * @param array $argv web request parameters
-     * @param array $post Post request variable.
+     * @param array $argv Incoming data from get and mod/rewrite.
+     * @param array $post Post data.
      *
      * @return mixed
      */
@@ -66,37 +77,38 @@ class HomeController extends Controller {
             && isset($post[$honey])
             && isset($post[$honey2])
         ) {
-            $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
-            $login_id  = G::$S->Login?G::$S->Login->login_id:0;
             if ('' != $post[$honey] || '' != $post[$honey2]) {
                 G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
-            } elseif (false !== strpos($post[$from], "\n") || false !== strpos($post[$from], "\r")) {
+            } elseif (false !== strpos($post[$from], "\n")
+                || false !== strpos($post[$from], "\r")
+            ) {
                 G::msg(Localizer::translate('home.contact.msg.fromnewline'));
-            } elseif (false !== strpos($post[$subject], "\n") || false !== strpos($post[$subject], "\r")) {
+            } elseif (false !== strpos($post[$subject], "\n")
+                || false !== strpos($post[$subject], "\r")
+            ) {
                 G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
             } else {
-                mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$post[$subject],
-                    'Login Info: '.$loginname.' - '.$login_id."\n"
-                    .'Specified Email Address: '.$post[$from]."\n"
-                    .'Subject: '.$post[$subject]."\n"
-                    .'Message: '."\n".$post[$message],
-                    'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
-                    ."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
-                    );
+                $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
+                $login_id  = G::$S->Login?G::$S->Login->login_id:0;
+
+                $this->mailer($post, $from, $subject, $message,
+                              $loginname, $login_id);
                 G::msg(Localizer::translate('home.contact.msg.sent'));
-                $C = new ContactLog(array(
+
+                $ContactLog = new ContactLog(array(
                     'from'     => $post[$from],
                     'subject'  => $post[$subject],
                     'to'       => G::$G['siteEmail'],
                     'body'     => $post[$message],
                     'login_id' => $login_id,
                 ), true);
-                $C->save();
+                $ContactLog->save();
             }
         } else {
             G::msg(Localizer::translate('home.contact.msg.useform'));
         }
     }
+
 
     /**
      * Display log of submissions to the contact form
@@ -115,4 +127,29 @@ class HomeController extends Controller {
 
         G::$V->log = ContactLog::some(100, 0, 'id', true);
     }
+
+    /**
+     * Mailer
+     *
+     * @param array  $post      Post Array
+     * @param string $from      From Key
+     * @param string $subject   Subject Key
+     * @param string $message   Message Key
+     * @param string $loginName User's login
+     * @param string $loginId   Users' ID
+     *
+     * @return mixed
+     */
+    private function mailer($post, $from, $subject, $message,
+                            $loginName, $loginId) {
+        mail(G::$G['siteEmail'], G::$G['contactFormSubject'].$post[$subject],
+            'Login Info: '.$loginName.' - '.$loginId."\n"
+            .'Specified Email Address: '.$post[$from]."\n"
+            .'Subject: '.$post[$subject]."\n"
+            .'Message: '."\n".$post[$message],
+            'From: "'.G::$G['VIEW']['_siteName'].'" <'.G::$G['siteEmail'].">\n"
+            ."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
+        );
+    }
+
 }

@@ -18,4 +18,3 @@ if (file_exists(dirname(__DIR__).'/^HTML5')) {
 }
 
 G::$G['VIEW']['_link'][] = array('rel' => 'stylesheet','type' => 'text/css','href' => '/^HTML4/css/default.css');
-
