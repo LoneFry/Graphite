@@ -102,8 +102,6 @@ class UnitTest extends PHPUnit_Framework_TestCase {
      * @return mixed
      */
     public function tearDown() {
-
+        // Put stuff in here that you want to do after each test.
     }
-
-
 };

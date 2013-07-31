@@ -38,11 +38,7 @@ class AutoLoader {
      * @return string
      */
     private static function getFileName($path) {
-        return substr(
-            $path,
-            strrpos($path, '/') + 1,
-            strrpos($path, '.') - strrpos($path, '/') - 1
-        );
+        return basename($path, '.php');
     }
 
     /**
@@ -155,6 +151,4 @@ class AutoLoader {
             require_once static::$classNames[$className];
         }
     }
-
 }
-

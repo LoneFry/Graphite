@@ -94,8 +94,6 @@ abstract class Controller {
                 $argv[$key] = $val;
             }
         }
-
-
         switch ($_SERVER['REQUEST_METHOD']) {
             case 'GET':
                 $params = $_GET;
@@ -107,9 +105,7 @@ abstract class Controller {
                 $params = array();
                 break;
         }
-
-       return $this->$func($argv, $params);
-
+        return $this->$func($argv, $params);
     }
 
 
