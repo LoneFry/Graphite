@@ -42,6 +42,11 @@ abstract class DataModel {
     protected $vals = array();
 
     /**
+     * Invalid values
+     */
+    protected $invalidVals = array();
+
+    /**
      * constructor accepts four prototypes:
      * __construct(true) will create an instance with default values
      * __construct(int) will create an instance with the pkey set to the int
@@ -70,6 +75,15 @@ abstract class DataModel {
                 $this->setAll($a);
             }
         }
+    }
+
+    /**
+     * Returns the invalid Values.
+     *
+     * @return mixed
+     */
+    public function getInvalidVals() {
+        return $this->invalidVals;
     }
 
     /**
@@ -278,6 +292,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
@@ -290,6 +305,7 @@ abstract class DataModel {
                         || $v <= static::$vars[$k]['max'])
                 ) {
                     $this->vals[$k] = (int)$v;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if (isset(static::$vars[$k]['min'])
@@ -303,6 +319,7 @@ abstract class DataModel {
                     $v = min($v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = (int)$v;
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -327,6 +344,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
@@ -339,6 +357,7 @@ abstract class DataModel {
                         || $v <= static::$vars[$k]['max'])
                 ) {
                     $this->vals[$k] = (float)$v;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if (isset(static::$vars[$k]['min'])
@@ -352,6 +371,7 @@ abstract class DataModel {
                     $v = min($v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = (float)$v;
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -376,6 +396,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             $strict = isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict'];
 
@@ -390,8 +411,10 @@ abstract class DataModel {
                                         static::$vars[$k]['values'], $strict)
             ) {
                 $this->vals[$k] = static::$vars[$k]['values'][$i];
+                unset($this->invalidVals[$k]);
             } elseif (!$strict) {
                 $this->vals[$k] = static::$vars[$k]['values'][0];
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -417,6 +440,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['format'])) {
                 $format = static::$vars[$k]['format'];
             } else {
@@ -438,6 +462,7 @@ abstract class DataModel {
                         || $v <= static::$vars[$k]['max'])
                 ) {
                     $this->vals[$k] = date($format, $v);
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if (isset(static::$vars[$k]['min'])
@@ -451,6 +476,7 @@ abstract class DataModel {
                     $v = min($v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = date($format, $v);
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -476,6 +502,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             // don't clobber passed-in typestamps
             if (!is_numeric($v)) {
                 $v = strtotime($v);
@@ -492,6 +519,7 @@ abstract class DataModel {
                         || $v <= static::$vars[$k]['max'])
                 ) {
                     $this->vals[$k] = $v;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if (isset(static::$vars[$k]['min'])
@@ -505,6 +533,7 @@ abstract class DataModel {
                     $v = min($v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = $v;
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -530,6 +559,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
@@ -541,6 +571,7 @@ abstract class DataModel {
                         || strlen($v) <= static::$vars[$k]['max'])
                 ) {
                     $this->vals[$k] = $v;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if ((!isset(static::$vars[$k]['min'])
@@ -554,6 +585,7 @@ abstract class DataModel {
                         $v = substr($v, 0, static::$vars[$k]['max']);
                     }
                     $this->vals[$k] = $v;
+                    unset($this->invalidVals[$k]);
                 }
             }
         }
@@ -579,6 +611,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
@@ -588,10 +621,10 @@ abstract class DataModel {
                     && (!isset(static::$vars[$k]['max'])
                         || !is_numeric(static::$vars[$k]['max'])
                         || strlen($v) <= static::$vars[$k]['max'])
+                    && (false !== $v = filter_var($v, FILTER_VALIDATE_EMAIL))
                 ) {
-                    if (false !== $v = filter_var($v, FILTER_VALIDATE_EMAIL)) {
-                        $this->vals[$k] = $v;
-                    }
+                    $this->vals[$k] = $v;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 if ((!isset(static::$vars[$k]['min'])
@@ -606,6 +639,7 @@ abstract class DataModel {
                     }
                     if (false !== $v = filter_var($v, FILTER_VALIDATE_EMAIL)) {
                         $this->vals[$k] = $v;
+                        unset($this->invalidVals[$k]);
                     }
                 }
             }
@@ -665,6 +699,7 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
@@ -678,10 +713,12 @@ abstract class DataModel {
                     );
                 if (null !== $tmp) {
                     $this->vals[$k] = $tmp;
+                    unset($this->invalidVals[$k]);
                 }
             } else {
                 $this->vals[$k] = 1 == ord($v)
                                   || filter_var($v, FILTER_VALIDATE_BOOLEAN);
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
@@ -796,7 +833,7 @@ abstract class DataModel {
             if (!is_array($v)) {
                 $v = array($v);
             }
-
+            $this->invalidVals[$k] = $v;
             // IF we have a whitelist, filter supplied value
             if (isset(static::$vars[$k]['values'])
                 && is_array(static::$vars[$k]['values'])
@@ -822,6 +859,7 @@ abstract class DataModel {
                 || strlen($v) <= static::$vars[$k]['max']
             ) {
                 $this->vals[$k] = $v;
+                unset($this->invalidVals[$k]);
             }
         }
         return $this->vals[$k];
