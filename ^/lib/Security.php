@@ -50,7 +50,9 @@ class Security {
             $_SESSION['ip'] = '';
         }
 
-        if (isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id']) && 0 < $_SESSION['login_id']) {
+        if (isset($_SESSION['login_id']) && is_numeric($_SESSION['login_id'])
+            && 0 < $_SESSION['login_id']
+        ) {
             $Login = new Login(array('login_id' => $_SESSION['login_id']));
             if (false === $Login->load()) {
                 G::msg(Localizer::translate('security.error.loginloadfail'), 'error');

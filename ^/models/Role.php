@@ -101,7 +101,7 @@ class Role extends Record {
         } else {
             $query = "SELECT rl.`login_id`, rl.`grantor_id` "
                 ."FROM `".G::$G['db']['tabl']."Roles_Logins` rl "
-                ."WHERE rl.`role_id` = ".$this->__get('role_id')
+                ."WHERE rl.`role_id` = ".$this->__get('role_id').''
             ;
         }
         if (false === $result = G::$m->query($query)) {

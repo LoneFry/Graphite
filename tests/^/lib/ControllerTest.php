@@ -72,8 +72,8 @@ class ControllerTest extends UnitTest {
     /**
      * Test that the action is set.
      *
-     * @param $action
-     * @param $expected
+     * @param string $action   Action requested
+     * @param string $expected Expected action implemented.
      *
      * @return void
      *
@@ -173,6 +173,11 @@ class ControllerTest extends UnitTest {
 
 }
 
+/**
+ * Used to pass through extra arguments in mock functions.
+ *
+ * @return array
+ */
 function makeArgArray() {
     return func_get_args();
 }

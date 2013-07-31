@@ -144,4 +144,3 @@ class PasswordHasher implements IPasswordHasher {
         return false;
     }
 }
-

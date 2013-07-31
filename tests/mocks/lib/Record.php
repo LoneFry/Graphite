@@ -12,8 +12,6 @@
  * @link     http://g.lonefry.com
  */
 
-// require_once SITE.'/^/lib/DataModel.php';
-
 /**
  * Record class - used as a base class for Active Record Model classes
  *  an example extension is at bottom of file
@@ -378,8 +376,7 @@ abstract class Record extends DataModel {
      * @return bool
      */
     public static function drop() {
-        $query = "DROP TABLE IF EXISTS `".static::$table."`";
-        return G::$M->query($query);
+        return true;
     }
 
     /**
@@ -390,6 +387,6 @@ abstract class Record extends DataModel {
      * @return mixed
      */
     public static function create($returnQuery = false) {
-        return G::$M->query($query);
+        return $returnQuery?'-create query-':false;
     }
 }
