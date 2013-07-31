@@ -95,11 +95,12 @@ class GshController extends CLIController {
     /**
      * Controller action to use as entry point for Gsh
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_sh($argv = array()) {
+    public function do_sh($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -107,8 +108,8 @@ class GshController extends CLIController {
         G::$V->_title = 'Graphite Shell';
         $r = '';
         $this->_cli_load();
-        if (isset($_POST['prompt'])) {
-            foreach (explode(';', $_POST['prompt']) as $command) {
+        if (isset($request['prompt'])) {
+            foreach (explode(';', $request['prompt']) as $command) {
                 $r .= $this->_cli_run($command);
             }
         }
@@ -132,11 +133,12 @@ class GshController extends CLIController {
     /**
      * Controller action to clear the CLI buffer
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_clear($argv = array()) {
+    public function do_clear($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -148,11 +150,12 @@ class GshController extends CLIController {
     /**
      * Controller action to print the date
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_date($argv = array()) {
+    public function do_date($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -162,11 +165,12 @@ class GshController extends CLIController {
     /**
      * Controller action to echo inputs
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_echo($argv = array()) {
+    public function do_echo($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -177,11 +181,12 @@ class GshController extends CLIController {
     /**
      * Controller action to print a help message
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_help($argv = array()) {
+    public function do_help($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -197,11 +202,12 @@ class GshController extends CLIController {
     /**
      * Controller action to print the arguments array as recieved and parsed
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_argv($argv = array()) {
+    public function do_argv($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return $this->do_403($argv);
         }
@@ -213,11 +219,12 @@ class GshController extends CLIController {
     /**
      * Controller action for non-existent commands
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_404($argv = array()) {
+    public function do_404($argv = array(), $request = array()) {
         if (!G::$S->roleTest($this->role)) {
             return parent::do_404($argv);
         }
@@ -227,11 +234,12 @@ class GshController extends CLIController {
     /**
      * Controller action for unauthorized sessions
      *
-     * @param array $argv Argument list passed from Dispatcher
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_403($argv = array()) {
+    public function do_403($argv = array(), $request = array()) {
         if (isset($_GET['a'])) {
             if (!G::$S->Login) {
                 $this->_println('Your session has expired.  Log in and try again.');

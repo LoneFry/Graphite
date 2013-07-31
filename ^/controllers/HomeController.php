@@ -28,20 +28,21 @@ class HomeController extends Controller {
     /**
      * Constructor
      *
-     * @param array $argv Incoming data from get and mod/rewrite
-     *
-     * @return \HomeController
+     * @param array $argv    Argument list passed from Dispatcher
      */
-    public function __construct($argv) {
+    public function __construct($argv = array()) {
         parent::__construct($argv);
     }
 
     /**
      * Display default Home page
      *
-     * @return void
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
+     * @return mixed
      */
-    public function do_home() {
+    public function do_home($argv = array(), $request = array()) {
         G::$V->_template = 'Home.php';
         G::$V->_title    = G::$V->_siteName;
     }
@@ -49,16 +50,16 @@ class HomeController extends Controller {
     /**
      * Display contact form
      *
-     * @param array $argv Incoming data from get and mod/rewrite.
-     * @param array $post Post data.
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_contact($argv, $post) {
+    public function do_contact($argv = array(), $request = array()) {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed      = $seed    = (int)(isset($post['apple'])
-            ? $post['apple']
+        G::$V->seed      = $seed    = (int)(isset($request['apple'])
+            ? $request['apple']
             : microtime(true));
         G::$V->from      = $from    = substr(md5($seed), -6);
         G::$V->subject   = $subject = md5($from);
@@ -71,35 +72,35 @@ class HomeController extends Controller {
         </style>
 ';
 
-        if (isset($post[$from])
-            && isset($post[$subject])
-            && isset($post[$message])
-            && isset($post[$honey])
-            && isset($post[$honey2])
+        if (isset($request[$from])
+            && isset($request[$subject])
+            && isset($request[$message])
+            && isset($request[$honey])
+            && isset($request[$honey2])
         ) {
-            if ('' != $post[$honey] || '' != $post[$honey2]) {
+            if ('' != $request[$honey] || '' != $request[$honey2]) {
                 G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
-            } elseif (false !== strpos($post[$from], "\n")
-                || false !== strpos($post[$from], "\r")
+            } elseif (false !== strpos($request[$from], "\n")
+                || false !== strpos($request[$from], "\r")
             ) {
                 G::msg(Localizer::translate('home.contact.msg.fromnewline'));
-            } elseif (false !== strpos($post[$subject], "\n")
-                || false !== strpos($post[$subject], "\r")
+            } elseif (false !== strpos($request[$subject], "\n")
+                || false !== strpos($request[$subject], "\r")
             ) {
                 G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
             } else {
                 $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
                 $login_id  = G::$S->Login?G::$S->Login->login_id:0;
 
-                $this->mailer($post, $from, $subject, $message,
+                $this->mailer($request, $from, $subject, $message,
                               $loginname, $login_id);
                 G::msg(Localizer::translate('home.contact.msg.sent'));
 
                 $ContactLog = new ContactLog(array(
-                    'from'     => $post[$from],
-                    'subject'  => $post[$subject],
+                    'from'     => $request[$from],
+                    'subject'  => $request[$subject],
                     'to'       => G::$G['siteEmail'],
-                    'body'     => $post[$message],
+                    'body'     => $request[$message],
                     'login_id' => $login_id,
                 ), true);
                 $ContactLog->save();
@@ -113,11 +114,12 @@ class HomeController extends Controller {
     /**
      * Display log of submissions to the contact form
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_contactLog($argv) {
+    public function do_contactLog($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Home/ContactLog')) {
             return parent::do_403($argv);
         }
@@ -151,5 +153,4 @@ class HomeController extends Controller {
             ."Reply-To: ".$post[$from]."\nX-Mailer: PHP/" . phpversion()
         );
     }
-
 }

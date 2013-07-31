@@ -28,11 +28,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_list($argv) {
+    public function do_list($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin')) {
             return parent::do_403($argv);
         }
@@ -44,11 +45,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_Login($argv) {
+    public function do_Login($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -74,12 +76,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
-     * @param array $post post request array
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_LoginAdd($argv, $post) {
+    public function do_LoginAdd($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -87,29 +89,29 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.LoginAdd.php';
         G::$V->_title    = 'Add Login';
 
-        if (isset($post['loginname']) && isset($post['realname'])
-            && isset($post['pass1']) && isset($post['pass2'])
-            && isset($post['email1']) && isset($post['email2'])
-            && isset($post['sessionStrength']) && isset($post['flagChangePass'])
-            && isset($post['disabled'])
+        if (isset($request['loginname']) && isset($request['realname'])
+            && isset($request['pass1']) && isset($request['pass2'])
+            && isset($request['email1']) && isset($request['email2'])
+            && isset($request['sessionStrength']) && isset($request['flagChangePass'])
+            && isset($request['disabled'])
         ) {
             $insert = true;
-            if ($post['email1'] != $post['email2']) {
+            if ($request['email1'] != $request['email2']) {
                 G::msg(
                     Localizer::translate('admin.loginadd.msg.emailmismatch'),
                     'error'
                 );
                 $insert = false;
             }
-            $post['email'] = $post['email1'];
+            $request['email'] = $request['email1'];
 
-            if ('' == $post['pass1']) {
+            if ('' == $request['pass1']) {
                 G::msg(
                     Localizer::translate('admin.loginadd.msg.passwordempty'),
                     'error'
                 );
                 $insert = false;
-            } elseif ($post['pass1'] != $post['pass2']) {
+            } elseif ($request['pass1'] != $request['pass2']) {
                 G::msg(
                     Localizer::translate('admin.loginadd.msg.passwordmismatch'),
                     'error'
@@ -117,20 +119,20 @@ class AdminController extends Controller {
                 $insert = false;
             } elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
                 && G::$G['SEC']['passwords']['enforce_in_admin']
-                && true !== $error = Security::validate_password($post['pass1'])
+                && true !== $error = Security::validate_password($request['pass1'])
             ) {
                 G::msg($error, 'error');
                 $insert = false;
             } else {
-                $post['password'] = $post['pass1'];
+                $request['password'] = $request['pass1'];
             }
 
-            $L = new Login($post, true);
+            $L = new Login($request, true);
             if (!$L->loginname) {
                 G::msg(
                     Localizer::translate(
                         'admin.loginadd.msg.loginnameinvalid',
-                        htmlspecialchars($post['loginname'])
+                        htmlspecialchars($request['loginname'])
                     ),
                     'error'
                 );
@@ -140,7 +142,7 @@ class AdminController extends Controller {
                 G::msg(
                     Localizer::translate(
                         'admin.loginadd.msg.emailinvalid',
-                        htmlspecialchars($post['email'])
+                        htmlspecialchars($request['email'])
                     ),
                     'error'
                 );
@@ -179,12 +181,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
-     * @param array $post post request array
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_LoginEdit($argv, $post) {
+    public function do_LoginEdit($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -201,34 +203,34 @@ class AdminController extends Controller {
         $L->load();
 
         // handle changes to the Login
-        if (isset($post['login_id']) && $post['login_id'] == $L->login_id
-            && isset($post['loginname']) && isset($post['realname'])
-            && isset($post['pass1']) && isset($post['pass2'])
-            && isset($post['email1']) && isset($post['email2'])
-            && isset($post['sessionStrength']) && isset($post['flagChangePass'])
-            && isset($post['disabled'])
+        if (isset($request['login_id']) && $request['login_id'] == $L->login_id
+            && isset($request['loginname']) && isset($request['realname'])
+            && isset($request['pass1']) && isset($request['pass2'])
+            && isset($request['email1']) && isset($request['email2'])
+            && isset($request['sessionStrength']) && isset($request['flagChangePass'])
+            && isset($request['disabled'])
         ) {
             $update = true;
             $old_loginname = $L->loginname;
             $old_email = $L->email;
-            $L->loginname = $post['loginname'];
-            $L->realname = $post['realname'];
-            $L->email = $post['email1'];
-            $L->sessionStrength = $post['sessionStrength'];
-            $L->flagChangePass = $post['flagChangePass'];
-            $L->disabled = $post['disabled'];
+            $L->loginname = $request['loginname'];
+            $L->realname = $request['realname'];
+            $L->email = $request['email1'];
+            $L->sessionStrength = $request['sessionStrength'];
+            $L->flagChangePass = $request['flagChangePass'];
+            $L->disabled = $request['disabled'];
 
-            if ($old_loginname == $L->loginname && $old_loginname != $post['loginname']) {
+            if ($old_loginname == $L->loginname && $old_loginname != $request['loginname']) {
                 G::msg(
                     Localizer::translate(
                         'admin.loginedit.msg.logininvalid',
-                        htmlspecialchars($post['loginname'])
+                        htmlspecialchars($request['loginname'])
                     ),
                     'error'
                 );
                 $update = false;
             }
-            if ($post['pass1'] != $post['pass2']) {
+            if ($request['pass1'] != $request['pass2']) {
                 G::msg(
                     Localizer::translate('admin.loginedit.msg.passwordmismatch'),
                     'error'
@@ -236,29 +238,29 @@ class AdminController extends Controller {
                 $update = false;
             } elseif (isset(G::$G['SEC']['passwords']['enforce_in_admin'])
                 && G::$G['SEC']['passwords']['enforce_in_admin']
-                && true !== $error = Security::validate_password($post['pass1'])
+                && true !== $error = Security::validate_password($request['pass1'])
             ) {
                 G::msg($error, 'error');
                 $update = false;
             } else {
                 // blank means don't change password
-                if ($post['pass1'] != '') {
-                    $L->password = $post['pass1'];
+                if ($request['pass1'] != '') {
+                    $L->password = $request['pass1'];
                 }
             }
 
-            if ($post['email1'] != $post['email2']) {
+            if ($request['email1'] != $request['email2']) {
                 G::msg(
                     Localizer::translate('admin.loginedit.msg.emailmismatch'),
                     'error'
                 );
                 $update = false;
             }
-            if ($old_email == $L->email && $old_email != $post['email1']) {
+            if ($old_email == $L->email && $old_email != $request['email1']) {
                 G::msg(
                     Localizer::translate(
                         'admin.loginedit.msg.emailinvalid',
-                        htmlspecialchars($post['email1'])
+                        htmlspecialchars($request['email1'])
                     ),
                     'error'
                 );
@@ -274,7 +276,7 @@ class AdminController extends Controller {
                     G::msg(
                         Localizer::translate(
                             'admin.loginedit.msg.loginnameexists',
-                            htmlspecialchars($post['email1'])
+                            htmlspecialchars($request['email1'])
                         ),
                         'error'
                     );
@@ -290,9 +292,9 @@ class AdminController extends Controller {
         $R = new Role();
         $Roles = $R->search(1000, 0, 'label');
         // handle grant/revoke changes
-        if (isset($post['grant']) && is_array($post['grant'])) {
+        if (isset($request['grant']) && is_array($request['grant'])) {
             $i = 0;
-            foreach ($post['grant'] as $k => $v) {
+            foreach ($request['grant'] as $k => $v) {
                 if (1 == $v && !$L->roleTest($Roles[$k]->label)) {
                     $Roles[$k]->grant($L->login_id);
                     $i++;
@@ -301,7 +303,7 @@ class AdminController extends Controller {
             G::msg(Localizer::translate('admin.loginedit.msg.grantroles', $i));
             $i = 0;
             foreach ($Roles as $k => $v) {
-                if ($L->roleTest($Roles[$k]->label) && !isset($post['grant'][$k])) {
+                if ($L->roleTest($Roles[$k]->label) && !isset($request['grant'][$k])) {
                     $Roles[$k]->revoke($L->login_id);
                     $i++;
                 }
@@ -323,11 +325,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_Role($argv) {
+    public function do_Role($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -342,11 +345,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_RoleAdd($argv) {
+    public function do_RoleAdd($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -354,10 +358,10 @@ class AdminController extends Controller {
         G::$V->_template = 'Admin.RoleAdd.php';
         G::$V->_title    = 'Add Role';
 
-        if (isset($_POST['label']) && isset($_POST['description'])
-            && isset($_POST['disabled'])
+        if (isset($request['label']) && isset($request['description'])
+            && isset($request['disabled'])
         ) {
-            $R = new Role($_POST, true);
+            $R = new Role($request, true);
 
             if ($result = $R->insert()) {
                 G::msg('Role Added');
@@ -379,11 +383,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_RoleEdit($argv) {
+    public function do_RoleEdit($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -400,13 +405,13 @@ class AdminController extends Controller {
         $R->load();
 
         // handle changes to the role
-        if (isset($_POST['role_id']) && $_POST['role_id'] == $R->role_id
-            && isset($_POST['label']) && isset($_POST['description'])
-            && isset($_POST['disabled'])
+        if (isset($request['role_id']) && $request['role_id'] == $R->role_id
+            && isset($request['label']) && isset($request['description'])
+            && isset($request['disabled'])
         ) {
-            $R->label = $_POST['label'];
-            $R->description = $_POST['description'];
-            $R->disabled = $_POST['disabled'];
+            $R->label = $request['label'];
+            $R->description = $request['description'];
+            $R->disabled = $request['disabled'];
 
             if ($result = $R->update()) {
                 G::msg('Role Edited');
@@ -424,9 +429,9 @@ class AdminController extends Controller {
         $members = $R->getMembers();
 
         // handle grant/revoke changes
-        if (isset($_POST['grant']) && is_array($_POST['grant'])) {
+        if (isset($request['grant']) && is_array($request['grant'])) {
             $i = 0;
-            foreach ($_POST['grant'] as $k => $v) {
+            foreach ($request['grant'] as $k => $v) {
                 if (1 == $v && !isset($members[$k])) {
                     $R->grant($k);
                     $members[$k] = G::$S->Login->login_id;
@@ -437,7 +442,7 @@ class AdminController extends Controller {
             $i = 0;
             if (is_array($members)) {
                 foreach ($members as $k => $v) {
-                    if (!isset($_POST['grant'][$k])) {
+                    if (!isset($request['grant'][$k])) {
                         $R->revoke($k);
                         unset($members[$k]);
                         $i++;
@@ -458,11 +463,12 @@ class AdminController extends Controller {
     /**
      * action
      *
-     * @param array $argv web request parameters
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
      *
      * @return mixed
      */
-    public function do_loginLog($argv) {
+    public function do_loginLog($argv = array(), $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
