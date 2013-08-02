@@ -28,6 +28,7 @@
  */
 abstract class Controller {
     protected $action = '';
+    protected $method = '';
     protected $argv   = array();
 
     /**
@@ -44,6 +45,7 @@ abstract class Controller {
                 $this->action($argv[0]);
             }
         }
+        $this->method = $_SERVER['REQUEST_METHOD'];
     }
 
     /**
@@ -95,7 +97,7 @@ abstract class Controller {
             }
         }
 
-        switch ($_SERVER['REQUEST_METHOD']) {
+        switch ($this->method) {
             case 'GET':
                 $params = $_GET;
                 break;
