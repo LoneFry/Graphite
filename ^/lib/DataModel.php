@@ -667,12 +667,14 @@ abstract class DataModel {
         }
         if (1 < count($a = func_get_args())) {
             $v = $a[1];
+            $this->invalidVals[$k] = $v;
             // support entry of converted IPs
             if (is_numeric($v)) {
                 $v = long2ip($v);
             }
             if (filter_var($v, FILTER_VALIDATE_IP)) {
                 $this->vals[$k] = ip2long($v);
+                unset($this->invalidVals[$k]);
             }
         }
         return long2ip($this->vals[$k]);
@@ -752,11 +754,13 @@ abstract class DataModel {
             } else {
                 $v = serialize($a[1]);
             }
+            $this->invalidVals[$k] = $v;
             if (!isset(static::$vars[$k]['max'])
                 || !is_numeric(static::$vars[$k]['max'])
                 || strlen($v) <= static::$vars[$k]['max']
             ) {
                 $this->vals[$k] = $v;
+                unset($this->invalidVals[$k]);
             }
         }
         return unserialize($this->vals[$k]);
@@ -790,11 +794,13 @@ abstract class DataModel {
             } else {
                 $v = json_encode($a[1]);
             }
+            $this->invalidVals[$k] = $v;
             if (!isset(static::$vars[$k]['max'])
                 || !is_numeric(static::$vars[$k]['max'])
                 || strlen($v) <= static::$vars[$k]['max']
             ) {
                 $this->vals[$k] = $v;
+                unset($this->invalidVals[$k]);
             }
         }
         return json_decode($this->vals[$k]);
@@ -845,8 +851,7 @@ abstract class DataModel {
                     if (in_array($vv, static::$vars[$k]['values'])) {
                         $tmp[$kk] = $vv;
                     } elseif ($strict) {
-                        $tmp = $this->vals[$k];
-                        break;
+                        return $this->vals[$k];
                     }
                 }
                 $v = $tmp;
