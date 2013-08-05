@@ -182,19 +182,18 @@ abstract class DataModel {
      *  @return mixed set value on success, null on failure
      */
     public function __set($k, $v) {
+        // If value is null, just set directly
         if (null === $v) {
             return $this->vals[$k] = null;
         }
+
+        // If a custom method exists for var, call it
         if (method_exists($this, $k)) {
             return $this->$k($v);
         }
 
         // $k is a valid var, with a type?
-        if (!isset(static::$vars[$k]['type'])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (!method_exists($this, '_'.static::$vars[$k]['type'])) {
@@ -204,6 +203,8 @@ abstract class DataModel {
                 E_USER_NOTICE);
             return null;
         }
+
+        // Finally, set the value through its type handler
         $func = '_'.static::$vars[$k]['type'];
         return $this->$func($k, $v);
     }
@@ -219,21 +220,27 @@ abstract class DataModel {
      *  @return mixed requested value if found, null on failure
      */
     public function __get($k) {
+        // If value is null, just return null
+        if (null === $this->vals[$k]) {
+            return null;
+        }
+
+        // If a custom method exists for var, call it
         if (method_exists($this, $k)) {
             return $this->$k();
         }
 
-        // $k is a valid var, with a val?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __get(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        // $k is a valid var?
+        if (null === $this->_isVar($k)) {
             return null;
         }
+
+        // If the type is not valid, return the raw value
         if (!method_exists($this, '_'.static::$vars[$k]['type'])) {
             return $this->vals[$k];
         }
+
+        // Finally, request the value through its type handler
         $func = '_'.static::$vars[$k]['type'];
         return $this->$func($k);
     }
@@ -262,6 +269,27 @@ abstract class DataModel {
         $this->vals[$k] = null;
     }
 
+    /**
+     * Express whether key is declared in static::$vars
+     * Trigger error if it is not
+     *
+     * @param string $k property to test
+     *
+     * @return bool Return true if declared, null if undeclared
+     */
+    protected function _isVar($k) {
+        if (!isset(static::$vars[$k])) {
+            $trace = debug_backtrace();
+            trigger_error('Undefined property via DataModel::__get/__set: '
+                .$k.' in '.$trace[1]['file'].' on line '.$trace[1]['line'],
+                E_USER_NOTICE);
+
+            return null;
+        }
+
+        return true;
+    }
+
     /** **********************************************************************
      * Start Type specific combined Getter/Setter functions
      *
@@ -282,12 +310,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _i($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -334,12 +357,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _f($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -386,12 +404,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _e($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -430,12 +443,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _dt($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -492,12 +500,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _ts($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -549,12 +552,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _s($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -601,12 +599,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _em($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -657,12 +650,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _ip($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -691,12 +679,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _b($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -737,12 +720,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _o($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -777,12 +755,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _j($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
@@ -817,12 +790,7 @@ abstract class DataModel {
      * @return mixed current value, if setting, resultant value
      */
     protected function _a($k) {
-        // $k is a valid var?
-        if (!isset(static::$vars[$k])) {
-            $trace = debug_backtrace();
-            trigger_error('Undefined property via __set(): '.$k
-                .' in '.$trace[0]['file'].' on line '.$trace[0]['line'],
-                E_USER_NOTICE);
+        if (null === $this->_isVar($k)) {
             return null;
         }
         if (1 < count($a = func_get_args())) {
