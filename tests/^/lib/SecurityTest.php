@@ -15,7 +15,7 @@ require_once dirname(__FILE__).'/../../includeme.php';
 
 
 /**
- * AdminController class unit test
+ * Security class unit test
  *
  * PHP version 5
  *
