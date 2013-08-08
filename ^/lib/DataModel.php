@@ -334,12 +334,12 @@ abstract class DataModel {
                 if (isset(static::$vars[$k]['min'])
                     && is_numeric(static::$vars[$k]['min'])
                 ) {
-                    $v = max($v, static::$vars[$k]['min']);
+                    $v = max((int)$v, static::$vars[$k]['min']);
                 }
                 if (isset(static::$vars[$k]['max'])
                     && is_numeric(static::$vars[$k]['max'])
                 ) {
-                    $v = min($v, static::$vars[$k]['max']);
+                    $v = min((int)$v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = (int)$v;
                 unset($this->invalidVals[$k]);
@@ -381,12 +381,12 @@ abstract class DataModel {
                 if (isset(static::$vars[$k]['min'])
                     && is_numeric(static::$vars[$k]['min'])
                 ) {
-                    $v = max($v, static::$vars[$k]['min']);
+                    $v = max((float)$v, static::$vars[$k]['min']);
                 }
                 if (isset(static::$vars[$k]['max'])
                     && is_numeric(static::$vars[$k]['max'])
                 ) {
-                    $v = min($v, static::$vars[$k]['max']);
+                    $v = min((float)$v, static::$vars[$k]['max']);
                 }
                 $this->vals[$k] = (float)$v;
                 unset($this->invalidVals[$k]);
@@ -816,7 +816,7 @@ abstract class DataModel {
                 $tmp = array();
 
                 foreach ($v as $kk => $vv) {
-                    if (in_array($vv, static::$vars[$k]['values'])) {
+                    if (in_array($vv, static::$vars[$k]['values'], $strict)) {
                         $tmp[$kk] = $vv;
                     } elseif ($strict) {
                         return $this->vals[$k];
