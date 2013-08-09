@@ -101,10 +101,31 @@ abstract class Record extends DataModel {
     /**
      * return the table, which is a protected static var
      *
+     * @param string $joiner Request a joiner table by specifying which table
+     *                        to join with
+     *
      * @return string Model's table name
      */
-    public static function getTable() {
-        return static::$table;
+    public static function getTable($joiner = null) {
+        // If no joiner is specified, we just want the table name
+        if (null == $joiner) {
+            return static::$table;
+        }
+
+        // If a known joiner is specified, return it
+        if (isset(static::$joiners) && isset(static::$joiners[$joiner])) {
+            return G::$m->tabl.static::$joiners[$joiner];
+        }
+
+        // If a plausible joiner is specified, derive it
+        if (preg_match('/^[\w\d]+$/i', $joiner)) {
+            return static::$table.'_'.$joiner;
+        }
+
+        // An invalid joiner was requested, that's an error
+        trigger_error('Requested invalid joiner table');
+
+        return null;
     }
 
     /**
