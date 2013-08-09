@@ -64,7 +64,7 @@ class AdminController extends Controller {
                 G::$V->list = $l;
             } elseif ($l && 1 == count($l)) {
                 $L = array_shift($l);
-                return $this->do_LoginEdit(array($L->login_id), array());
+                return $this->do_LoginEdit(array('login', $L->login_id), array());
             }
         } else {
             $l = new Login();
