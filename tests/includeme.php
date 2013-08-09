@@ -35,11 +35,15 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
 
 require_once TEST_ROOT.'/mocks/lib/G.php';
 require_once TEST_ROOT.'/config.php';
+
+// Force some configs for testing
+G::$G['db']['tabl'] = 'test_';
+G::$G['db']['log']  = 1;
+
 require_once SITE.'/^/lib/AutoLoader.php';
 AutoLoader::registerDirectory();
 
 spl_autoload_register(array('AutoLoader', 'loadClass'));
-AutoLoader::addDirectory(TEST_ROOT.'/mocks', true);
 
 
 
@@ -50,6 +54,7 @@ define('CONT', G::$G['CON']['URL']);// for use in URLs
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);
 }
+
 
 $_SERVER['REMOTE_ADDR'] = 'testing.overnightbdc.com';
 
@@ -64,6 +69,25 @@ $_SERVER['REMOTE_ADDR'] = 'testing.overnightbdc.com';
  * @link     http:// g.lonefry.com
  */
 class UnitTest extends PHPUnit_Framework_TestCase {
+    public function __construct($name = null, array $data = array(), $dataName = '') {
+        parent::__construct($name, $data, $dataName);
+
+        AutoLoader::addFile(TEST_ROOT.'/mocks/lib/mysqli_.php', true);
+
+        // setup DB connection or fail.
+        G::$G['db']['tabl'] = 'test_';
+        G::$G['db']['log']  = 1;
+        G::$m               = G::$M = new mysqli_(
+            G::$G['db']['host'],
+            G::$G['db']['user'],
+            G::$G['db']['pass'],
+            G::$G['db']['name'],
+            null,
+            null,
+            G::$G['db']['tabl'],
+            G::$G['db']['log']
+        );
+    }
 
     /**
      * Setup
@@ -73,7 +97,6 @@ class UnitTest extends PHPUnit_Framework_TestCase {
     public function setUp() {
         // Setup Stuff
 
-        $mysqliMock = new mysqli_();
 
         // Mock out security object
         G::$S = $this->getMockBuilder('Security')
@@ -87,13 +110,6 @@ class UnitTest extends PHPUnit_Framework_TestCase {
             ->getMock();
 
         // $this->getMock('View', array('render'));
-
-        // Mock out read sql object
-        G::$m = $mysqliMock;
-
-        // Mock out write sql object
-        G::$M = $mysqliMock;
-
     }
 
     /**

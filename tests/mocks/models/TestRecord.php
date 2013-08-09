@@ -3,6 +3,7 @@ class TestRecord extends Record {
     protected static $table = 'Test';
     protected static $pkey = 'testInt';
     protected static $query = '';
+    protected static $joiners = array('Login' => 'Test_Login');
 
     // vars array - all the information required to work with each record field
     //  val     the current value in this object instance
@@ -44,3 +45,4 @@ class TestRecord extends Record {
         'strictArray'    => array('strict' => true, 'type' => 'a', 'def' => array('one', 'three'), 'values' => array('one', 'two', 'three')),
     );
 }
+TestRecord::prime();
