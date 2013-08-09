@@ -26,9 +26,8 @@ class Login extends Record {
     protected static $table = 'Logins';
     protected static $pkey  = 'login_id';
     protected static $query = '';
-
-    protected static $vars = array(
-        'login_id'        => array('type' => 'i' , 'min' => 1),
+    protected static $vars  = array(
+        'login_id'        => array('type' => 'i' , 'min' => 1, 'guard' => true),
         'loginname'       => array('type' => 's' , 'strict' => true, 'min' => 3, 'max' => 255),
         'password'        => array('type' => 's' , 'strict' => true, 'min' => 3, 'max' => 255),
         'realname'        => array('type' => 's' , 'max' => 255),
@@ -46,6 +45,9 @@ class Login extends Record {
         'disabled'        => array('type' => 'b' , 'def' => 0),
         'flagChangePass'  => array('type' => 'b' , 'def' => 1),
     );
+    protected static $joiners = array(
+        'Role' => 'Roles_Logins',
+    );
 
     // a regex for determining valid loginnames
     protected static $labelRE = '^\w[\w\_\-\@\.\d]+$';
@@ -58,18 +60,16 @@ class Login extends Record {
      * @return void
      */
     public static function prime() {
-        self::$table = G::$G['db']['tabl'].'Logins';
-        self::$query = 'SELECT t.`login_id`, t.`loginname`, t.`password`, '
-            .'t.`realname`, t.`referrer_id`, t.`comment`, t.`email`, t.`UA`, '
-            .'t.`sessionStrength`, t.`lastIP`, t.`disabled`, t.`dateActive`, '
-            .'t.`dateLogin`, t.`dateLogout`, t.`dateModified`, '
-            .'t.`dateCreated`, t.`flagChangePass`, '
-            .'GROUP_CONCAT(r.label) as roles '
-            .'FROM `'.G::$G['db']['tabl'].'Logins` t '
-            .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles_Logins` rl '
-                .'ON t.login_id = rl.login_id '
-            .'LEFT JOIN `'.G::$G['db']['tabl'].'Roles` r '
-                .'ON r.role_id = rl.role_id';
+        parent::prime();
+        $keys = array_keys(static::$vars);
+        static::$query = 'SELECT t.`'.join('`, t.`', $keys).'`, '
+            .'GROUP_CONCAT(r.label) as roles'
+            .' FROM `'.static::$table.'` t'
+            .' LEFT JOIN `'.static::getTable('Role').'` rl'
+                .' ON t.login_id = rl.login_id'
+            .' LEFT JOIN `'.Role::getTable().'` r'
+                .' ON r.role_id = rl.role_id'
+        ;
     }
 
     /**
@@ -210,13 +210,15 @@ class Login extends Record {
                          'P' => 0, 'Q' => 0, 'R' => 0, 'S' => 0, 'T' => 0,
                          'U' => 0, 'V' => 0, 'W' => 0, 'X' => 0, 'Y' => 0,
                          'Z' => 0);
-        $query = "SELECT UPPER(LEFT(loginname,1)), count(loginname)"
-            ." FROM `".self::$table."` GROUP BY UPPER(LEFT(loginname,1))";
-        if (false !== $result = G::$m->query($query)) {
-            while ($row = $result->fetch_array()) {
-                $letters[$row[0]] = $row[1];
-            }
+        $query = "SELECT UPPER(LEFT(loginname, 1)), count(loginname)"
+            ." FROM `".static::$table."`"
+            ." GROUP BY UPPER(LEFT(loginname, 1))"
+        ;
+
+        if (false !== $data = G::$m->queryToArray($query, "UPPER(LEFT(loginname, 1))")) {
+            $letters = array_merge($letters, $data);
         }
+
         return $letters;
     }
 
@@ -226,7 +228,7 @@ class Login extends Record {
      *
      * @param string $c Search for logins with loginnames starting with this
      *
-     * @return array collection of Login objects starting wiht passed string
+     * @return array collection of Login objects starting with passed string
      */
     public static function forInitial($c = null) {
         if (strlen($c) < 1) {
