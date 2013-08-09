@@ -28,12 +28,18 @@ require_once dirname(__FILE__).'/../../includeme.php';
 class DataModelTest extends UnitTest {
     protected $obj;
 
+    public function __construct($name = null, array $data = array(), $dataName = '') {
+        parent::__construct($name, $data, $dataName);
+        AutoLoader::addFile(TEST_ROOT.'/mocks/models/TestRecord.php', true);
+    }
+
     /**
      * Resets the fixtures between each run.
      *
      * @return mixed
      */
     public function setUp() {
+        parent::setUp();
         // Create a new TestRecord with defaults set
         $this->obj = new TestRecord(true);
     }

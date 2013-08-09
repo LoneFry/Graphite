@@ -24,7 +24,7 @@ require_once dirname(__FILE__).'/../../includeme.php';
  * @link     http://g.lonefry.com
  *
  */
-class AutoLoaderTest extends PHPUnit_Framework_TestCase {
+class AutoLoaderTest extends UnitTest {
 
     protected $obj;
 
