@@ -144,7 +144,7 @@ class mysqli_ extends mysqli {
      * @param string $query    Query to run
      * @param string $keyField Name of field to index returned array by.
      *
-     * @return array Array of rows returned by query
+     * @return array|bool Array of rows returned by query|false on error
      */
     public function queryToArray($query, $keyField = null) {
         // If query fails, return false
