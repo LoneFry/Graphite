@@ -517,7 +517,9 @@ abstract class Record extends DataModel {
         if (false === G::$M->query($query)) {
             return false;
         }
-        $this->vals[static::$pkey] = G::$M->insert_id;
+        if (0 != G::$M->insert_id) {
+            $this->vals[static::$pkey] = G::$M->insert_id;
+        }
 
         // Subsequent to successful DB commit, update DBvals
         foreach (static::$vars as $k => $v) {
