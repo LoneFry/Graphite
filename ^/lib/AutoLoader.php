@@ -55,10 +55,10 @@ class AutoLoader {
      *
      * @param string $dir Directory to be index
      *
-     * @return mixed
+     * @return array Lines returned by exec('find ...')
      */
     public static function getDirListing($dir) {
-        exec('find ' . SITE . $dir
+        exec('find ' . escapeshellarg(SITE . $dir)
             . ' -path "*/controllers/*" -name "*.php"'
             . ' -o -path "*/lib/*"  -name "*.php"'
             . ' -o -path "*/models/*" -name "*.php"'
