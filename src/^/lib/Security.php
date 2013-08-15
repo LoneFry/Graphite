@@ -135,6 +135,8 @@ class Security {
 
         $this->_enforceReadOnly();
 
+        $this->_enforceReadOnly();
+
         return true;
     }
 
