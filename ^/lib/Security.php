@@ -81,6 +81,8 @@ class Security {
                 // move to $this->close()// $Login->save();
 
                 $this->Login = $Login;
+
+                $this->_enforceReadOnly();
             }
         }
 
@@ -128,6 +130,8 @@ class Security {
         include_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $Login->login_id, 'ua' => $this->ua), true);
         $LL->save();
+
+        $this->_enforceReadOnly();
 
         return true;
     }
@@ -178,6 +182,30 @@ class Security {
             return $this->Login->roleTest($s);
         }
         return false;
+    }
+
+    /**
+     * Test whether the current user is a member of the Read_Only role
+     * IF so, disable
+     */
+    protected function _enforceReadOnly() {
+        if ($this->roleTest('Read_Only')) {
+            // Save Login before revoking write access
+            $this->Login->save();
+
+            // If the two connections match, There must not be a read only
+            if (G::$M === G::$m || null == G::$m) {
+                G::msg(Localizer::translate('security.login.noreadonly'), 'error');
+                G::$G['CON']['path'] = G::$G['CON']['controller500'].'/500';
+                G::$M->close();
+                G::$m->close();
+                G::$M = G::$m = null;
+            } else {
+                // Overwrite r/w connection with r/o connection
+                G::msg(Localizer::translate('security.login.readonly'));
+                G::$M = G::$m;
+            }
+        }
     }
 
     /**
