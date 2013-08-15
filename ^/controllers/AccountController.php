@@ -51,9 +51,9 @@ class AccountController extends Controller {
             G::$V->l = '';
         }
         G::$V->_URI = isset($request['_URI']) ? $request['_URI']
-                    : isset($argv['_URI']) ? $argv['_URI'] : CONT;
+                    : (isset($argv['_URI']) ? $argv['_URI'] : CONT);
         G::$V->_Lbl = isset($request['_Lbl']) ? $request['_Lbl']
-                    : isset($argv['_Lbl']) ? $argv['_Lbl'] : 'Home';
+                    : (isset($argv['_Lbl']) ? $argv['_Lbl'] : 'Home');
     }
 
     /**
