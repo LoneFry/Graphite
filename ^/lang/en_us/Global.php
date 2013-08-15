@@ -27,4 +27,7 @@ return $_LANG = array(
         . ' for your account.',
     'security.error.accountdisabled' => 'Your account is currently disabled.',
     'security.error.disabledaccount' => 'Your account is currently disabled.',
+    'security.login.noreadonly' => 'Your account is marked Read_Only but no'
+        .' read only connection is available!',
+    'security.login.readonly' => 'Your account is running in Read_Only mode.',
 );
