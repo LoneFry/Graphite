@@ -51,9 +51,12 @@ abstract class Controller {
     /**
      * default action for handling 403 errors
      *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
      * @return mixed
      */
-    public function do_403() {
+    public function do_403($argv = array(), $request = array()) {
         header("HTTP/1.0 403 Forbidden");
         G::$V->_template = '403.php';
         G::$V->_title    = 'Permission Denied';
