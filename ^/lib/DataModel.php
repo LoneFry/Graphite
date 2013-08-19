@@ -182,11 +182,6 @@ abstract class DataModel {
      *  @return mixed set value on success, null on failure
      */
     public function __set($k, $v) {
-        // If value is null, just set directly
-        if (null === $v) {
-            return $this->vals[$k] = null;
-        }
-
         // If a custom method exists for var, call it
         if (method_exists($this, $k)) {
             return $this->$k($v);
@@ -196,6 +191,12 @@ abstract class DataModel {
         if (null === $this->_isVar($k)) {
             return null;
         }
+
+        // If value is null, just set directly
+        if (null === $v) {
+            return $this->vals[$k] = null;
+        }
+
         if (!method_exists($this, '_'.static::$vars[$k]['type'])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property type via __set(): '.$k
@@ -220,11 +221,6 @@ abstract class DataModel {
      *  @return mixed requested value if found, null on failure
      */
     public function __get($k) {
-        // If value is null, just return null
-        if (null === $this->vals[$k]) {
-            return null;
-        }
-
         // If a custom method exists for var, call it
         if (method_exists($this, $k)) {
             return $this->$k();
@@ -232,6 +228,11 @@ abstract class DataModel {
 
         // $k is a valid var?
         if (null === $this->_isVar($k)) {
+            return null;
+        }
+
+        // If value is null, just return null
+        if (null === $this->vals[$k]) {
             return null;
         }
 
