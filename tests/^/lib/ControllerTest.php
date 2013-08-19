@@ -11,7 +11,7 @@
  * @link     http://g.lonefry.com
  */
 
-require_once dirname(__FILE__).'/../../includeme.php';
+require_once dirname(__FILE__) . '/../includeme.php';
 
 
 /**

@@ -14,11 +14,10 @@
 
 define('NOW', microtime(true));
 // the root of this website
-define('SITE', dirname(dirname(__FILE__)));
-// the RELATIVE path of the core files
-define('CORE', '/^');
+
+define('SITE', dirname(dirname(dirname(__FILE__))));
 // the ABSOLUTE path of the lib includes
-define('LIB', SITE.CORE.'/lib');
+define('LIB', SITE.'/^/lib');
 
 // Path of testing includes
 define('TEST_ROOT', SITE.'/tests');
@@ -26,21 +25,19 @@ define('TEST_ROOT', SITE.'/tests');
 // Graphite Version indicator, for scripts interacting herewith
 define('GVER', 5);
 
-
 // to save from having to work around magic quotes, just refuse to work with it
 if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
-
-require_once TEST_ROOT.'/mocks/lib/G.php';
-require_once TEST_ROOT.'/config.php';
+require_once TEST_ROOT . '/mocks/lib/G.php';
+require_once TEST_ROOT . '/^/config.php';
 
 // Force some configs for testing
 G::$G['db']['tabl'] = 'test_';
 G::$G['db']['log']  = 1;
 
-require_once SITE.'/^/lib/AutoLoader.php';
+require_once SITE . '/^/lib/AutoLoader.php';
 AutoLoader::registerDirectory();
 
 spl_autoload_register(array('AutoLoader', 'loadClass'));
