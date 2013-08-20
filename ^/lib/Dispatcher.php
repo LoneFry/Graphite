@@ -159,6 +159,8 @@ class Dispatcher {
         $Controller = $this->controller.'Controller';
         $Controller = new $Controller($argv);
         if (method_exists($Controller, 'do_'.$Controller->action)) {
+            G::$V->_controller = strtolower($this->controller);
+            G::$V->_action = strtolower($Controller->action);
             return $Controller->act();
         }
 
