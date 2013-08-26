@@ -25,13 +25,15 @@
  * @link     http://g.lonefry.com
  */
 class View {
+    /** @var array registered templates by type */
     protected $templates = array(
         'header'   => 'header.php',
         'footer'   => 'footer.php',
         'template' => '404.php',
         );
+    /** @var array List of paths in which to find templates */
     protected $includePath = array();
-
+    /** @var array Values to expose to templates */
     public $vals = array(
         '_meta'   => array(),
         '_script' => array(),
@@ -95,7 +97,7 @@ class View {
     }
 
     /**
-     * add values for a META tag to be written to document <HEAD>
+     * Add values for a META tag to be written to document <HEAD>
      *
      * @param string $name    META name=
      * @param string $content META content=
@@ -110,7 +112,7 @@ class View {
     }
 
     /**
-     * add values for a SCRIPT tag to be written to document <HEAD>
+     * Add values for a SCRIPT tag to be written to document <HEAD>
      *
      * @param string $src Javascript Source URL
      *
@@ -124,7 +126,7 @@ class View {
     }
 
     /**
-     * add values for a LINK tag to be written to document <HEAD>
+     * Add values for a LINK tag to be written to document <HEAD>
      *
      * @param string $rel   LINK rel=
      * @param string $type  LINK type=
@@ -158,10 +160,10 @@ class View {
     /**
      * Test whether a file exists in a path sanity checking with realpath
      *
-     * @param string $path filesystem path to check
-     * @param string $file filename to check for
+     * @param string $path Filesystem path to check
+     * @param string $file Filename to check for
      *
-     * @return string|bool corrected filename relative to path if found,
+     * @return string|bool Corrected filename relative to path if found,
      *                     false if not found
      */
     public function in_realpath($path, $file) {
@@ -177,13 +179,13 @@ class View {
     }
 
     /**
-     * set view template for rendering request
+     * Set view template for rendering request
      *
-     * @param string $template template part, eg: 'header', 'footer',
+     * @param string $template Template part, eg: 'header', 'footer',
      *                         for main template use 'template'
-     * @param string $file     filename of template, relative to template path
+     * @param string $file     Filename of template, relative to template path
      *
-     * @return string set template, or prior set template on failure
+     * @return string Set template, or prior set template on failure
      */
     public function setTemplate($template, $file) {
         foreach ($this->includePath as $dir) {
@@ -196,12 +198,12 @@ class View {
     }
 
     /**
-     * get view template for rendering request
+     * Get view template for rendering request
      *
-     * @param string $template template part, eg: 'header', 'footer',
+     * @param string $template Template part, eg: 'header', 'footer',
      *                         for main template use 'template'
      *
-     * @return string prior set template
+     * @return string Prior set template
      */
     public function getTemplate($template) {
         return $this->templates[$template];
@@ -213,8 +215,8 @@ class View {
      * If name is of a template this will passoff the set to setTemplate()
      * All other names will be added to unrestricted vals array
      *
-     *  @param string $name  property to set
-     *  @param mixed  $value value to use
+     *  @param string $name  Property to set
+     *  @param mixed  $value Value to use
      *
      *  @return mixed
      */
@@ -236,9 +238,9 @@ class View {
      * If name is of a template this will pass off the get to getTemplate()
      * All other names will be pulled from unrestricted vals array
      *
-     * @param string $name property to set
+     * @param string $name Property to set
      *
-     * @return mixed found value
+     * @return mixed Found value
      */
     function __get($name) {
         switch ($name) {
@@ -262,7 +264,7 @@ class View {
     /**
      * __isset magic method restores the normal operation of isset()
      *
-     * @param string $k property to test
+     * @param string $k Property to test
      *
      * @return bool Return true if set, false otherwise
      */
@@ -273,7 +275,7 @@ class View {
     /**
      * __unset magic method restores the normal operation of unset()
      *
-     * @param string $k property to unset
+     * @param string $k Property to unset
      *
      * @return void
      */
@@ -287,7 +289,7 @@ class View {
      *
      * @param string $_template Template to render
      *
-     * @return bool true on success, false otherwise
+     * @return bool True on success, false otherwise
      */
     public function render($_template = 'template') {
         extract($this->vals);
@@ -318,7 +320,7 @@ class View {
 /**
  * Helper for brevity in templates - echo html escaped string
  *
- * @param string $s string to output
+ * @param string $s String to output
  *
  * @return void
  */

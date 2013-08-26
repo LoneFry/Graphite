@@ -24,46 +24,34 @@
  * @see      /^/lib/DataModel.php
  */
 abstract class Report extends DataModel {
-    /**
-     * resulting data produced by load()
-     */
+    /** @var array resulting data produced by load() */
     protected $_data   = array();
 
-    /**
-     * OFFSET of query result set
-     */
+    /** @var int OFFSET of query result set */
     protected $_start  = 0;
 
-    /**
-     * LIMIT of query result set
-     */
+    /** @var int LIMIT of query result set */
     protected $_count  = 10000;
 
-    /**
-     * ORDER BY of query
-     * must be in $this->_orders array
-     */
+    /** @var string ORDER BY of query; must be in $this->_orders array */
     protected $_order  = null;
 
-    /**
-     * whitelist of valid ORDER BY values
-     */
+    /** @var array Whitelist of valid ORDER BY values */
     protected $_orders = array();
 
-    /**
-     * ASC/DESC specifier of ORDER BY
-     * true is ASC, false is DESC
-     */
+    /** @var bool ASC/DESC specifier of ORDER BY; true is ASC, false is DESC */
     protected $_asc = true;
 
     /**
-     * constructor accepts three prototypes:
+     * Constructor accepts three prototypes:
      * __construct(true) will create an instance with default values
      * __construct(array()) will create an instance with supplied values
      * __construct(array(),true) will create a instance with supplied values
      *
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b set defaults
+     *
+     * @throws Exception
      */
     public function __construct($a = null, $b = null) {
         if (!isset(static::$query) || '' == static::$query) {
@@ -81,7 +69,7 @@ abstract class Report extends DataModel {
     }
 
     /**
-     * run the report query with defined params and set results in $this->_data
+     * Run the report query with defined params and set results in $this->_data
      *
      * @return bool false on failure
      */
@@ -135,16 +123,16 @@ abstract class Report extends DataModel {
     }
 
     /**
-     * return the report results stored in $this->_data
+     * Return the report results stored in $this->_data
      *
-     * @return array report result data
+     * @return array Report result data
      */
     public function toArray() {
         return $this->_data;
     }
 
     /**
-     * return the report results stored in $this->_data, as a JSON packet
+     * Return the report results stored in $this->_data, as a JSON packet
      *
      * @return string JSON encoded report result data
      */
@@ -153,13 +141,13 @@ abstract class Report extends DataModel {
     }
 
     /**
-     * filter and set query params.
-     * handle start,count,order, pass the rest upwards
+     * Filter and set query params.
+     * Handle start,count,order, pass the rest upwards
      *
-     * @param string $k parameter to set
-     * @param mixed  $v value to use
+     * @param string $k Parameter to set
+     * @param mixed  $v Value to use
      *
-     * @return mixed set value on success, null on failure
+     * @return mixed Set Value on success, null on failure
      */
     public function __set($k, $v) {
         if ('_start' == $k) {

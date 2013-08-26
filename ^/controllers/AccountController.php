@@ -23,6 +23,7 @@
  * @see      /^/lib/Controller.php
  */
 class AccountController extends Controller {
+    /** @var string Default action */
     protected $action = 'login';
 
     /**

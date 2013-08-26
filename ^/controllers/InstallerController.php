@@ -23,6 +23,7 @@
  * @see      /^/lib/Controller.php
  */
 class InstallerController extends Controller {
+    /** @var string Default action */
     protected $action = 'install';
 
     /**
@@ -321,7 +322,7 @@ class InstallerController extends Controller {
         }
     }
 
-
+    /** @var string Initial config template */
     protected $config = <<<'ENDOFCONFIG'
 <?php
 /** **************************************************************************

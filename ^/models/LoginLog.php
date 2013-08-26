@@ -23,9 +23,13 @@
  * @see      /^/lib/Record.php
  */
 class LoginLog extends Record {
+    /** @var string Table name, un-prefixed */
     protected static $table = 'LoginLog';
+    /** @var string Primary Key */
     protected static $pkey  = 'pkey';
+    /** @var string Select query, without WHERE clause */
     protected static $query = '';
+    /** @var array Table definition as collection of fields */
     protected static $vars  = array(
         'pkey'     => array('type' => 'i', 'min' => 1, 'guard' => true),
         'login_id' => array('type' => 'i', 'min' => 0),

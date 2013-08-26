@@ -23,10 +23,11 @@
  * @see      /^/lib/Controller.php
  */
 class DefaultController extends Controller {
+    /** @var string Default action */
     protected $action = '404';
 
     /**
-     * default action for handling 404 errors
+     * Default action for handling 404 errors
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -40,7 +41,7 @@ class DefaultController extends Controller {
     }
 
     /**
-     * default action for handling 500 errors
+     * Default action for handling 500 errors
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters

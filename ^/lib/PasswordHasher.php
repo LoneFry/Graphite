@@ -63,7 +63,7 @@ interface IPasswordHasher {
  */
 class PasswordHasher implements IPasswordHasher {
     /**
-     * private constructor to prevent instantiation
+     * Private constructor to prevent instantiation
      */
     private function __construct() {
     }

@@ -23,10 +23,11 @@
  * @see      /^/lib/Controller.php
  */
 class AdminController extends Controller {
+    /** @var string Default action */
     protected $action = 'list';
 
     /**
-     * action
+     * Display list of available Admin actions
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -43,7 +44,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Choose a Login to administrate
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -74,7 +75,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Add a Login
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -180,7 +181,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Edit a Login
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -325,7 +326,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Choose a Role to administrate
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -345,7 +346,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Add a Role
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -383,7 +384,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * Edit a Role
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
@@ -463,7 +464,7 @@ class AdminController extends Controller {
     }
 
     /**
-     * action
+     * View Login Log
      *
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters

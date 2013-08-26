@@ -23,24 +23,16 @@
  * @link     http://g.lonefry.com
  */
 class mysqli_ extends mysqli {
-    /**
-     * to log the queries
-     */
+    /** @var array Log of queries, run times, errors */
     private static $_aQueries = array(array(0));
 
-    /**
-     * common prefix used by app tables, for reference
-     */
+    /** @var string Common prefix used by app tables, for reference */
     private static $_tabl = '';
 
-    /**
-     * whether to log
-     */
+    /** @var bool Whether to log */
     private static $_log = false;
 
-    /**
-     * whether connection succeeded
-     */
+    /** @var bool Whether connection succeeded */
     private $_open = false;
 
     /**
@@ -87,7 +79,7 @@ class mysqli_ extends mysqli {
     }
 
     /**
-     * wrapper for mysqli::query() that logs queries
+     * Wrapper for mysqli::query() that logs queries
      *
      * @param string $query Query to run
      *
@@ -139,7 +131,7 @@ class mysqli_ extends mysqli {
     }
 
     /**
-     * wrapper for mysqli::query() that returns an array of rows
+     * Wrapper for mysqli::query() that returns an array of rows
      *
      * @param string $query    Query to run
      * @param string $keyField Name of field to index returned array by.
@@ -182,7 +174,7 @@ class mysqli_ extends mysqli {
     }
 
     /**
-     * return logged queries
+     * Return logged queries
      *
      * @return array query log
      */
@@ -191,7 +183,7 @@ class mysqli_ extends mysqli {
     }
 
     /**
-     * getter for read-only properties
+     * Getter for read-only properties
      *
      * @param string $k property to get
      *

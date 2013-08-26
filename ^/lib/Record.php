@@ -25,7 +25,8 @@
  * @see      /^/lib/DataModel.php
  */
 abstract class Record extends DataModel {
-    protected $DBvals = array();// instance DB values of vars defined in $vars
+    /** @var array Instance DB values of vars defined in $vars */
+    protected $DBvals = array();
 
     // Should be defined in subclasses
     // protected static $table;// name of table
@@ -33,14 +34,16 @@ abstract class Record extends DataModel {
     // protected static $vars = array();// record definition
 
     /**
-     * constructor accepts four prototypes:
-     * Record(true) will create an instance with default values
-     * Record(int) will create an instance with pkey set to int
-     * Record(array()) will create an instance with supplied values
-     * record(array(),true) will create a record with supplied values
+     * Constructor accepts four prototypes:
+     *  Record(true) will create an instance with default values
+     *  Record(int) will create an instance with pkey set to int
+     *  Record(array()) will create an instance with supplied values
+     *  record(array(),true) will create a record with supplied values
      *
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b set defaults
+     *
+     * @throws Exception
      */
     public function __construct($a = null, $b = null) {
         // Ensure that a pkey is defined in subclasses
@@ -90,7 +93,7 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * return the pkey, which is a protected static var
+     * Return the pkey, which is a protected static var
      *
      * @return string Model's primary key
      */
@@ -99,7 +102,7 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * return the table, which is a protected static var
+     * Return the table, which is a protected static var
      *
      * @param string $joiner Request a joiner table by specifying which table
      *                        to join with
@@ -129,7 +132,7 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * return array of values changed since last DB load/save
+     * Return array of values changed since last DB load/save
      *
      * @return array Changed values
      */
@@ -150,7 +153,7 @@ abstract class Record extends DataModel {
     /**
      * Override this function to perform custom actions AFTER load
      *
-     * @param array $row unregistered values selected in load()
+     * @param array $row Unregistered values selected in load()
      *
      * @return void
      */
@@ -158,12 +161,12 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * "load" object from array, sets DBvals as if loaded from database
+     * "Load" object from array, sets DBvals as if loaded from database
      *  if pkey is not passed, fail
      *
      * @param array $row values
      *
-     * @return mixed array of unregistered values on success, false on failure
+     * @return mixed Array of unregistered values on success, false on failure
      */
     public function load_array($row) {
         if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
@@ -178,10 +181,10 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * load object from database
+     * Load object from database
      *  if pkey is not set, assume fill(), else select()
      *
-     * @return mixed array of unregistered values on success, false on failure
+     * @return mixed Array of unregistered values on success, false on failure
      */
     public function load() {
         if (null === $this->vals[static::$pkey]) {
@@ -195,7 +198,7 @@ abstract class Record extends DataModel {
      * use sprintf() to embed the registered pkey
      * returns values selected that are not registered variables, typ. array()
      *
-     * @return mixed array of unregistered values on success, false on failure
+     * @return mixed Array of unregistered values on success, false on failure
      */
     public function select() {
         // Fail if pkey has no value
@@ -230,7 +233,7 @@ abstract class Record extends DataModel {
      * SELECT the record from the database using static::$query
      * add all set values to the WHERE clause, otherwise like load()
      *
-     * @return mixed array of unregistered values on success, false on failure
+     * @return mixed Array of unregistered values on success, false on failure
      */
     public function fill() {
         // embed pkey value into instance SELECT query, then run
@@ -277,12 +280,12 @@ abstract class Record extends DataModel {
      * SELECT all the records from the database using static::$query
      * add all set values to the WHERE clause, returns collection
      *
-     * @param int $count LIMIT - number of rows to SELECT
-     * @param int $start OFFSET - number of rows to skip
-     * @param int $order ORDER BY - column to sort query by
-     * @param int $desc  DESC/ASC - true for DESC ordering
+     * @param int    $count LIMIT - number of rows to SELECT
+     * @param int    $start OFFSET - number of rows to skip
+     * @param string $order ORDER BY - column to sort query by
+     * @param bool   $desc  DESC/ASC - true for DESC ordering
      *
-     * @return array collection of objects found in search
+     * @return array Collection of objects found in search
      */
     public function search($count = null, $start = 0, $order = null, $desc = false) {
         // embed pkey value into instance SELECT query, then run
@@ -332,10 +335,10 @@ abstract class Record extends DataModel {
      * @param string $where Custom WHERE clause
      * @param int    $count LIMIT - number of rows to SELECT
      * @param int    $start OFFSET - number of rows to skip
-     * @param int    $order ORDER BY - column to sort query by
-     * @param int    $desc  DESC/ASC - true for DESC ordering
+     * @param string $order ORDER BY - column to sort query by
+     * @param bool   $desc  DESC/ASC - true for DESC ordering
      *
-     * @return array collection of objects found in search
+     * @return array Collection of objects found in search
      */
     protected static function search_where($where = "WHERE 1", $count = null, $start = 0, $order = null, $desc = false
     ) {
@@ -365,12 +368,12 @@ abstract class Record extends DataModel {
     /**
      * SELECT $count of the records from the database using static::$query
      *
-     * @param int $count LIMIT - number of rows to SELECT
-     * @param int $start OFFSET - number of rows to skip
-     * @param int $order ORDER BY - column to sort query by
-     * @param int $desc  DESC/ASC - true for DESC ordering
+     * @param int    $count LIMIT - number of rows to SELECT
+     * @param int    $start OFFSET - number of rows to skip
+     * @param string $order ORDER BY - column to sort query by
+     * @param bool   $desc  DESC/ASC - true for DESC ordering
      *
-     * @return array collection of objects found in search
+     * @return array Collection of objects found in search
      */
     public static function some($count = null, $start = 0, $order = null, $desc = false) {
         $query = static::$query
@@ -399,10 +402,10 @@ abstract class Record extends DataModel {
     /**
      * SELECT all the records from the database using static::$query
      *
-     * @param int $order ORDER BY - column to sort query by
-     * @param int $desc  DESC/ASC - true for DESC ordering
+     * @param string $order ORDER BY - column to sort query by
+     * @param bool   $desc  DESC/ASC - true for DESC ordering
      *
-     * @return array collection of objects found in search
+     * @return array Collection of objects found in search
      */
     public static function all($order = null, $desc = false) {
         return static::some(null, 0, $order, $desc);
@@ -412,13 +415,13 @@ abstract class Record extends DataModel {
      * SELECT all the records from the database using static::$query
      * add passed list of ids, returns collection
      *
-     * @param array $ids   array of numeric ids to SELECT records for
-     * @param int   $count LIMIT - number of rows to SELECT
-     * @param int   $start OFFSET - number of rows to skip
-     * @param int   $order ORDER BY - column to sort query by
-     * @param int   $desc  DESC/ASC - true for DESC ordering
+     * @param array  $ids   Array of numeric ids to SELECT records for
+     * @param int    $count LIMIT - number of rows to SELECT
+     * @param int    $start OFFSET - number of rows to skip
+     * @param string $order ORDER BY - column to sort query by
+     * @param bool   $desc  DESC/ASC - true for DESC ordering
      *
-     * @return array collection of objects found in search
+     * @return array Collection of objects found in search
      */
     public static function search_ids($ids = array(), $count = null, $start = 0, $order = null, $desc = false) {
         if (!is_array($ids)) {
@@ -441,12 +444,12 @@ abstract class Record extends DataModel {
     /**
      * SELECT the record from the database with the specified pkey value
      *
-     * @param int $id numeric id to SELECT record for
+     * @param int $id Numeric id to SELECT record for
      *
      * @deprecated
      * @see Record::byPK
      *
-     * @return object object for specified ID
+     * @return object Object for specified ID
      */
     public static function byId($id) {
         $R = new static($id);
@@ -457,9 +460,9 @@ abstract class Record extends DataModel {
     /**
      * SELECT the record from the database with the specified pkey value
      *
-     * @param int $val numeric id to SELECT record for
+     * @param int $val Numeric id to SELECT record for
      *
-     * @return bool|Record false on failure or Record object for specified PKey
+     * @return bool|Record False on failure or Record object for specified PKey
      */
     public static function byPK($val) {
         $R = new static();
@@ -472,10 +475,10 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * commit object to database
+     * Commit object to database
      *  if pkey is not set, assume INSERT query, else UPDATE
      *
-     * @return mixed value returned by delegated method
+     * @return mixed Value returned by delegated method
      */
     public function save() {
         if (null === $this->vals[static::$pkey]) {
@@ -494,14 +497,14 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * build INSERT query for set values, run and store insert_id
+     * Build INSERT query for set values, run and store insert_id
      * set value detection based on DBval, null for new (unloaded) records
      * $save flag set if any field changed, typically pkey set for insert()
      *
      * returns new pkey value (insert_id)
      * (uses MySQL specific INSERT ... SET ... syntax)
      *
-     * @return mixed new primary key value of inserted row, or false on failure
+     * @return mixed New primary key value of inserted row, or false on failure
      */
     public function insert() {
         $query = 'INSERT INTO `'.static::$table.'` SET ';
@@ -560,11 +563,11 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * build UPDATE query for changed values, run
+     * Build UPDATE query for changed values, run
      * set value detection based on DBval, set in load()
      * $save flag set if any field changed
      *
-     * @return bool true on success, false on failure, null on abort
+     * @return bool True on success, false on failure, null on abort
      */
     public function update() {
         $query = 'UPDATE `'.static::$table.'` SET ';
@@ -623,9 +626,9 @@ abstract class Record extends DataModel {
     }
 
     /**
-     * delete a record
+     * Delete a record
      *
-     * @return bool true on success, false on failure
+     * @return bool True on success, false on failure
      */
     public function delete() {
         // Fail if pkey has no value

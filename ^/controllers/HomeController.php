@@ -23,12 +23,13 @@
  * @see      /^/lib/Controller.php
  */
 class HomeController extends Controller {
+    /** @var string Default action */
     protected $action = 'home';
 
     /**
      * Constructor
      *
-     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $argv Argument list passed from Dispatcher
      */
     public function __construct($argv = array()) {
         parent::__construct($argv);
@@ -132,7 +133,7 @@ class HomeController extends Controller {
     }
 
     /**
-     * Mailer
+     * Send message from Contact form displayed by do_contact()
      *
      * @param array  $post      Post Array
      * @param string $from      From Key
