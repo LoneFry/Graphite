@@ -24,7 +24,7 @@
  */
 class SHA1PasswordHasher implements IPasswordHasher {
     /**
-     * private constructor to prevent instantiation
+     * Private constructor to prevent instantiation
      */
     private function __construct() {
     }
@@ -32,9 +32,9 @@ class SHA1PasswordHasher implements IPasswordHasher {
     /**
      * Create a hashword using sha1()
      *
-     * @param string $password password to hash
+     * @param string $password Password to hash
      *
-     * @return string hashed password for storage
+     * @return string hashed Password for storage
      */
     public static function hash_password($password) {
         return sha1($password);
@@ -43,10 +43,10 @@ class SHA1PasswordHasher implements IPasswordHasher {
     /**
      * Test a password against a recalled SHA1
      *
-     * @param string $password password to test
+     * @param string $password Password to test
      * @param string $hash     SHA1 from database
      *
-     * @return bool true if password passes, false if not
+     * @return bool True if password passes, false if not
      */
     public static function test_password($password, $hash) {
         return sha1($password) == $hash;
@@ -57,7 +57,7 @@ class SHA1PasswordHasher implements IPasswordHasher {
      *
      * @param string $hash SHA1 from database
      *
-     * @return bool true if argument passes as SHA1, false if not
+     * @return bool True if argument passes as SHA1, false if not
      */
     public static function is_hash($hash) {
         return preg_match('/[0-9a-f]{40}/i', $hash);

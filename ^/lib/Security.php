@@ -23,9 +23,13 @@
  * @see      /^/models/Login.php
  */
 class Security {
+    /** @var bool|\Login Login object for current user */
     protected $Login = false;
+    /** @var string IP address of current client */
     protected $ip;
+    /** @var string User-agent data */
     protected $ua;
+    /** @var string Hash of user-agent data */
     protected $UA;
 
     /**
@@ -94,8 +98,8 @@ class Security {
     /**
      * Test login credentials
      *
-     * @param string $loginname loginname attempting to login
-     * @param string $password  provided password
+     * @param string $loginname Loginname attempting to login
+     * @param string $password  Provided password
      *
      * @return bool true on success, false on failure
      */
@@ -187,6 +191,8 @@ class Security {
     /**
      * Test whether the current user is a member of the Read_Only role
      * IF so, disable
+     *
+     * @return void
      */
     protected function _enforceReadOnly() {
         if ($this->roleTest('Read_Only')) {
@@ -211,9 +217,9 @@ class Security {
     /**
      * __get magic method
      *
-     * @param string $k property to get
+     * @param string $k Property to get
      *
-     * @return mixed requested value if found, null on failure
+     * @return mixed Requested value if found, null on failure
      */
     public function __get($k) {
         switch ($k) {
@@ -235,7 +241,7 @@ class Security {
     }
 
     /**
-     * ensure session is closed properly
+     * Ensure session is closed properly
      *
      * @return void
      */
@@ -246,7 +252,7 @@ class Security {
     /**
      * Test password against policies
      *
-     * @param string $password password to test
+     * @param string $password Password to test
      *
      * @return bool|string true if passed|error text if failed
      */

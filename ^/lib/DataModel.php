@@ -26,24 +26,16 @@
  * @see      /^/lib/Report.php
  */
 abstract class DataModel {
-    /**
-     * overrideable select query used by load()
-     */
+    /** @var string Select query used by load() */
     protected static $query;
 
-    /**
-     * default date format
-     */
+    /** @var string Default date format */
     protected static $dateFormat = 'Y-m-d H:i:s';
 
-    /**
-     * instance values of vars defined in $vars
-     */
+    /** @var array Instance values of vars defined in $vars */
     protected $vals = array();
 
-    /**
-     * Invalid values
-     */
+    /** @var array Invalid values */
     protected $invalidVals = array();
 
     /**

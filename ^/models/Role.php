@@ -23,9 +23,13 @@
  * @see      /^/lib/Record.php
  */
 class Role extends Record {
+    /** @var string Table name, un-prefixed */
     protected static $table = 'Roles';
+    /** @var string Primary Key */
     protected static $pkey  = 'role_id';
+    /** @var string Select query, without WHERE clause */
     protected static $query = '';
+    /** @var array Table definition as collection of fields */
     protected static $vars  = array(
         'role_id'      => array('type' => 'i', 'min' => 1, 'guard' => true),
         'label'        => array('type' => 's', 'strict' => true, 'min' => 3, 'max' => 255),
@@ -35,12 +39,13 @@ class Role extends Record {
         'dateModified' => array('type' => 'ts', 'min' => 0),
         'dateCreated'  => array('type' => 'ts', 'min' => 0),
     );
+    /** @var array List of tables that connect this to another table */
     protected static $joiners = array(
         'Login' => 'Roles_Logins',
     );
 
     /**
-     * called by Record::insert() BEFORE running INSERT query
+     * Called by Record::insert() BEFORE running INSERT query
      *
      * @return void
      */
@@ -52,7 +57,7 @@ class Role extends Record {
     }
 
     /**
-     * called by Record::update() BEFORE running UPDATE query
+     * Called by Record::update() BEFORE running UPDATE query
      *
      * @return void
      */
@@ -63,7 +68,7 @@ class Role extends Record {
     /**
      * Get the Role's Creator
      *
-     * @return string the loginname of the creator of the Role
+     * @return string The loginname of the creator of the Role
      */
     public function getCreator() {
         if ($this->__get('creator_id') > 0) {
@@ -116,7 +121,7 @@ class Role extends Record {
      *
      * @param int $login_id The login to grant to
      *
-     * @return bool true on success, false on failure
+     * @return bool True on success, false on failure
      */
     public function grant($login_id) {
         if (!is_numeric($login_id)) {
@@ -136,7 +141,7 @@ class Role extends Record {
      *
      * @param int $login_id The login to revoke from
      *
-     * @return bool true on success, false on failure
+     * @return bool True on success, false on failure
      */
     public function revoke($login_id) {
         if (!is_numeric($login_id)) {

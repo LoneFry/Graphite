@@ -23,9 +23,13 @@
  * @see      /^/lib/Record.php
  */
 class ContactLog extends Record {
+    /** @var string Table name, un-prefixed */
     protected static $table = 'ContactLog';
+    /** @var string Primary Key */
     protected static $pkey  = 'id';
+    /** @var string Select query, without WHERE clause */
     protected static $query = '';
+    /** @var array Table definition as collection of fields */
     protected static $vars = array(
         'id'          => array('type' => 'i' , 'min' => 1, 'guard' => true),
         'from'        => array('type' => 'em', 'max' => 255),

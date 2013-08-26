@@ -23,17 +23,24 @@
  * @link     http://g.lonefry.com
  */
 final class G {
-    public static $M;            // mysqli object
-    public static $m;            // mysqli object with read-only connection
-    public static $V;            // View object
-    public static $C;            // (Controller) Dispatcher object
-    public static $S;            // Security / Session object
-    public static $G = array();  // Graphite configuration array
+    /** @var mysqli_ mysqli_ object */
+    public static $M;
+    /** @var mysqli_ mysqli_ object  with read-only connection */
+    public static $m;
+    /** @var View View object */
+    public static $V;
+    /** @var Dispatcher (Controller) Dispatcher object */
+    public static $C;
+    /** @var Security Security / Session object */
+    public static $S;
+    /** @var array Graphite configuration array */
+    public static $G = array();
 
+    /** @var array Stores messages to be displayed to the user */
     private static $_msg = array();
 
     /**
-     * private constructor to prevent instantiation
+     * Private constructor to prevent instantiation
      */
     private function __construct() {
 
@@ -41,7 +48,7 @@ final class G {
 
 
     /**
-     * log messages for output later
+     * Log messages for output later
      *
      * @param string $s the message
      *                  pass null to return the messages
@@ -63,7 +70,7 @@ final class G {
     }
 
     /**
-     * replace special characters with their common counterparts
+     * Replace special characters with their common counterparts
      *
      * @param string $s the string to alter
      *
@@ -85,7 +92,7 @@ final class G {
     }
 
     /**
-     * emit invocation info, and passed value
+     * Emit invocation info, and passed value
      *
      * @param mixed $v   value to var_dump
      * @param bool  $die whether to exit when done
@@ -145,7 +152,7 @@ final class G {
     }
 
     /**
-     * close Security and mysqli objects in proper order
+     * Close Security and mysqli objects in proper order
      * This should be called before PHP cleanup to close things in order
      * register_shutdown_function() is one way to do this.
      *

@@ -23,9 +23,13 @@
  * @see      /^/lib/Record.php
  */
 class Login extends Record {
+    /** @var string Table name, un-prefixed */
     protected static $table = 'Logins';
+    /** @var string Primary Key */
     protected static $pkey  = 'login_id';
+    /** @var string Select query, without WHERE clause */
     protected static $query = '';
+    /** @var array Table definition as collection of fields */
     protected static $vars  = array(
         'login_id'        => array('type' => 'i' , 'min' => 1, 'guard' => true),
         'loginname'       => array('type' => 's' , 'strict' => true, 'min' => 3, 'max' => 255),
@@ -45,13 +49,14 @@ class Login extends Record {
         'disabled'        => array('type' => 'b' , 'def' => 0),
         'flagChangePass'  => array('type' => 'b' , 'def' => 1),
     );
+    /** @var array List of tables that connect this to another table */
     protected static $joiners = array(
         'Role' => 'Roles_Logins',
     );
 
-    // a regex for determining valid loginnames
+    /** @var string A regex for determining valid loginnames */
     protected static $labelRE = '^\w[\w\_\-\@\.\d]+$';
-    // cache the Roles this Login has
+    /** @var array Cache the Roles this Login has */
     protected $roles = array();
 
     /**
@@ -73,10 +78,10 @@ class Login extends Record {
     }
 
     /**
-     * wrap the parent constructor and set roles if passed
+     * Wrap the parent constructor and set roles if passed
      *
      * @param bool|int|array $a pkey value|set defaults|set values
-     * @param bool           $b set defaults
+     * @param bool           $b Set defaults
      */
     public function __construct($a = null, $b = null) {
         parent::__construct($a, $b);
@@ -86,11 +91,11 @@ class Login extends Record {
     }
 
     /**
-     * process extra values returned by load()'s SELECT query
+     * Process extra values returned by load()'s SELECT query
      *
-     * @param array $row extra values for post processing
+     * @param array $row Extra values for post processing
      *
-     * @return array remaining unprocesed values
+     * @return array Remaining unprocesed values
      */
     public function onload($row = array()) {
         if (isset($row['roles'])) {
@@ -175,9 +180,9 @@ class Login extends Record {
     /**
      * Verify supplied password using configured PasswordHasher
      *
-     * @param string $password the password to verify
+     * @param string $password The password to verify
      *
-     * @return bool true if password verified, false if not
+     * @return bool True if password verified, false if not
      */
     public function test_password($password) {
         return PasswordHasher::test_password($password, $this->password);
@@ -186,7 +191,7 @@ class Login extends Record {
     /**
      * Get referring loginname
      *
-     * @return string loginname of the referring Login
+     * @return string Loginname of the referring Login
      */
     public function getReferrer() {
         if ($this->__get('referrer_id') > 0) {
@@ -198,7 +203,7 @@ class Login extends Record {
     }
 
     /**
-     * return number of logins per initial letter
+     * Return number of logins per initial letter
      *
      * @return array Array indexed by letter containing counts per letter
      */
@@ -230,7 +235,7 @@ class Login extends Record {
      *
      * @param string $c Search for logins with loginnames starting with this
      *
-     * @return array collection of Login objects starting with passed string
+     * @return array Collection of Login objects starting with passed string
      */
     public static function forInitial($c = null) {
         if (strlen($c) < 1) {

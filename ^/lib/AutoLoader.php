@@ -27,6 +27,7 @@
  * @link     http://g.lonefry.com
  */
 class AutoLoader {
+    /** @var array Registry of known class names */
     protected static $classNames = array();
 
     /**

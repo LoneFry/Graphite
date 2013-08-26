@@ -24,11 +24,17 @@
  * @see      /^/lib/Controller.php
  */
 class Dispatcher {
+    /** @var string Name of Controller to load */
     protected $controller        = 'Default';
+    /** @var string Path of Controller to load */
     protected $controllerPath    = '';
+    /** @var string Name of 404 Controller to load if required */
     protected $controller404     = 'Default';
+    /** @var string Path of 404 Controller to load if required */
     protected $controller404Path = '';
+    /** @var array Paths in which to find Controllers */
     protected $includePath       = array();
+    /** @var array Arguments to pass to Controllers */
     protected $argv              = array();
 
     /**

@@ -27,14 +27,17 @@
  * @see      /^/controllers/DefaultController.php
  */
 abstract class Controller {
+    /** @var string Default action */
     protected $action = '';
+    /** @var string Which REQUEST_METHOD to act under */
     protected $method = '';
-    protected $argv   = array();
+    /** @var array Argument list passed from Dispatcher */
+    protected $argv = array();
 
     /**
      * Controller constructor
      *
-     * @param array $argv request parameters
+     * @param array $argv Argument list passed from Dispatcher
      *
      * @return mixed
      */

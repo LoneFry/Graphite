@@ -24,7 +24,7 @@
  */
 class PBKDF2PasswordHasher implements IPasswordHasher {
     /**
-     * private constructor to prevent instantiation
+     * Private constructor to prevent instantiation
      */
     private function __construct() {
     }
@@ -91,6 +91,8 @@ class PBKDF2PasswordHasher implements IPasswordHasher {
      * @param string $salt        salt to add to hash
      * @param int    $iterations  number of times to hash
      * @param int    $hash_length desired length of derived key in octets
+     *
+     * @throws Exception
      *
      * @return string hashed password for storage
      */
