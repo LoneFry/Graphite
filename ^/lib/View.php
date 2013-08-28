@@ -284,17 +284,14 @@ class View {
     /**
      * Executes any actions that need to be handled before rendering.
      *
-     * @returns void
+     * @return void
      */
     public function prerender() {
         if (G::$G['MODE'] == 'prd') {
-            $ver = G::$G['VIEW']['version'];
+            $ver = isset(G::$G['VIEW']['version']) ? G::$G['VIEW']['version'] : 0;
             // JS
             foreach ($this->vals['_script'] as $key => $scriptName) {
-                // var_dump($scriptName);
-                // var_dump($this->getFileName($scriptName));
-
-                $minFile =  '/min/' . $this->getFileName($scriptName);
+                $minFile =  '/min/' . $this->_getMinName($scriptName);
                 if (file_exists(SITE . $minFile)) {
                     $this->vals['_script'][$key] = $minFile . '?ver=' . $ver;
                 }
@@ -305,12 +302,11 @@ class View {
                 if ($link['type'] !== 'text/css') {
                     continue;
                 }
-                $minFile = SITE . '/min/' . $this->getFileName($link['href']);
+                $minFile = SITE . '/min/' . $this->_getMinName($link['href']);
                 if (file_exists(SITE . $minFile)) {
                     $this->vals['_link'][$key]['href'] = $minFile . '?ver=' . $ver;
                 }
             }
-            // die;
         }
     }
 
@@ -354,11 +350,11 @@ class View {
      *
      * @return string
      */
-    private function getFileName($filename) {
+    private function _getMinName($filename) {
         $basename = basename($filename);
-        $ext = substr($basename, strripos($basename, '.'), strlen($basename));
+        $ext = strrchr($basename, '.');
         if (strpos($basename, '.min' . $ext) === false) {
-            $final = str_replace($ext, '.min' . $ext, $basename);
+            $final = substr($basename, 0, strripos($basename, '.')) . '.min' . $ext;
         } else {
             $final = $basename;
         }
