@@ -282,6 +282,39 @@ class View {
     }
 
     /**
+     * Executes any actions that need to be handled before rendering.
+     *
+     * @returns void
+     */
+    public function prerender() {
+        if (G::$G['MODE'] == 'prd') {
+            $ver = G::$G['VIEW']['version'];
+            // JS
+            foreach ($this->vals['_script'] as $key => $scriptName) {
+                // var_dump($scriptName);
+                // var_dump($this->getFileName($scriptName));
+
+                $minFile =  '/min/' . $this->getFileName($scriptName);
+                if (file_exists(SITE . $minFile)) {
+                    $this->vals['_script'][$key] = $minFile . '?ver=' . $ver;
+                }
+            }
+
+            // CSS
+            foreach ($this->vals['_link'] as $key => $link) {
+                if ($link['type'] !== 'text/css') {
+                    continue;
+                }
+                $minFile = SITE . '/min/' . $this->getFileName($link['href']);
+                if (file_exists(SITE . $minFile)) {
+                    $this->vals['_link'][$key]['href'] = $minFile . '?ver=' . $ver;
+                }
+            }
+            // die;
+        }
+    }
+
+    /**
      * Render requested template by bringing $this->vals into scope and
      * including template file
      *
@@ -312,6 +345,24 @@ class View {
 
         // If we got here, we didn't find the template.
         return false;
+    }
+
+    /**
+     * Returns a min name of a css/js file.
+     *
+     * @param string $filename File name to evaluate
+     *
+     * @return string
+     */
+    private function getFileName($filename) {
+        $basename = basename($filename);
+        $ext = substr($basename, strripos($basename, '.'), strlen($basename));
+        if (strpos($basename, '.min' . $ext) === false) {
+            $final = str_replace($ext, '.min' . $ext, $basename);
+        } else {
+            $final = $basename;
+        }
+        return $final;
     }
 }
 
