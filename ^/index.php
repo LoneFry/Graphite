@@ -18,4 +18,5 @@ G::$C = new Dispatcher(G::$G['CON']);
 G::$V = new View(G::$G['VIEW']);
 G::$C->Act();
 G::close();
+G::$V->prerender();
 G::$V->render();
