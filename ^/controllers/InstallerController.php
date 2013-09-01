@@ -125,97 +125,30 @@ class InstallerController extends Controller {
             G::msg(ob_get_clean());
             if ($install) {
                 G::$G['db']['tabl'] = G::$M->escape_string($request['Tabl']);
-                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Logins` ("
-                                           ."`login_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
-                                           ."`loginname` varchar(255) NOT NULL,"
-                                           ."`password` varchar(255) NOT NULL,"
-                                           ."`realname` varchar(255) NOT NULL DEFAULT '',"
-                                           ."`email` varchar(255) NOT NULL DEFAULT '',"
-                                           ."`comment` varchar(255) NOT NULL DEFAULT '',"
-                                           ."`sessionStrength` tinyint(1) UNSIGNED NOT NULL DEFAULT '2',"
-                                           ."`lastIP` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`UA` varchar(40) NOT NULL DEFAULT '',"
-                                           ."`dateModified` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateActive` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateLogin` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateLogout` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`referrer_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`disabled` bit NOT NULL DEFAULT 0,"
-                                           ."`flagChangePass` bit NOT NULL DEFAULT 0,"
-                                           ."PRIMARY KEY (`login_id`),"
-                                           ."UNIQUE KEY `loginname` (`loginname`))")
-                ) {
-                    G::msg('Failed to create table '.G::$G['db']['tabl'].'Logins', 'error');
-                    $install = false;
-                } else {
-                    G::msg('Created table '.G::$G['db']['tabl'].'Logins');
+                foreach (array('Login', 'Role', 'LoginLog', 'ContactLog') as $class) {
+                    if (false === $class::create()) {
+                        G::msg('Failed to create table '.$class::getTable(), 'error');
+                        $install = false;
+                    } else {
+                        G::msg('Created table '.$class::getTable());
+                    }
                 }
-                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Roles_Logins` ("
-                                           ."`role_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`login_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`grantor_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."PRIMARY KEY (`role_id`,`login_id`))")
+                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".Role::getTable('Logins')."` ("
+                    ."`role_id` int(10) UNSIGNED NOT NULL DEFAULT 0,"
+                    ."`login_id` int(10) UNSIGNED NOT NULL DEFAULT 0,"
+                    ."`grantor_id` int(10) UNSIGNED NOT NULL DEFAULT 0,"
+                    ."`dateCreated` int(10) UNSIGNED NOT NULL DEFAULT 0,"
+                    ."PRIMARY KEY (`role_id`,`login_id`))")
                 ) {
-                    G::msg('Failed to create table '.G::$G['db']['tabl'].'Roles_Logins', 'error');
+                    G::msg('Failed to create table '.Role::getTable('Logins'), 'error');
                     $install = false;
                 } else {
-                    G::msg('Created table '.G::$G['db']['tabl'].'Roles_Logins');
-                }
-                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."Roles` ("
-                                           ."`role_id` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
-                                           ."`label` varchar(255) NOT NULL,"
-                                           ."`description` varchar(255) NOT NULL,"
-                                           ."`creator_id` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`disabled` bit NOT NULL DEFAULT 0,"
-                                           ."`dateModified` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`dateCreated` int(11) UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."PRIMARY KEY (`role_id`),"
-                                           ."UNIQUE KEY `label` (`label`))")
-                ) {
-                    G::msg('Failed to create table '.G::$G['db']['tabl'].'Roles', 'error');
-                    $install = false;
-                } else {
-                    G::msg('Created table '.G::$G['db']['tabl'].'Roles');
-                }
-                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."LoginLog` ("
-                                           ."`pkey` int(11) UNSIGNED NOT NULL AUTO_INCREMENT,"
-                                           ."`login_id` int(11) UNSIGNED NOT NULL,"
-                                           ."`ip` int(11) UNSIGNED NOT NULL,"
-                                           ."`ua` varchar(255) NOT NULL,"
-                                           ."`iDate` int(11) UNSIGNED NOT NULL,"
-                                           ."PRIMARY KEY (`pkey`))")
-                ) {
-                    G::msg('Failed to create table '.G::$G['db']['tabl'].'LoginLog', 'error');
-                    $install = false;
-                } else {
-                    G::msg('Created table '.G::$G['db']['tabl'].'LoginLog');
-                }
-                if (false === G::$M->query("CREATE TABLE IF NOT EXISTS `".G::$G['db']['tabl']."ContactLog` ("
-                                           ."`id` int UNSIGNED NOT NULL AUTO_INCREMENT,"
-                                           ."`from` varchar(255) NOT NULL,"
-                                           ."`date` int UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`subject` varchar(255) NOT NULL,"
-                                           ."`to` varchar(255) NOT NULL,"
-                                           ."`body` text NOT NULL,"
-                                           ."`IP` int UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`login_id` int UNSIGNED NOT NULL DEFAULT '0',"
-                                           ."`flagDismiss` bit NOT NULL DEFAULT 0,"
-                                           ."PRIMARY KEY (`id`),"
-                                           ."KEY `flagDismiss` (`flagDismiss`))")
-                ) {
-                    G::msg('Failed to create table '.G::$G['db']['tabl'].'ContactLog', 'error');
-                    $install = false;
-                } else {
-                    G::msg('Created table '.G::$G['db']['tabl'].'ContactLog');
+                    G::msg('Created table '.Role::getTable('Logins'));
                 }
 
                 if (!$install) {
                     G::msg('Not all tables could be created, install ended prematurely.', 'error');
                 } else {
-                    include_once SITE.'/^/models/Login.php';
-                    Login::prime();// just in case Login was primed earlier
                     $L = new Login(array('loginname'   => $request['loginname'],
                                          'password'    => $request['password1'],
                                          'email'       => $request['siteEmail'],
@@ -233,9 +166,6 @@ class InstallerController extends Controller {
                     } else {
                         G::msg('Failed to create root user: '.$L->loginname, 'error');
                     }
-
-                    include_once SITE.'/^/models/Role.php';
-                    Role::prime();
 
                     $roles = array(
                         array('label' => 'Admin', 'description' => 'General use admin Role', 'creator_id' => 1),
