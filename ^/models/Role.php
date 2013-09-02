@@ -45,6 +45,18 @@ class Role extends Record {
     );
 
     /**
+     * prime() initialized static values, call below class definition
+     *
+     * @return void
+     */
+    public static function prime() {
+        parent::prime();
+
+        // Add unique index on `label` column
+        self::$vars['label']['ddl'] = static::deriveDDL('label').' UNIQUE KEY';
+    }
+
+    /**
      * Called by Record::insert() BEFORE running INSERT query
      *
      * @return void

@@ -49,8 +49,15 @@ class ContactLog extends Record {
      */
     public static function prime() {
         parent::prime();
+
+        // Store DDL before setting front-end defaults
+        self::$vars['IP']['ddl'] = static::deriveDDL('IP');
         self::$vars['IP']['def'] = $_SERVER['REMOTE_ADDR'];
-        self::$vars['date']['def'] = time();
+        self::$vars['date']['ddl'] = static::deriveDDL('date');
+        self::$vars['date']['def'] = (int)NOW;
+
+        // Add index on `flagDismiss` column
+        self::$vars['flagDismiss']['ddl'] = static::deriveDDL('flagDismiss').', KEY (`flagDismiss`)';
     }
 }
 ContactLog::prime();

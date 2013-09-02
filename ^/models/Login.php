@@ -37,7 +37,7 @@ class Login extends Record {
         'realname'        => array('type' => 's' , 'max' => 255),
         'email'           => array('type' => 'em', 'max' => 255),
         'comment'         => array('type' => 's' , 'max' => 255),
-        'sessionStrength' => array('type' => 'e' , 'def' => 2, 'values' => array(0,1,2)),
+        'sessionStrength' => array('type' => 'i' , 'min' => 0, 'max' => 2, 'def' => 2),
         'UA'              => array('type' => 's' , 'min' => 40, 'max' => 40),
         'lastIP'          => array('type' => 'ip'),
         'dateActive'      => array('type' => 'ts', 'min' => 0),
@@ -75,6 +75,9 @@ class Login extends Record {
             .' LEFT JOIN `'.Role::getTable().'` r'
                 .' ON r.role_id = rl.role_id'
         ;
+
+        // Add unique index on `loginname` column
+        self::$vars['loginname']['ddl'] = static::deriveDDL('loginname').' UNIQUE KEY';
     }
 
     /**

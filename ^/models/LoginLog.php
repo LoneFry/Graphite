@@ -45,8 +45,11 @@ class LoginLog extends Record {
      */
     public static function prime() {
         parent::prime();
+        // Store DDL before setting front-end defaults
+        self::$vars['ip']['ddl'] = static::deriveDDL('ip');
         self::$vars['ip']['def'] = $_SERVER['REMOTE_ADDR'];
-        self::$vars['iDate']['def'] = NOW;
+        self::$vars['iDate']['ddl'] = static::deriveDDL('iDate');
+        self::$vars['iDate']['def'] = (int)NOW;
     }
 }
 LoginLog::prime();
