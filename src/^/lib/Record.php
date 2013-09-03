@@ -543,6 +543,63 @@ abstract class Record extends PassiveRecord {
     }
 
     /**
+     *
+     *
+     * @return array
+     */
+    public static function verifyStructure() {
+        $describe = static::describe();
+        $config   = static::$vars;
+        $changes  = array();
+        if (!empty($describe)) {
+            foreach ($describe as $col) {
+                $back_ddl  = '`'.$col['Field'].'` '
+                    .($col['Type'])
+                    .('NO' == $col['Null'] ? ' NOT NULL' : '')
+                    .('' != $col['Default'] ? ' DEFAULT '.$col['Default'] : '')
+                    .('' != $col['Extra'] ? ' '.strtoupper($col['Extra']) : '')
+                    .('MUL' == $col['Key'] ? ', KEY (`'.$col['Field'].'`)' : '')
+                    .('UNI' == $col['Key'] ? ' UNIQUE KEY' : '')
+                ;
+                $front_ddl = static::getDDL($col['Field']);
+                if ($back_ddl != $front_ddl) {
+                    if (false === $front_ddl) {
+                        $alter = 'DROP `'.$col['Field'].'`';
+                    } else {
+                        $alter = 'CHANGE `'.$col['Field'].'` '.$front_ddl;
+                    }
+                    $changes[$col['Field']] = compact('back_ddl', 'front_ddl', 'alter');
+                }
+                unset($config[$col['Field']]);
+                unset($describe[$col['Field']]);
+            }
+        }
+        foreach ($config as $field => $col) {
+            $front_ddl = static::getDDL($field);
+            $back_ddl = false;
+            $alter = 'ADD '.$front_ddl;
+            $changes[$field] = compact('back_ddl', 'front_ddl', 'alter');
+        }
+
+        return $changes;
+    }
+
+    /**
+     * Get or derive DDL for specified field
+     *
+     * @param string $field Specified field
+     *
+     * @return bool|string
+     */
+    public static function getDDL($field) {
+        if (isset(static::$vars[$field]['ddl'])) {
+            return static::$vars[$field]['ddl'];
+        }
+
+        return static::deriveDDL($field);
+    }
+
+    /**
      * Derive DDL for a field as configured in self::$vars
      *
      * @param string $field Name of field to derive DDL for
@@ -550,21 +607,21 @@ abstract class Record extends PassiveRecord {
      * @return bool|string
      */
     public static function deriveDDL($field) {
-        if (!self::_isVar($field)) {
+        if (!isset(static::$vars[$field])) {
             return false;
         }
         $config = static::$vars[$field];
         switch ($config['type']) {
             case 'f':
                 // float
-                $config['ddl'] = '`'.$field.'` FLOAT NOT NULL';
+                $config['ddl'] = '`'.$field.'` float NOT NULL';
                 if (isset($config['def']) && is_numeric($config['def'])) {
                     $config['ddl'] .= ' DEFAULT '.$config['def'];
                 }
                 break;
             case 'b':
                 // boolean stored as bit
-                $config['ddl'] = '`'.$field.'` BIT(1) NOT NULL';
+                $config['ddl'] = '`'.$field.'` bit(1) NOT NULL';
                 if (isset($config['def'])) {
                     $config['ddl'] .= ' DEFAULT '.($config['def'] ? "b'1'" : "b'0'");
                 } else {
@@ -573,7 +630,7 @@ abstract class Record extends PassiveRecord {
                 break;
             case 'ip':
                 // IP address stored as int
-                $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
+                $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
                 if (isset($config['def'])) {
                     if (!is_numeric($config['def'])) {
                         $config['ddl'] .= ' DEFAULT '.ip2long($config['def']);
@@ -595,13 +652,13 @@ abstract class Record extends PassiveRecord {
             case 's':
                 // string
                 if (!isset($config['max']) || !is_numeric($config['max']) || 16777215 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` LONGTEXT NOT NULL';
+                    $config['ddl'] = '`'.$field.'` longtext NOT NULL';
                 } elseif (65535 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` MEDIUMTEXT NOT NULL';
+                    $config['ddl'] = '`'.$field.'` mediumtext NOT NULL';
                 } elseif (255 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` TEXT NOT NULL';
+                    $config['ddl'] = '`'.$field.'` text NOT NULL';
                 } else {
-                    $config['ddl'] = '`'.$field.'` VARCHAR('.((int)$config['max']).') NOT NULL';
+                    $config['ddl'] = '`'.$field.'` varchar('.((int)$config['max']).') NOT NULL';
                 }
                 if (isset($config['def'])) {
                     $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
@@ -624,31 +681,31 @@ abstract class Record extends PassiveRecord {
                 // integers
                 if (isset($config['min']) && is_numeric($config['min']) && 0 <= $config['min']) {
                     if (!isset($config['max']) || !is_numeric($config['max'])) {
-                        $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
                     } elseif (4294967295 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` BIGINT(20) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` bigint(20) unsigned NOT NULL';
                     } elseif (16777215 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` int(10) unsigned NOT NULL';
                     } elseif (65535 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` MEDIUMINT(7) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` mediumint(7) unsigned NOT NULL';
                     } elseif (255 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` SMALLINT(5) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` smallint(5) unsigned NOT NULL';
                     } elseif (0 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` TINYINT(3) UNSIGNED NOT NULL';
+                        $config['ddl'] = '`'.$field.'` tinyint(3) unsigned NOT NULL';
                     }
                 } else {
                     if (!isset($config['max']) || !is_numeric($config['max'])) {
-                        $config['ddl'] = '`'.$field.'` INT(11) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` int(11) NOT NULL';
                     } elseif (2147483647 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` BIGINT(20) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` bigint(20) NOT NULL';
                     } elseif (8388607 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` INT(11) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` int(11) NOT NULL';
                     } elseif (32767 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` MEDIUMINT(8) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` mediumint(8) NOT NULL';
                     } elseif (127 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` SMALLINT(6) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` smallint(6) NOT NULL';
                     } elseif (0 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` TINYINT(4) NOT NULL';
+                        $config['ddl'] = '`'.$field.'` tinyint(4) NOT NULL';
                     }
                 }
                 if (isset($config['def']) && is_numeric($config['def'])) {
@@ -665,7 +722,7 @@ abstract class Record extends PassiveRecord {
                 break;
             case 'e':
                 // enums
-                $config['ddl'] = '`'.$field.'` ENUM(';
+                $config['ddl'] = '`'.$field.'` enum(';
                 foreach ($config['values'] as $v) {
                     $config['ddl'] .= "'".G::$M->escape_string($v)."',";
                 }
@@ -678,12 +735,12 @@ abstract class Record extends PassiveRecord {
                 // datetimes and mysql timestamps
                 // A column called 'recordChanged' is assumed to be a MySQL timestamp
                 if ('recordChanged' == $field) {
-                    $config['ddl'] = '`'.$field.'` TIMESTAMP NOT NULL'
+                    $config['ddl'] = '`'.$field.'` timestamp NOT NULL'
                         .' DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
                     break;
                 }
 
-                $config['ddl'] = '`'.$field.'` DATETIME NOT NULL';
+                $config['ddl'] = '`'.$field.'` datetime NOT NULL';
                 if (isset($config['def'])) {
                     // This supports more flexible defaults, like '5 days ago'
                     if (!is_numeric($config['def'])) {
@@ -718,6 +775,7 @@ abstract class Record extends PassiveRecord {
         $ciphertext_base64 = base64_encode($ciphertext);
         return $ciphertext_base64;
     }
+
     /**
      * Decrypt a string
      *

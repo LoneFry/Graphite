@@ -468,4 +468,59 @@ class AdminController extends Controller {
 
         return $this->View;
     }
+
+    /**
+     * Compare model definitions to actual table definitions
+     * TODO: Also check min/max data against set limits
+     *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
+     * @return mixed
+     */
+    public function do_tables(array $argv = array(), array $request = array()) {
+        if (!G::$S->roleTest('Admin/Login')) {
+            return parent::do_403($argv);
+        }
+
+        G::$V->_template = 'Admin.Tables.php';
+        G::$V->_title    = G::$V->_siteName.': Tables';
+
+        $files = array();
+        $tables = array();
+        foreach (explode(';', G::$G['includePath']) as $path) {
+            if (!is_dir(SITE.$path.'/models')) {
+                continue;
+            }
+            foreach (scandir(SITE.$path.'/models') as $file) {
+                // If the file is not a readable PHP file
+                if (!is_file(SITE.$path.'/models/'.$file)
+                    || !is_readable(SITE.$path.'/models/'.$file)
+                    || '.php' != substr($path.'/models/'.$file, -4)
+                ) {
+                    continue;
+                }
+                $class = substr($file, 0, -4);
+                // If we already have a class of this name
+                if (isset($tables[$class])) {
+                    $files[$path.'/models/'.$file] = Localizer::translate('admin.tables.nameconflict');
+                    continue;
+                }
+                // If we cannot include the file
+                if (!include_once SITE.$path.'/models/'.$file) {
+                    $files[$path.'/models/'.$file] = Localizer::translate('admin.tables.includefail');
+                    continue;
+                }
+                // If the file did not define a Record
+                if (!is_subclass_of($class, 'Record')) {
+                    $files[$path.'/models/'.$file] = Localizer::translate('admin.tables.notrecord');
+                    continue;
+                }
+                $files[$path.'/models/'.$file] = $class;
+                $tables[$class] = $class::verifyStructure();
+            }
+        }
+        G::$V->files = $files;
+        G::$V->tables = $tables;
+    }
 }
