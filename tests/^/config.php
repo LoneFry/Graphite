@@ -23,7 +23,7 @@ G::$G['contactFormSubject'] = 'Contact form message: ';
 G::$G['MODE'] = 'prd';
 // includePath relative to SITE
 // each class will append it's own sub directory to each path
-G::$G['includePath'] = SITE.'/^HTML5;'.SITE.'/^/';
+G::$G['includePath'] = '/^HTML5;/^/';
 
 // enable the installer -- reverse this when installed
 G::$G['installer'] = true;
