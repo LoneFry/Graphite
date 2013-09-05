@@ -270,7 +270,7 @@ abstract class DataModel {
      *
      * @return bool Return true if declared, null if undeclared
      */
-    protected function _isVar($k) {
+    protected static function _isVar($k) {
         if (!isset(static::$vars[$k])) {
             $trace = debug_backtrace();
             trigger_error('Undefined property via DataModel::__get/__set: '
