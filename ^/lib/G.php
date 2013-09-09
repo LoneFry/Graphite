@@ -169,6 +169,15 @@ final class G {
             self::$m->close();
         }
     }
+
+    /**
+     * Provide short alias for Localizer::translate
+     *
+     * @return mixed Pass-through return value of Localizer::translate
+     */
+    public static function _() {
+        return call_user_func_array(array('Localizer', 'translate'), func_get_args());
+    }
 }
 // register G::close() to be called at shutdown
 register_shutdown_function('G::close');

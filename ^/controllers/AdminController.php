@@ -100,7 +100,7 @@ class AdminController extends Controller {
             $insert = true;
             if ($request['email1'] != $request['email2']) {
                 G::msg(
-                    Localizer::translate('admin.loginadd.msg.emailmismatch'),
+                    G::_('admin.loginadd.msg.emailmismatch'),
                     'error'
                 );
                 $insert = false;
@@ -109,13 +109,13 @@ class AdminController extends Controller {
 
             if ('' == $request['pass1']) {
                 G::msg(
-                    Localizer::translate('admin.loginadd.msg.passwordempty'),
+                    G::_('admin.loginadd.msg.passwordempty'),
                     'error'
                 );
                 $insert = false;
             } elseif ($request['pass1'] != $request['pass2']) {
                 G::msg(
-                    Localizer::translate('admin.loginadd.msg.passwordmismatch'),
+                    G::_('admin.loginadd.msg.passwordmismatch'),
                     'error'
                 );
                 $insert = false;
@@ -132,7 +132,7 @@ class AdminController extends Controller {
             $L = new Login($request, true);
             if (!$L->loginname) {
                 G::msg(
-                    Localizer::translate(
+                    G::_(
                         'admin.loginadd.msg.loginnameinvalid',
                         htmlspecialchars($request['loginname'])
                     ),
@@ -142,7 +142,7 @@ class AdminController extends Controller {
             }
             if (!$L->email) {
                 G::msg(
-                    Localizer::translate(
+                    G::_(
                         'admin.loginadd.msg.emailinvalid',
                         htmlspecialchars($request['email'])
                     ),
@@ -152,16 +152,16 @@ class AdminController extends Controller {
             }
 
             if ($insert && $result = $L->insert()) {
-                G::msg(Localizer::translate('admin.loginadd.msg.success'));
+                G::msg(G::_('admin.loginadd.msg.success'));
                 return $this->do_LoginEdit(array($L->login_id), array());
             } elseif ($insert && (null === $result)) {
                 G::msg(
-                    Localizer::translate('admin.loginadd.msg.nochange')
+                    G::_('admin.loginadd.msg.nochange')
                 );
             } else {
                 if (G::$M->errno == 1062) {
                     G::msg(
-                        Localizer::translate(
+                        G::_(
                             'admin.loginadd.msg.loginnameexists',
                             $L->loginname
                         ),
@@ -169,7 +169,7 @@ class AdminController extends Controller {
                     );
                 }
                 G::msg(
-                    Localizer::translate('admin.loginadd.msg.fail'),
+                    G::_('admin.loginadd.msg.fail'),
                     'error'
                 );
             }
@@ -225,7 +225,7 @@ class AdminController extends Controller {
 
             if ($old_loginname == $L->loginname && $old_loginname != $request['loginname']) {
                 G::msg(
-                    Localizer::translate(
+                    G::_(
                         'admin.loginedit.msg.logininvalid',
                         htmlspecialchars($request['loginname'])
                     ),
@@ -235,7 +235,7 @@ class AdminController extends Controller {
             }
             if ($request['pass1'] != $request['pass2']) {
                 G::msg(
-                    Localizer::translate('admin.loginedit.msg.passwordmismatch'),
+                    G::_('admin.loginedit.msg.passwordmismatch'),
                     'error'
                 );
                 $update = false;
@@ -254,14 +254,14 @@ class AdminController extends Controller {
 
             if ($request['email1'] != $request['email2']) {
                 G::msg(
-                    Localizer::translate('admin.loginedit.msg.emailmismatch'),
+                    G::_('admin.loginedit.msg.emailmismatch'),
                     'error'
                 );
                 $update = false;
             }
             if ($old_email == $L->email && $old_email != $request['email1']) {
                 G::msg(
-                    Localizer::translate(
+                    G::_(
                         'admin.loginedit.msg.emailinvalid',
                         htmlspecialchars($request['email1'])
                     ),
@@ -271,13 +271,13 @@ class AdminController extends Controller {
             }
 
             if ($update && $result = $L->update()) {
-                G::msg(Localizer::translate('admin.loginedit.msg.success'));
+                G::msg(G::_('admin.loginedit.msg.success'));
             } elseif ($update && (null === $result)) {
-                G::msg(Localizer::translate('admin.loginedit.msg.nochange'));
+                G::msg(G::_('admin.loginedit.msg.nochange'));
             } else {
                 if (G::$M->errno == 1062) {
                     G::msg(
-                        Localizer::translate(
+                        G::_(
                             'admin.loginedit.msg.loginnameexists',
                             htmlspecialchars($request['email1'])
                         ),
@@ -285,7 +285,7 @@ class AdminController extends Controller {
                     );
                 }
                 G::msg(
-                    Localizer::translate('admin.loginedit.msg.fail'),
+                    G::_('admin.loginedit.msg.fail'),
                     'error'
                 );
             }
@@ -303,7 +303,7 @@ class AdminController extends Controller {
                     $i++;
                 }
             }
-            G::msg(Localizer::translate('admin.loginedit.msg.grantroles', $i));
+            G::msg(G::_('admin.loginedit.msg.grantroles', $i));
             $i = 0;
             foreach ($Roles as $k => $v) {
                 if ($L->roleTest($Roles[$k]->label) && !isset($request['grant'][$k])) {
@@ -311,7 +311,7 @@ class AdminController extends Controller {
                     $i++;
                 }
             }
-            G::msg(Localizer::translate('admin.loginedit.msg.revokeroles', $i));
+            G::msg(G::_('admin.loginedit.msg.revokeroles', $i));
             $L->load();
         }
 

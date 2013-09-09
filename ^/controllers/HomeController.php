@@ -81,22 +81,22 @@ class HomeController extends Controller {
             && isset($request[$honey2])
         ) {
             if ('' != $request[$honey] || '' != $request[$honey2]) {
-                G::msg(Localizer::translate('home.contact.msg.honeynotempty'));
+                G::msg(G::_('home.contact.msg.honeynotempty'));
             } elseif (false !== strpos($request[$from], "\n")
                 || false !== strpos($request[$from], "\r")
             ) {
-                G::msg(Localizer::translate('home.contact.msg.fromnewline'));
+                G::msg(G::_('home.contact.msg.fromnewline'));
             } elseif (false !== strpos($request[$subject], "\n")
                 || false !== strpos($request[$subject], "\r")
             ) {
-                G::msg(Localizer::translate('home.contact.msg.subjectnewline'));
+                G::msg(G::_('home.contact.msg.subjectnewline'));
             } else {
                 $loginname = G::$S->Login?G::$S->Login->loginname:'[not logged in]';
                 $login_id  = G::$S->Login?G::$S->Login->login_id:0;
 
                 $this->mailer($request, $from, $subject, $message,
                               $loginname, $login_id);
-                G::msg(Localizer::translate('home.contact.msg.sent'));
+                G::msg(G::_('home.contact.msg.sent'));
 
                 $ContactLog = new ContactLog(array(
                     'from'     => $request[$from],
@@ -108,7 +108,7 @@ class HomeController extends Controller {
                 $ContactLog->save();
             }
         } else {
-            G::msg(Localizer::translate('home.contact.msg.useform'));
+            G::msg(G::_('home.contact.msg.useform'));
         }
     }
 
