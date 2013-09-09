@@ -36,6 +36,9 @@ final class G {
     /** @var array Graphite configuration array */
     public static $G = array();
 
+    /** @var Factory Object */
+    public static $Factory;
+
     /** @var array Stores messages to be displayed to the user */
     private static $_msg = array();
 
@@ -46,6 +49,18 @@ final class G {
 
     }
 
+    /**
+     * Shortcut for a factory build method call.
+     *
+     * @return mixed
+     */
+    public static function build() {
+        $args = func_get_args();
+        return call_user_func_array(
+            array(self::$Factory, "build"),
+            $args
+        );
+    }
 
     /**
      * Log messages for output later
