@@ -139,4 +139,16 @@ class AutoLoader {
             require_once static::$classNames[$className];
         }
     }
+
+    /**
+     * Adds a class and file to the lookup table
+     *
+     * @param string $className Class you are trying to load.
+     * @param string $path      File containing class
+     *
+     * @return void
+     */
+    public static function addClass($className, $path) {
+        static::$classNames[$className] = $path;
+    }
 }
