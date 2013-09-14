@@ -42,7 +42,7 @@ class Dispatcher {
      *
      * @param array $cfg Configuration array
      */
-    function __construct($cfg) {
+    public function __construct(array $cfg) {
         // set hard default for controller paths
         $this->controllerPath = $this->controller404Path =
             SITE.DIRECTORY_SEPARATOR.'^'.DIRECTORY_SEPARATOR.'controllers'.DIRECTORY_SEPARATOR;

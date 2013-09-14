@@ -34,7 +34,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_list($argv = array(), $request = array()) {
+    public function do_list(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin')) {
             return parent::do_403($argv);
         }
@@ -51,7 +51,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_Login($argv = array(), $request = array()) {
+    public function do_Login(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -82,7 +82,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_LoginAdd($argv = array(), $request = array()) {
+    public function do_LoginAdd(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -188,7 +188,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_LoginEdit($argv = array(), $request = array()) {
+    public function do_LoginEdit(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
@@ -333,7 +333,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_Role($argv = array(), $request = array()) {
+    public function do_Role(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -353,7 +353,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_RoleAdd($argv = array(), $request = array()) {
+    public function do_RoleAdd(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -391,7 +391,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_RoleEdit($argv = array(), $request = array()) {
+    public function do_RoleEdit(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
@@ -471,7 +471,7 @@ class AdminController extends Controller {
      *
      * @return mixed
      */
-    public function do_loginLog($argv = array(), $request = array()) {
+    public function do_loginLog(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }

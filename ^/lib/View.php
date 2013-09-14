@@ -47,7 +47,7 @@ class View {
      *
      * @param array $cfg Configuration array
      */
-    function __construct($cfg) {
+    public function __construct(array $cfg) {
         // Check for and validate location of Controllers
         if (isset(G::$G['includePath'])) {
             foreach (explode(';', G::$G['includePath']) as $v) {

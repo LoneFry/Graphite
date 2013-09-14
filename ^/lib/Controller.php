@@ -41,7 +41,7 @@ abstract class Controller {
      *
      * @return mixed
      */
-    public function __construct($argv = array()) {
+    public function __construct(array $argv = array()) {
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {
@@ -59,7 +59,7 @@ abstract class Controller {
      *
      * @return mixed
      */
-    public function do_403($argv = array(), $request = array()) {
+    public function do_403(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 403 Forbidden");
         G::$V->_template = '403.php';
         G::$V->_title    = 'Permission Denied';

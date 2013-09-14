@@ -31,7 +31,7 @@ class HomeController extends Controller {
      *
      * @param array $argv Argument list passed from Dispatcher
      */
-    public function __construct($argv = array()) {
+    public function __construct(array $argv = array()) {
         parent::__construct($argv);
     }
 
@@ -43,7 +43,7 @@ class HomeController extends Controller {
      *
      * @return mixed
      */
-    public function do_home($argv = array(), $request = array()) {
+    public function do_home(array $argv = array(), array $request = array()) {
         G::$V->_template = 'Home.php';
         G::$V->_title    = G::$V->_siteName;
     }
@@ -56,7 +56,7 @@ class HomeController extends Controller {
      *
      * @return mixed
      */
-    public function do_contact($argv = array(), $request = array()) {
+    public function do_contact(array $argv = array(), array $request = array()) {
         G::$V->_template = 'Home.Contact.php';
         G::$V->_title    = G::$V->_siteName.': Contact';
         G::$V->seed      = $seed    = (int)(isset($request['apple'])
@@ -121,7 +121,7 @@ class HomeController extends Controller {
      *
      * @return mixed
      */
-    public function do_contactLog($argv = array(), $request = array()) {
+    public function do_contactLog(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Home/ContactLog')) {
             return parent::do_403($argv);
         }

@@ -157,7 +157,7 @@ abstract class Record extends DataModel {
      *
      * @return void
      */
-    public function onload($row = array()) {
+    public function onload(array $row = array()) {
     }
 
     /**
@@ -168,7 +168,7 @@ abstract class Record extends DataModel {
      *
      * @return mixed Array of unregistered values on success, false on failure
      */
-    public function load_array($row) {
+    public function load_array(array $row) {
         if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
             return false;
         }

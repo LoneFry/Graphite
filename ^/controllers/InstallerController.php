@@ -35,7 +35,7 @@ class InstallerController extends Controller {
      *
      * @return mixed
      */
-    public function do_install($argv = array(), $request = array()) {
+    public function do_install(array $argv = array(), array $request = array()) {
         if (true !== G::$G['installer']) {
             G::msg('Installer Disabled', 'error');
             return parent::do_403($argv);

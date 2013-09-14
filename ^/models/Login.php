@@ -100,7 +100,7 @@ class Login extends Record {
      *
      * @return array Remaining unprocesed values
      */
-    public function onload($row = array()) {
+    public function onload(array $row = array()) {
         if (isset($row['roles'])) {
             $this->roles = explode(',', $row['roles']);
             unset($row['roles']);

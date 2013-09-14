@@ -34,7 +34,7 @@ class DefaultController extends Controller {
      *
      * @return mixed
      */
-    public function do_404($argv = array(), $request = array()) {
+    public function do_404(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 404 File Not Found");
         G::$V->_template = '404.php';
         G::$V->_title    = 'Requested Page Not Found';
@@ -48,7 +48,7 @@ class DefaultController extends Controller {
      *
      * @return mixed
      */
-    public function do_500($argv = array(), $request = array()) {
+    public function do_500(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 500 Internal Server Error");
         G::$V->_template = '500.php';
         G::$V->_title    = 'Internal Server Error';

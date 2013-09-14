@@ -34,7 +34,7 @@ class AccountController extends Controller {
      *
      * @return mixed
      */
-    public function do_login($argv = array(), $request = array()) {
+    public function do_login(array $argv = array(), array $request = array()) {
         G::$V->_template = 'Account.Login.php';
         G::$V->_title    = G::$V->_siteName.' : Check-in';
 
@@ -65,7 +65,7 @@ class AccountController extends Controller {
      *
      * @return mixed
      */
-    public function do_logout($argv = array(), $request = array()) {
+    public function do_logout(array $argv = array(), array $request = array()) {
         G::$V->_template = 'Account.Logout.php';
         G::$V->_title    = G::$V->_siteName.' : Check-out';
 
@@ -83,7 +83,7 @@ class AccountController extends Controller {
      *
      * @return mixed
      */
-    public function do_recover($argv = array(), $request = array()) {
+    public function do_recover(array $argv = array(), array $request = array()) {
         G::$V->_template = 'Account.Recover.php';
         G::$V->_title    = G::$V->_siteName.' : Recover Password';
 
@@ -156,7 +156,7 @@ class AccountController extends Controller {
      *
      * @return mixed
      */
-    public function do_edit($argv = array(), $request = array()) {
+    public function do_edit(array $argv = array(), array $request = array()) {
         if (!G::$S->Login) {
             G::$V->_URI = CONT.'Account/edit';
             G::$V->_Lbl = 'Account Settings';
