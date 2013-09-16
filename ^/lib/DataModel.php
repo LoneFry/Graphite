@@ -85,6 +85,13 @@ abstract class DataModel {
      */
     public abstract function load();
 
+    /**
+     * Produce meaningful array representation of Model
+     *
+     * @return array
+     */
+    public abstract function toArray();
+
 
     /**
      * return an array of all registered values, checking
@@ -835,3 +842,4 @@ abstract class DataModel {
      * END Type specific combined Getter/Setter functions
      ************************************************************************/
 }
+
