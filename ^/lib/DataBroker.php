@@ -139,7 +139,7 @@ class DataBroker implements IDataProvider {
         }
 
         // Walk up the class hierarchy looking for a class with an assigned DataProvider
-        while (false !== $class = get_parent_class($class)) {
+        do {
             // If the class has an assigned DataProvider
             if (isset(static::$ProviderDict[$class])) {
                 // If the assigned DataProvider is not instantiated yet
@@ -149,7 +149,7 @@ class DataBroker implements IDataProvider {
                 }
                 return static::$Providers[static::$ProviderDict[$class]];
             }
-        }
+        } while (false !== $class = get_parent_class($class));
 
         // The specified class does not have an assigned DataProvider
         // If only someone had assigned one to PassiveRecord or DataModel

@@ -27,15 +27,6 @@ class HomeController extends Controller {
     protected $action = 'home';
 
     /**
-     * Constructor
-     *
-     * @param array $argv Argument list passed from Dispatcher
-     */
-    public function __construct(array $argv = array()) {
-        parent::__construct($argv);
-    }
-
-    /**
      * Display default Home page
      *
      * @param array $argv    Argument list passed from Dispatcher

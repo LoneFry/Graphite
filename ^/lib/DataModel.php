@@ -79,19 +79,11 @@ abstract class DataModel {
     }
 
     /**
-     * load object from database
-     *
-     * @return void
-     */
-    public abstract function load();
-
-    /**
      * Produce meaningful array representation of Model
      *
      * @return array
      */
     public abstract function toArray();
-
 
     /**
      * return an array of all registered values, checking

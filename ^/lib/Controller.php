@@ -33,15 +33,18 @@ abstract class Controller {
     protected $method = '';
     /** @var array Argument list passed from Dispatcher */
     protected $argv = array();
+    /** @var IDataProvider $DB */
+    protected $DB;
 
     /**
      * Controller constructor
      *
      * @param array $argv Argument list passed from Dispatcher
+     * @param IDataProvider $DB DataProvider to use with Controller
      *
      * @return mixed
      */
-    public function __construct(array $argv = array()) {
+    public function __construct(array $argv = array(), IDataProvider $DB) {
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {
@@ -49,6 +52,7 @@ abstract class Controller {
             }
         }
         $this->method = $_SERVER['REQUEST_METHOD'];
+        $this->DB = $DB;
     }
 
     /**

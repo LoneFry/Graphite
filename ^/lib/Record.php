@@ -151,6 +151,15 @@ abstract class Record extends DataModel {
     }
 
     /**
+     * Produce meaningful array representation of Model
+     *
+     * @return array
+     */
+    public function toArray() {
+        return $this->getAll();
+    }
+
+    /**
      * Override this function to perform custom actions AFTER load
      *
      * @param array $row Unregistered values selected in load()
