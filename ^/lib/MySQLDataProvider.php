@@ -43,11 +43,6 @@ class MysqlDataProvider extends DataProvider {
             trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
         }
 
-        // If no fields were set, this is unexpected
-        if (0 == count($params)) {
-            return null;
-        }
-
         $vars = $Model->getFieldList();
         $values = array();
         // Build search WHERE clause
@@ -80,7 +75,7 @@ class MysqlDataProvider extends DataProvider {
         $keys = array_keys($vars);
         $query = 'SELECT t.`'.join('`, t.`', $keys).'`'
             .' FROM `'.$prefix.$Model->getTable().'` t'
-            .' WHERE '.join(' AND ', $values)
+            .(count($values) ? ' WHERE '.join(' AND ', $values) : '')
             .' GROUP BY `'.$Model->getPkey().'`'
             .$this->_makeOrderBy($orders)
             .(is_numeric($count) && is_numeric($start)
