@@ -1,24 +1,23 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * DataProvider - Base class for DataProviders
+ * File : /^/lib/DataProvider.php
  *
  * PHP version 5.3
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
 
 /**
- * Record class - used as a base class for Active Record Model classes
- *  an example extension is at bottom of file
+ * DataProvider class - provides partial functionality of DataProviders
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
@@ -52,7 +51,7 @@ abstract class DataProvider implements IDataProvider {
             return null;
         }
 
-        $results = $this->search(get_class($Model), array($Model->getPkey() => $Model->{$Model->getPkey()}));
+        $results = $this->fetch(get_class($Model), array($Model->getPkey() => $Model->{$Model->getPkey()}));
         if (count($results)) {
             $Model = array_shift($results);
             return true;
@@ -76,7 +75,7 @@ abstract class DataProvider implements IDataProvider {
             return null;
         }
 
-        $results = $this->search(get_class($Model), $params, array(), 1, 0);
+        $results = $this->fetch(get_class($Model), $params, array(), 1, 0);
         if (count($results)) {
             $Model = array_shift($results);
 

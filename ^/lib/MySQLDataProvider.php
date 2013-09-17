@@ -1,24 +1,23 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * MysqlDataProvider - Provide data from MySQL
+ * File : /^/lib/MysqlDataProvider.php
  *
  * PHP version 5.3
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
 
 /**
- * Record class - used as a base class for Active Record Model classes
- *  an example extension is at bottom of file
+ * MysqlDataProvider class - Runs CRUD to MySQL for PassiveRecord models
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
@@ -37,16 +36,12 @@ class MysqlDataProvider extends DataProvider {
      *
      * @return array Found records
      */
-    public function search($class, array $params, array $orders = array(), $count = null, $start = 0) {
+    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
         if (!is_a($Model, 'PassiveRecord')) {
             trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
         }
-
-        // Sanitize $params through Model
-        $Model->setAll($params);
-        $params = $Model->getDiff();
 
         // If no fields were set, this is unexpected
         if (0 == count($params)) {
@@ -57,16 +52,34 @@ class MysqlDataProvider extends DataProvider {
         $values = array();
         // Build search WHERE clause
         foreach ($params as $key => $val) {
-            if ('b' == $vars[$key]['type']) {
-                $values[] = "`$key` = ".($this->vals[$key] ? "b'1'" : "b'0'");
+            if (!isset($vars[$key])) {
+                // Skip Invalid field
+                continue;
+            }
+            // Support list of values for IN conditions
+            if (is_array($val) && !in_array($vars['type'], array('a', 'j', 'o', 'b'))) {
+                foreach ($val as $key2 => $val2) {
+                    // Sanitize each value through the model
+                    $Model->$key = $val2;
+                    $val2 = $Model->$key;
+                    $val[$key2] = G::$m->escape_string($val2);
+                }
+                $values[] = "`$key` IN ('".implode("', '", $val)."')";
             } else {
-                $values[] = "`$key` = '".G::$M->escape_string($this->vals[$key])."'";
+                $Model->$key = $val;
+                $val = $Model->$key;
+                if ('b' == $vars[$key]['type']) {
+                    $values[] = "`$key` = ".($val ? "b'1'" : "b'0'");
+                } else {
+                    $values[] = "`$key` = '".G::$M->escape_string($val)."'";
+                }
             }
         }
 
+        $prefix = is_a($Model, 'ActiveRecord') ? '' : G::$m->tabl;
         $keys = array_keys($vars);
         $query = 'SELECT t.`'.join('`, t.`', $keys).'`'
-            .' FROM `'.G::$m->tabl.$Model->getTable().'` t'
+            .' FROM `'.$prefix.$Model->getTable().'` t'
             .' WHERE '.join(' AND ', $values)
             .' GROUP BY `'.$Model->getPkey().'`'
             .$this->_makeOrderBy($orders)
@@ -74,24 +87,25 @@ class MysqlDataProvider extends DataProvider {
                 ? ' LIMIT '.((int)$start).','.((int)$count)
                 : '')
         ;
-
         if (false === $result = G::$m->query($query)) {
             return false;
         }
-        $a = array();
+
+        $Records = array();
         while ($row = $result->fetch_assoc()) {
-            $a[$row[static::$pkey]] = new static();
-            $a[$row[static::$pkey]]->load_array($row);
+            /** @var PassiveRecord $Records[$row[$Model->getPkey()]] */
+            $Records[$row[$Model->getPkey()]] = new $class();
+            $Records[$row[$Model->getPkey()]]->load_array($row);
         }
         $result->close();
 
-        return $a;
+        return $Records;
     }
 
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord &$Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -111,9 +125,9 @@ class MysqlDataProvider extends DataProvider {
         foreach ($diff as $key => $val) {
             $fields[] = $key;
             if ('b' == $vars[$key]['type']) {
-                $values[] = $this->vals[$key] ? "b'1'" : "b'0'";
+                $values[] = $diff[$key] ? "b'1'" : "b'0'";
             } else {
-                $values[] = G::$M->escape_string($this->vals[$key]);
+                $values[] = G::$M->escape_string($diff[$key]);
             }
         }
 
@@ -136,7 +150,7 @@ class MysqlDataProvider extends DataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord &$Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -159,9 +173,9 @@ class MysqlDataProvider extends DataProvider {
             if (null === $Model->{$Model->getPkey()}) {
                 $values[] = "`$key` = NULL";
             } elseif ('b' == $vars[$key]['type']) {
-                $values[] = "`$key` = ".($this->vals[$key] ? "b'1'" : "b'0'");
+                $values[] = "`$key` = ".($diff[$key] ? "b'1'" : "b'0'");
             } else {
-                $values[] = "`$key` = '".G::$M->escape_string($this->vals[$key])."'";
+                $values[] = "`$key` = '".G::$M->escape_string($diff[$key])."'";
             }
         }
 
@@ -177,6 +191,8 @@ class MysqlDataProvider extends DataProvider {
         }
 
         $Model->unDiff();
+
+        return true;
     }
 
     /**
@@ -184,18 +200,19 @@ class MysqlDataProvider extends DataProvider {
      *  and bool indicating asc/desc order for values
      *
      * @param array $orders Array of field => (= 'asc' ?)
+     * @param array $valids list of valid order by values
      *
      * @return string ORDER BY clause
      */
-    protected function _makeOrderBy(array $orders = array()) {
-        if (0 == count($orders)) {
+    protected function _makeOrderBy(array $orders = array(), array $valids = array()) {
+        if (0 == count($orders) || 0 == count($valids)) {
             return '';
         }
 
         foreach ($orders as $field => $asc) {
             if ('rand()' == $field) {
                 $orders[$field] = "RAND() ".($asc ? 'ASC' : 'DESC');
-            } else {
+            } elseif (in_array($valids, $field)) {
                 $orders[$field] = "`$field` ".($asc ? 'ASC' : 'DESC');
             }
         }
@@ -204,6 +221,7 @@ class MysqlDataProvider extends DataProvider {
     }
 
     /**
+     * TODO figure out where this belongs
      * Derive DDL for a field as configured
      *
      * @param string $field  Name of field to derive DDL for
@@ -301,6 +319,7 @@ class MysqlDataProvider extends DataProvider {
                 }
                 if (isset($config['def']) && is_numeric($config['def'])) {
                     $config['ddl'] .= ' DEFAULT '.$config['def'];
+/* TODO pkey
                 } elseif ($field != static::$pkey) {
                     $config['ddl'] .= ' DEFAULT 0';
                 }
@@ -309,6 +328,7 @@ class MysqlDataProvider extends DataProvider {
                 // This can be overridden with an explicit DDL
                 if ($field == static::$pkey) {
                     $config['ddl'] .= ' AUTO_INCREMENT';
+*/
                 }
                 break;
             case 'e': // enums

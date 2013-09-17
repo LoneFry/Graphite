@@ -1,24 +1,24 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * PassiveRecord - core database record class
+ * File : /^/lib/PassiveRecord.php
  *
  * PHP version 5.3
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
 
 /**
- * Record class - used as a base class for Active Record Model classes
- *  an example extension is at bottom of file
+ * PassiveRecord class - used as a base class for Record Model classes
+ *  for use with a DataProvider
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
@@ -86,7 +86,7 @@ abstract class PassiveRecord extends DataModel {
     /**
      * Return the table, which is a protected static var
      *
-     * @param string $joiner  Request a joiner table by specifying which table
+     * @param string $joiner Request a joiner table by specifying which table
      *                        to join with
      *
      * @return string Model's table name
@@ -99,7 +99,7 @@ abstract class PassiveRecord extends DataModel {
 
         // If a known joiner is specified, return it
         if (isset(static::$joiners) && isset(static::$joiners[$joiner])) {
-            return G::$m->tabl.static::$joiners[$joiner];
+            return static::$joiners[$joiner];
         }
 
         // If a plausible joiner is specified, derive it
@@ -188,6 +188,27 @@ abstract class PassiveRecord extends DataModel {
      * @return void
      */
     public function ondelete() {
+    }
+
+    /**
+     * "Load" object from array, sets DBvals as if loaded from database
+     *  if pkey is not passed, fail
+     *
+     * @param array $row values
+     *
+     * @return mixed Array of unregistered values on success, false on failure
+     */
+    public function load_array(array $row) {
+        if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
+            return false;
+        }
+        $row = $this->setAll($row, false);
+        foreach (static::$vars as $k => $v) {
+            $this->DBvals[$k] = $this->vals[$k];
+        }
+        $this->onload($row);
+
+        return $row;
     }
 
     /**

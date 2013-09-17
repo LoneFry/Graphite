@@ -52,7 +52,7 @@ G::$G['db']['ro'] = array(
     'name' => ''
 );
 
-G::$G['ProviderDict'] = array(
+G::$G['db']['ProviderDict'] = array(
     'DataModel' => 'MySQLDataProvider',
 );
 /** **************************************************************************

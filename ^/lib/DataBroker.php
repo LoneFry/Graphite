@@ -1,30 +1,27 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * DataBroker - Core Data Broker between applications and Data Providers
+ * File : /^/lib/DataBroker.php
  *
  * PHP version 5.3
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
 
 /**
- * Record class - used as a base class for Active Record Model classes
- *  an example extension is at bottom of file
+ * DataBroker class - Delegates data requests to appropriate DataProvider
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
- * @see      /^/lib/mysqli_.php
- * @see      /^/lib/PassiveRecord.php
  */
-class WrapDataProvider implements IDataProvider {
+class DataBroker implements IDataProvider {
     /** @var array $Providers A cache of lazy-loaded DataProviders */
     protected static $Providers = array();
 
@@ -32,7 +29,12 @@ class WrapDataProvider implements IDataProvider {
     protected static $ProviderDict = array();
 
     /**
-     * @param array $dict
+     * Set Broker dictionary
+     *
+     * @param array $dict Array associating Models to DataProviders
+     *                    in the form 'Model' => 'DataProvider
+     *
+     * @return void
      */
     public static function setDict(array $dict) {
         self::$ProviderDict = $dict;
@@ -50,14 +52,14 @@ class WrapDataProvider implements IDataProvider {
      *
      * @return array Found records
      */
-    public function search($class, array $params, array $orders = array(), $count = null, $start = 0) {
+    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0) {
         return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $params, $orders, $count, $start);
     }
 
     /**
      * Load data for passed model
      *
-     * @param PassiveRecord $Model Model to load, passed by reference
+     * @param PassiveRecord &$Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -68,7 +70,7 @@ class WrapDataProvider implements IDataProvider {
     /**
      * Load data for passed model by its primary key value
      *
-     * @param PassiveRecord $Model Model to load, passed by reference
+     * @param PassiveRecord &$Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -79,7 +81,7 @@ class WrapDataProvider implements IDataProvider {
     /**
      * Load data for passed model by its set values
      *
-     * @param PassiveRecord $Model Model to load, passed by reference
+     * @param PassiveRecord &$Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -90,7 +92,7 @@ class WrapDataProvider implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord &$Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -101,7 +103,7 @@ class WrapDataProvider implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord &$Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -112,7 +114,7 @@ class WrapDataProvider implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord $Model Model to save, passed by reference
+     * @param PassiveRecord &$Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -120,6 +122,13 @@ class WrapDataProvider implements IDataProvider {
         return self::getDataProviderForClass($Model)->{__FUNCTION__}($Model);
     }
 
+    /**
+     * Get Data Provider For provided Class
+     *
+     * @param string $class Name of class
+     *
+     * @return null|IDataProvider
+     */
     public static function getDataProviderForClass($class) {
         if (is_object($class) && is_a($class, 'PassiveRecord')) {
             $class = get_class($class);

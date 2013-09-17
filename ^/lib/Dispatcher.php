@@ -162,8 +162,10 @@ class Dispatcher {
             $argv = $this->argv;
         }
         Localizer::loadLib($this->controller);
+        DataBroker::setDict(G::$G['db']['ProviderDict']);
+        /** @var Controller $Controller */
         $Controller = $this->controller.'Controller';
-        $Controller = new $Controller($argv);
+        $Controller = G::build($Controller, $argv, G::build('DataBroker'));
         if (method_exists($Controller, 'do_'.$Controller->action)) {
             G::$V->_controller = strtolower($this->controller);
             G::$V->_action = strtolower($Controller->action);
@@ -172,7 +174,8 @@ class Dispatcher {
 
         // else use 404 controller
         $Controller = $this->controller404.'Controller';
-        $Controller = new $Controller($argv);
+        $Controller = G::build($Controller, $argv, G::build('DataBroker'));
+
         return $Controller->act();
     }
 }

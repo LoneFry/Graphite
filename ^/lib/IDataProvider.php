@@ -1,24 +1,23 @@
 <?php
 /**
- * Record - core database active record class file
- * File : /^/lib/Record.php
+ * IDataProvider - Data Provider Interface
+ * File : /^/lib/IDataProvider.php
  *
  * PHP version 5.3
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
 
 /**
- * Record class - used as a base class for Active Record Model classes
- *  an example extension is at bottom of file
+ * IDataProvider interface -
  *
  * @category Graphite
  * @package  Core
- * @author   LoneFry <dev@lonefry.com>
+ * @author   Tyler Uebele
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
@@ -37,7 +36,7 @@ interface IDataProvider {
      *
      * @return array Found records
      */
-    public function search($class, array $params, array $orders = array(), $count = null, $start = 0);
+    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0);
 
     /**
      * Load data for passed model
