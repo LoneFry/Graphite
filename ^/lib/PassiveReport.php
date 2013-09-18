@@ -22,7 +22,7 @@
  * @link     http://g.lonefry.com
  * @see      /^/lib/DataModel.php
  */
-abstract class Report extends DataModel {
+abstract class PassiveReport extends DataModel {
     /** @var array resulting data produced by load() */
     protected $_data = array();
 

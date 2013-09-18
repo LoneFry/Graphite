@@ -40,7 +40,7 @@ class MysqlDataProvider extends DataProvider {
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
         if (!is_a($Model, 'PassiveRecord')) {
-            trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
+            trigger_error('Supplied class "'.$class.'" name does not extend PassiveRecord', E_USER_ERROR);
         }
 
         $vars = $Model->getFieldList();

@@ -57,6 +57,18 @@ class DataBroker implements IDataProvider {
     }
 
     /**
+     * Search for records of type $class according to provided primary key(s)
+     *
+     * @param string $class Name of Model to search for
+     * @param mixed  $pkey  Value(s) of primary key to fetch
+     *
+     * @return array Found records
+     */
+    public function byPK($class, $pkey) {
+        return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $pkey);
+    }
+
+    /**
      * Load data for passed model
      *
      * @param PassiveRecord &$Model Model to load, passed by reference

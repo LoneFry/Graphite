@@ -97,6 +97,18 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     }
 
     /**
+     * Search for records of type $class according to provided primary key(s)
+     *
+     * @param string $class Name of Model to search for
+     * @param mixed  $pkey  Value(s) of primary key to fetch
+     *
+     * @return array Found records
+     */
+    public function byPK($class, $pkey) {
+        return false;
+    }
+
+    /**
      * Save data does not apply to reports
      *
      * @param PassiveRecord &$Model Model to save, passed by reference
