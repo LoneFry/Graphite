@@ -25,6 +25,34 @@
  */
 abstract class DataProvider implements IDataProvider {
     /**
+     * Search for records of type $class according to provided primary key(s)
+     *
+     * @param string $class Name of Model to search for
+     * @param mixed  $pkey  Value(s) of primary key to fetch
+     *
+     * @return array Found records
+     */
+    public function byPK($class, $pkey) {
+        /** @var PassiveRecord $Model */
+        $Model = G::build($class);
+        if (!is_a($Model, 'PassiveRecord')) {
+            trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
+        }
+
+        $result = $this->fetch($class, array($class::getPkey() => $pkey));
+
+        if (!is_array($pkey)) {
+            if (!isset($result[$pkey])) {
+                $result = false;
+            } else {
+                $result = $result[$pkey];
+            }
+        }
+
+        return $result;
+    }
+
+    /**
      * Load data for passed model by its set values
      *
      * @param PassiveRecord $Model Model to load, passed by reference
