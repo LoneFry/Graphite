@@ -113,4 +113,14 @@ abstract class PassiveReport extends DataModel {
 
         return $orders;
     }
+
+    /**
+     * Set the data externally from DataProvider
+     * TODO figure out how to make this not dumb
+     *
+     * @param array $data Data from DataProvider
+     */
+    public function setData($data) {
+        $this->_data = $data;
+    }
 }

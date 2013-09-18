@@ -75,8 +75,8 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
         $query .= $this->_makeOrderBy($Model->getOrders($orders));
 
         if (null == $count) {
-            $count = $Model->_count;
-            $start = $Model->_start;
+            $count = $Model->getCount;
+            $start = $Model->getStart;
         }
         if (is_numeric($count) && is_numeric($start)) {
             // add limits also
@@ -87,13 +87,15 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
         if (false === $result = G::$m->query($query)) {
             return false;
         }
+        $data = array();
         while ($row = $result->fetch_assoc()) {
-            $this->_data[] = $row;
+            $data[] = $row;
         }
         $result->close();
-        $this->onload();
+        $Model->setData($data);
+        $Model->onload();
 
-        return true;
+        return $Model->toArray();
     }
 
     /**
