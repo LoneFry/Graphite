@@ -62,7 +62,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
 
                 $query[] = sprintf($val['sql'], "'".implode("', '", $arr)."'");
             } else {
-                $query[] = sprintf($val['sql'], G::$m->escape_string($this->vals[$key]));
+                $query[] = sprintf($val['sql'], G::$m->escape_string($val));
             }
         }
 
