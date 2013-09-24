@@ -45,6 +45,8 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
 
         // Sanitize $params through Model
         $Model->setAll($params);
+
+        $vars   = $Model->getParamList();
         $params = $Model->getAll();
         $params = array_filter($params, function($val) {
             return !is_null($val);
@@ -53,16 +55,16 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
         $query = array();
 
         foreach ($params as $key => $val) {
-            if ('a' === $val['type']) {
+            if ('a' === $vars[$key]['type']) {
                 $arr = unserialize($Model->$key);
 
                 foreach ($arr as $kk => $vv) {
                     $arr[$kk] = G::$m->escape_string($vv);
                 }
 
-                $query[] = sprintf($val['sql'], "'".implode("', '", $arr)."'");
+                $query[] = sprintf($vars[$key]['sql'], "'".implode("', '", $arr)."'");
             } else {
-                $query[] = sprintf($val['sql'], G::$m->escape_string($val));
+                $query[] = sprintf($vars[$key]['sql'], G::$m->escape_string($val));
             }
         }
 
