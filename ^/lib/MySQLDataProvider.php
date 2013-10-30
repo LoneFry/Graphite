@@ -122,13 +122,13 @@ class MysqlDataProvider extends DataProvider {
             if ('b' == $vars[$key]['type']) {
                 $values[] = $diff[$key] ? "b'1'" : "b'0'";
             } else {
-                $values[] = G::$M->escape_string($diff[$key]);
+                $values[] = "'".G::$M->escape_string($diff[$key])."'";
             }
         }
 
         $query = 'INSERT INTO `'.$Model->getTable().'` '
             . '(`' . implode('`, `', $fields) . '`)'
-            . "VALUES ('" . implode("','", $values) . "')";
+            . "VALUES (" . implode(",", $values) . ")";
 
         if (false === G::$M->query($query)) {
             return false;
