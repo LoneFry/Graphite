@@ -77,7 +77,7 @@ class MysqlDataProvider extends DataProvider {
             .' FROM `'.$prefix.$Model->getTable().'` t'
             .(count($values) ? ' WHERE '.join(' AND ', $values) : '')
             .' GROUP BY `'.$Model->getPkey().'`'
-            .$this->_makeOrderBy($orders)
+            .$this->_makeOrderBy($orders, array_keys($vars))
             .(is_numeric($count) && is_numeric($start)
                 ? ' LIMIT '.((int)$start).','.((int)$count)
                 : '')
@@ -207,7 +207,7 @@ class MysqlDataProvider extends DataProvider {
         foreach ($orders as $field => $asc) {
             if ('rand()' == $field) {
                 $orders[$field] = "RAND() ".($asc ? 'ASC' : 'DESC');
-            } elseif (in_array($valids, $field)) {
+            } elseif (in_array($field, $valids)) {
                 $orders[$field] = "`$field` ".($asc ? 'ASC' : 'DESC');
             }
         }
