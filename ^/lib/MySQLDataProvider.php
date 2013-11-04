@@ -181,13 +181,29 @@ class MysqlDataProvider extends DataProvider {
         if (false === G::$M->query($query)) {
             return false;
         }
-        if (0 != G::$M->insert_id) {
-            $Model->{$Model->getPkey()} = G::$M->insert_id;
+        $Model->unDiff();
+        return true;
+    }
+
+    /**
+     * Delete data for passed Model
+     *
+     * @param PassiveRecord $Model Model to be passed
+     *
+     * @return mixed|null
+     */
+    public function delete(PassiveRecord &$Model) {
+        // If the PKey is not set, what would we update?
+        if (null === $Model->{$Model->getPkey()}) {
+            return null;
         }
 
-        $Model->unDiff();
+        $Model->ondelete();
+        $prefix = is_a($Model, 'ActiveRecord') ? '' : G::$m->tabl;
+        $query  = 'DELETE FROM `'.$prefix.$Model->getTable().'` '
+            ." WHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
 
-        return true;
+        return G::$M->query($query);
     }
 
     /**

@@ -135,6 +135,17 @@ class DataBroker implements IDataProvider {
     }
 
     /**
+     * Delete record data for passed model
+     *
+     * @param PassiveRecord &$Model Model to save, passed by reference
+     *
+     * @return bool|null True on success, False on failure, Null on invalid attempt
+     */
+    public function delete(PassiveRecord &$Model) {
+        return self::getDataProviderForClass($Model)->{__FUNCTION__}($Model);
+    }
+
+    /**
      * Get Data Provider For provided Class
      *
      * @param string $class Name of class
