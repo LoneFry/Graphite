@@ -39,12 +39,12 @@ abstract class Controller {
     /**
      * Controller constructor
      *
-     * @param array $argv Argument list passed from Dispatcher
-     * @param IDataProvider $DB DataProvider to use with Controller
+     * @param array         $argv Argument list passed from Dispatcher
+     * @param IDataProvider $DB   DataProvider to use with Controller
      *
      * @return mixed
      */
-    public function __construct(array $argv = array(), IDataProvider $DB) {
+    public function __construct(array $argv = array(), IDataProvider $DB = null) {
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {
