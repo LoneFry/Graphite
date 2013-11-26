@@ -205,10 +205,17 @@ class MysqlDataProvider extends DataProvider {
         }
 
         foreach ($orders as $field => $asc) {
+            if (false === $asc || 'desc' == strtolower($asc)) {
+                $asc = 'DESC';
+            } elseif (true === $asc || 'asc' == strtolower($asc)) {
+                $asc = 'ASC';
+            } else {
+                $asc = '';
+            }
             if ('rand()' == $field) {
-                $orders[$field] = "RAND() ".($asc ? 'ASC' : 'DESC');
+                $orders[$field] = "RAND() ".$asc;
             } elseif (in_array($field, $valids)) {
-                $orders[$field] = "`$field` ".($asc ? 'ASC' : 'DESC');
+                $orders[$field] = "`$field` ".$asc;
             }
         }
 
