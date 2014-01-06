@@ -26,6 +26,8 @@ class AccountController extends Controller {
     /** @var string Default action */
     protected $action = 'login';
 
+    private $_redirect = 'Dashboard';
+
     /**
      * Process Login form
      *
@@ -189,8 +191,13 @@ class AccountController extends Controller {
             if (true === $saved = G::$S->Login->save()) {
                 if (isset($pass) && true === $pass) {
                     G::msg('Your password was updated.');
-                } else {
-                    G::msg('Your password was NOT updated.');
+                    if ($request['path'] != '') {
+                        $this->_redirect('/' . $request['path']);
+                    } else {
+                        $this->_redirect('/' . $this->_redirect);
+                    }
+                } elseif (G::$S->Login->flagChangePass == 1) {
+                    G::msg('You cannot re-use your old password!', 'error');
                 }
                 G::msg('Your account was updated.');
             } elseif (null === $saved) {
@@ -200,6 +207,7 @@ class AccountController extends Controller {
             }
         }
 
+        G::$V->path = $argv['_path'];
         G::$V->email = G::$S->Login->email;
         G::$V->comment = G::$S->Login->comment;
     }

@@ -2,6 +2,7 @@
             <h2 class="tcenter">Account Settings</h2>
             <div id="bodyLogin">
                 <form action="<?php echo CONT; ?>Account/edit" method="post">
+                    <input type="hidden" name="path" value="<?php echo $path; ?>">
                     <div>
                         <label for="acctMail">Private eMail</label>
                         <input id="acctMail" type="text" name="email" value="<?php echo $email; ?>">

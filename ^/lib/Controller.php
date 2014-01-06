@@ -160,4 +160,16 @@ abstract class Controller {
                               E_USER_NOTICE);
         }
     }
+
+    /**
+     * Redirects page to url
+     *
+     * @param String $url URL to redirect to.
+     *
+     * @return void
+     */
+    protected function _redirect($url) {
+        header("Location: ".$url);
+        die();
+    }
 }
