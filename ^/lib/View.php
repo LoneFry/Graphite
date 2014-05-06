@@ -372,7 +372,7 @@ class View {
  * @return void
  */
 function html($s) {
-    echo htmlspecialchars($s);
+    echo htmlspecialchars($s, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE);
 }
 
 /**
