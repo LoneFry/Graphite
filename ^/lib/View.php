@@ -313,12 +313,65 @@ class View {
     }
 
     /**
+     * Render the view with any secondary processing.
+     *
+     * @return void
+     */
+    public function output() {
+        $output = $this->render();
+        if ($this->_format === 'pdf' && class_exists('mPDF')) {
+            // Give us some time to render this...
+            set_time_limit(60);
+
+            $mpdf = new mPDF();
+            // Process and load the CSS separately.
+            // Keeps mpdf from flubbing up on big css files. (>100,000)
+            ini_set("pcre.backtrack_limit", "1000000");
+            $styleSheets = $this->_getStyleSheetUrls();
+            foreach ($styleSheets as $link) {
+                $css = file_get_contents(SITE . $link);
+                // In PDF format body tags lose classes.  This keeps body styles still relevant
+                if (isset($this->vals['_controller']) && isset($this->vals['_action'])) {
+                    $css = str_replace(
+                        'body.' . $this->vals['_controller'] . '-' . $this->vals['_action'],
+                        'body',
+                        $css
+                    );
+                    $css = str_replace('body.' . $this->vals['_controller'], 'body', $css);
+                }
+                $mpdf->WriteHTML($css, 1);
+            }
+            // Process and load HTML
+            $mpdf->WriteHTML($output, 2);
+            $mpdf->Output();
+        } else {
+            echo $output;
+        }
+    }
+
+    /**
+     * Returns an array of StyleSheet URLs
+     *
+     * @return array
+     */
+    private function _getStyleSheetUrls() {
+        $styleSheets = array();
+        foreach ($this->vals['_link'] as $link) {
+            if ($link['rel'] !== 'stylesheet') {
+                continue;
+            }
+            $styleSheets[] = $link['href'];
+        }
+        return $styleSheets;
+    }
+
+    /**
      * Render requested template by bringing $this->vals into scope and
      * including template file
      *
      * @param string $_template Template to render
      *
-     * @return bool True on success, false otherwise
+     * @return string|bool Buffered output on success, false otherwise
      */
     public function render($_template = 'template') {
         extract($this->vals);
@@ -336,8 +389,9 @@ class View {
             if (isset($this->templates[$_template])
                 && file_exists($_v.$this->templates[$_template])
             ) {
+                ob_start();
                 include_once $_v.$this->templates[$_template];
-                return true;
+                return ob_get_clean();
             }
         }
 
@@ -381,7 +435,7 @@ function html($s) {
  * @return void
  */
 function get_header() {
-    G::$V->render('header');
+    echo G::$V->render('header');
 }
 
 /**
@@ -390,7 +444,7 @@ function get_header() {
  * @return void
  */
 function get_footer() {
-    G::$V->render('footer');
+    echo G::$V->render('footer');
 }
 
 /**
@@ -399,5 +453,5 @@ function get_footer() {
  * @return void
  */
 function get_template() {
-    G::$V->render();
+    echo G::$V->render();
 }
