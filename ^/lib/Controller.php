@@ -41,10 +41,9 @@ abstract class Controller {
      *
      * @param array         $argv Argument list passed from Dispatcher
      * @param IDataProvider $DB   DataProvider to use with Controller
-     *
-     * @return mixed
      */
     public function __construct(array $argv = array(), IDataProvider $DB = null) {
+        $this->View = new View(G::$G['VIEW']);
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {

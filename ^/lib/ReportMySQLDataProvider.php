@@ -1,6 +1,6 @@
 <?php
 /**
- * ReportDataProvider - Provide report data from MySQL
+ * ReportMySQLDataProvider - Provide report data from MySQL
  * File : /^/lib/ReportMySQLDataProvider.php
  *
  * PHP version 5.3
@@ -13,7 +13,7 @@
  */
 
 /**
- * ReportDataProvider class - Fetches reports for PassiveReport models
+ * ReportMySQLDataProvider class - Fetches reports for PassiveReport models
  *
  * @category Graphite
  * @package  Core

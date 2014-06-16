@@ -54,6 +54,7 @@ G::$G['db']['ro'] = array(
 
 G::$G['db']['ProviderDict'] = array(
     'DataModel' => 'MySQLDataProvider',
+    'Report'    => 'ReportDataProvider',
 );
 /** **************************************************************************
  * /Database settings

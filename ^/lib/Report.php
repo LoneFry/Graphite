@@ -132,6 +132,37 @@ abstract class Report extends DataModel {
     }
 
     /**
+     * Run report according to search params $params
+     * Order results by $orders and limit results by $count, $start
+     *
+     * @param array  $params Values to search against
+     * @param array  $orders Order(s) of results
+     * @param int    $count  Number of rows to fetch
+     * @param int    $start  Number of rows to skip
+     *
+     * @return array Found records
+     */
+    public function fetch(array $params = array(), array $orders = array(), $count = null, $start = 0) {
+        if (count($params)) {
+            $this->setAll($params);
+        }
+        if (count($orders)) {
+            $fields = array_keys($orders);
+            $this->_order = array_shift($fields);
+            $this->_asc = array_shift($orders);
+        }
+        if (null !== $count) {
+            $this->_count = $count;
+        }
+        if (null !== $start) {
+            $this->_start = $start;
+        }
+        $this->load();
+
+        return $this->toArray();
+    }
+
+    /**
      * Return the report results stored in $this->_data, as a JSON packet
      *
      * @return string JSON encoded report result data
