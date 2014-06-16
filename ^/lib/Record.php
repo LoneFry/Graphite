@@ -24,7 +24,7 @@
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
  */
-abstract class Record extends DataModel {
+abstract class Record extends DataModel implements ArrayAccess {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 
@@ -842,5 +842,46 @@ abstract class Record extends DataModel {
         }
 
         return $config['ddl'];
+    }
+
+    /* **********************************************************************
+     * Implement ArrayAccess methods by wrapping DataModel magic methods
+     ***********************************************************************/
+
+    /**
+     * @param mixed $offset An offset to check for.
+     *
+     * @return boolean true on success or false on failure.
+     */
+    public function offsetExists($offset) {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value  The value to set.
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value) {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * @param mixed $offset The offset to retrieve.
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset) {
+        return $this->__get($offset);
+    }
+
+    /**
+     * @param mixed $offset The offset to unset.
+     *
+     * @return void
+     */
+    public function offsetUnset($offset) {
+        $this->__unset($offset);
     }
 }
