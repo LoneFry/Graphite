@@ -33,7 +33,7 @@ class InstallerController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_install(array $argv = array(), array $request = array()) {
         if (true !== G::$G['installer']) {
@@ -41,9 +41,9 @@ class InstallerController extends Controller {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Installer.php';
-        G::$V->_title    = G::$V->_siteName.' : Install';
-        G::$V->_head    .= '
+        $this->View->_template = 'Installer.php';
+        $this->View->_title    = $this->View->_siteName.' : Install';
+        $this->View->_head    .= '
 <style type="text/css">
     form#installer {background-color:#e2e2e2;padding:50px;}
     form#installer div{margin:auto;width:500px;}
@@ -64,17 +64,17 @@ class InstallerController extends Controller {
             && isset($request['User2'])
             && isset($request['Pass2']) && isset($request['Pass2b'])
         ) {
-            G::$V->siteName = $request['siteName'];
-            G::$V->loginname = $request['loginname'];
-            G::$V->siteEmail = $request['siteEmail'];
-            G::$V->Host = $request['Host'];
-            G::$V->User = $request['User'];
-            G::$V->Name = $request['Name'];
-            G::$V->Tabl = $request['Tabl'];
-            G::$V->User2 = $request['User2'];
-            G::$V->HTML5 = isset($request['HTML5']);
-            G::$V->HTML4 = isset($request['HTML4']);
-            G::$V->CLI = isset($request['CLI']);
+            $this->View->siteName = $request['siteName'];
+            $this->View->loginname = $request['loginname'];
+            $this->View->siteEmail = $request['siteEmail'];
+            $this->View->Host = $request['Host'];
+            $this->View->User = $request['User'];
+            $this->View->Name = $request['Name'];
+            $this->View->Tabl = $request['Tabl'];
+            $this->View->User2 = $request['User2'];
+            $this->View->HTML5 = isset($request['HTML5']);
+            $this->View->HTML4 = isset($request['HTML4']);
+            $this->View->CLI = isset($request['CLI']);
 
             $install = true;
             if ($request['password1'] != $request['password2']) {
@@ -217,7 +217,7 @@ class InstallerController extends Controller {
                         if (!rename($path.'/'.$filename, $path.'/'.date("YmdHis").$filename)) {
                             G::msg('An existing config file could not be moved. Please copy the below config into '
                                 .$path.'/'.$filename, 'error');
-                            G::$V->config = $config;
+                            $this->View->config = $config;
                             $install = false;
                         }
                     }
@@ -228,7 +228,7 @@ class InstallerController extends Controller {
                     if (!fwrite($f, $config)) {
                         G::msg('The config file could not be written. Please copy the below config into '
                             .$path.'/'.$filename, 'error');
-                        G::$V->config = $config;
+                        $this->View->config = $config;
                         $install = false;
                     } else {
                         G::msg('The config file was written to '.$path.'/'.$filename);
@@ -237,19 +237,21 @@ class InstallerController extends Controller {
                 }
             }
         } else {
-            G::$V->siteName = 'Graphite Site';
-            G::$V->loginname = 'root';
-            G::$V->siteEmail = '';
+            $this->View->siteName = 'Graphite Site';
+            $this->View->loginname = 'root';
+            $this->View->siteEmail = '';
 
-            G::$V->Host = 'localhost';
-            G::$V->User = '';
-            G::$V->Pass = '';
-            G::$V->Name = '';
-            G::$V->Tabl = 'g_'.substr(base_convert(uniqid(), 16, 36), -5).'_';
+            $this->View->Host = 'localhost';
+            $this->View->User = '';
+            $this->View->Pass = '';
+            $this->View->Name = '';
+            $this->View->Tabl = 'g_'.substr(base_convert(uniqid(), 16, 36), -5).'_';
 
-            G::$V->User2 = '';
-            G::$V->Pass2 = '';
+            $this->View->User2 = '';
+            $this->View->Pass2 = '';
         }
+
+        return $this->View;
     }
 
     /** @var string Initial config template */

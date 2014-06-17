@@ -32,11 +32,13 @@ class HomeController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_home(array $argv = array(), array $request = array()) {
-        G::$V->_template = 'Home.php';
-        G::$V->_title    = G::$V->_siteName;
+        $this->View->_template = 'Home.php';
+        $this->View->_title    = $this->View->_siteName;
+
+        return $this->View;
     }
 
     /**
@@ -45,25 +47,25 @@ class HomeController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_contact(array $argv = array(), array $request = array()) {
-        G::$V->_template = 'Home.Contact.php';
-        G::$V->_title    = G::$V->_siteName.': Contact';
-        G::$V->seed      = $seed    = (int)(isset($request['apple'])
+        $this->View->_template = 'Home.Contact.php';
+        $this->View->_title    = $this->View->_siteName.': Contact';
+        $this->View->seed      = $seed    = (int)(isset($request['apple'])
             ? $request['apple']
             : microtime(true));
-        G::$V->from      = $from    = substr(md5($seed), -6);
-        G::$V->subject   = $subject = md5($from);
-        G::$V->message   = $message = md5($subject);
-        G::$V->honey     = $honey   = md5($message);
-        G::$V->honey2    = $honey2  = md5($honey);
-        G::$V->_head .= '
+        $this->View->from      = $from    = substr(md5($seed), -6);
+        $this->View->subject   = $subject = md5($from);
+        $this->View->message   = $message = md5($subject);
+        $this->View->honey     = $honey   = md5($message);
+        $this->View->honey2    = $honey2  = md5($honey);
+        $this->View->_head .= '
         <style type="text/css">
             .c'.$honey.' {display:none;}
         </style>
 ';
-        G::$V->_script('/^/js/validate-email.min.js');
+        $this->View->_script('/^/js/validate-email.min.js');
 
         if (isset($request[$from])
             && isset($request[$subject])
@@ -101,6 +103,8 @@ class HomeController extends Controller {
         } else {
             G::msg(G::_('home.contact.msg.useform'));
         }
+
+        return $this->View;
     }
 
 
@@ -110,17 +114,19 @@ class HomeController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_contactLog(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Home/ContactLog')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Home.ContactLog.php';
-        G::$V->_title    = G::$V->_siteName.': Contact Log';
+        $this->View->_template = 'Home.ContactLog.php';
+        $this->View->_title    = $this->View->_siteName.': Contact Log';
 
-        G::$V->log = ContactLog::some(100, 0, 'id', true);
+        $this->View->log = ContactLog::some(100, 0, 'id', true);
+
+        return $this->View;
     }
 
     /**

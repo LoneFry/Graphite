@@ -34,29 +34,31 @@ class AccountController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_login(array $argv = array(), array $request = array()) {
-        G::$V->_template = 'Account.Login.php';
-        G::$V->_title    = G::$V->_siteName.' : Check-in';
+        $this->View->_template = 'Account.Login.php';
+        $this->View->_title    = $this->View->_siteName.' : Check-in';
 
-        G::$V->msg = '';
+        $this->View->msg = '';
         if (isset($request['l']) && isset($request['p'])) {
-            G::$V->l = $request['l'];
+            $this->View->l = $request['l'];
             if (G::$S->authenticate($request['l'], $request['p'])) {
-                G::$V->_template = 'Account.Loggedin.php';
+                $this->View->_template = 'Account.Loggedin.php';
             } else {
-                G::$V->msg = 'Login Failed.';
+                $this->View->msg = 'Login Failed.';
             }
         } elseif (G::$S->Login) {
-            G::$V->l = G::$S->Login->loginname;
+            $this->View->l = G::$S->Login->loginname;
         } else {
-            G::$V->l = '';
+            $this->View->l = '';
         }
-        G::$V->_URI = isset($request['_URI']) ? $request['_URI']
+        $this->View->_URI = isset($request['_URI']) ? $request['_URI']
                     : (isset($argv['_URI']) ? $argv['_URI'] : CONT);
-        G::$V->_Lbl = isset($request['_Lbl']) ? $request['_Lbl']
+        $this->View->_Lbl = isset($request['_Lbl']) ? $request['_Lbl']
                     : (isset($argv['_Lbl']) ? $argv['_Lbl'] : 'Home');
+
+        return $this->View;
     }
 
     /**
@@ -65,16 +67,18 @@ class AccountController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_logout(array $argv = array(), array $request = array()) {
-        G::$V->_template = 'Account.Logout.php';
-        G::$V->_title    = G::$V->_siteName.' : Check-out';
+        $this->View->_template = 'Account.Logout.php';
+        $this->View->_title    = $this->View->_siteName.' : Check-out';
 
         G::$S->deauthenticate();
 
-        G::$V->_URI = isset($request['_URI']) ? $request['_URI'] : CONT;
-        G::$V->_Lbl = isset($request['_Lbl']) ? $request['_Lbl'] : 'Home';
+        $this->View->_URI = isset($request['_URI']) ? $request['_URI'] : CONT;
+        $this->View->_Lbl = isset($request['_Lbl']) ? $request['_Lbl'] : 'Home';
+
+        return $this->View;
     }
 
     /**
@@ -83,15 +87,15 @@ class AccountController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_recover(array $argv = array(), array $request = array()) {
-        G::$V->_template = 'Account.Recover.php';
-        G::$V->_title    = G::$V->_siteName.' : Recover Password';
+        $this->View->_template = 'Account.Recover.php';
+        $this->View->_title    = $this->View->_siteName.' : Recover Password';
 
-        G::$V->msg = '';
+        $this->View->msg = '';
         if (G::$S->Login) {
-            G::$V->msg = "You are already Checked-in as <b>"
+            $this->View->msg = "You are already Checked-in as <b>"
                             .G::$S->Login->loginname."</b>.";
         }
         if (isset($request['loginname'])) {
@@ -102,7 +106,7 @@ class AccountController extends Controller {
                 $Login->fill();
             }
             if (0 == $Login->login_id) {
-                G::$V->msg = 'Unable to find <b>'
+                $this->View->msg = 'Unable to find <b>'
                     .htmlspecialchars($request['loginname'])
                     .'</b>, please try again.';
             } else {
@@ -110,13 +114,13 @@ class AccountController extends Controller {
                 $Login->flagChangePass = 1;
                 $r = $Login->save();
                 if (false === $r) {
-                    G::$V->msg = 'An Error occured trying to update your account.';
+                    $this->View->msg = 'An Error occured trying to update your account.';
                 } elseif (null === $r) {
-                    G::$V->msg = 'No changes detected, not trying to update your account.';
+                    $this->View->msg = 'No changes detected, not trying to update your account.';
                 } else {
                     $to = $Login->email;
                     $message = "\n\nA password reset has been requested for"
-                        ." your [".G::$V->_siteName."] account.  "
+                        ." your [".$this->View->_siteName."] account.  "
                         ."The temporary password is below.  After you login"
                         ." you will be required to change your password."
                         ."\n\nLoginName: ".$Login->loginname
@@ -125,7 +129,7 @@ class AccountController extends Controller {
                     $headers = array(
                             'Message-ID'   => date("YmdHis").uniqid().'@'.$_SERVER['SERVER_NAME'],
                             'To'           => $to,
-                            'Subject'      => '['.G::$V->_siteName.'] Password Reset',
+                            'Subject'      => '['.$this->View->_siteName.'] Password Reset',
                             'From'         => G::$G['siteEmail'],
                             'Reply-To'     => G::$G['siteEmail'],
                             'MIME-Version' => '1.0',
@@ -137,17 +141,19 @@ class AccountController extends Controller {
                         $header .= $k.': '.$v."\r\n";
                     }
                     if (imap_mail($to, $headers['Subject'], $message, $header)) {
-                        G::$V->msg = 'A new password has been mailed to you.  When you get it, login below.';
-                        G::$V->_template = 'Account.Login.php';
-                        G::$V->_URI = CONT;
-                        G::$V->_Lbl = 'Home';
-                        G::$V->l = $Login->loginname;
+                        $this->View->msg = 'A new password has been mailed to you.  When you get it, login below.';
+                        $this->View->_template = 'Account.Login.php';
+                        $this->View->_URI = CONT;
+                        $this->View->_Lbl = 'Home';
+                        $this->View->l = $Login->loginname;
                     } else {
-                        G::$V->msg = 'Mail sending failed, please contact support for your password reset.';
+                        $this->View->msg = 'Mail sending failed, please contact support for your password reset.';
                     }
                 }
             }
         }
+
+        return $this->View;
     }
 
     /**
@@ -156,17 +162,17 @@ class AccountController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_edit(array $argv = array(), array $request = array()) {
         if (!G::$S->Login) {
-            G::$V->_URI = CONT.'Account/edit';
-            G::$V->_Lbl = 'Account Settings';
+            $this->View->_URI = CONT.'Account/edit';
+            $this->View->_Lbl = 'Account Settings';
             return $this->do_login($argv);
         }
 
-        G::$V->_template = 'Account.Edit.php';
-        G::$V->_title    = G::$V->_siteName.' : Account Settings';
+        $this->View->_template = 'Account.Edit.php';
+        $this->View->_title    = $this->View->_siteName.' : Account Settings';
 
         if (isset($request['comment']) && isset($request['email'])
             && isset($request['password1']) && isset($request['password2'])
@@ -207,8 +213,10 @@ class AccountController extends Controller {
             }
         }
 
-        G::$V->path = $argv['_path'];
-        G::$V->email = G::$S->Login->email;
-        G::$V->comment = G::$S->Login->comment;
+        $this->View->path = $argv['_path'];
+        $this->View->email = G::$S->Login->email;
+        $this->View->comment = G::$S->Login->comment;
+
+        return $this->View;
     }
 }

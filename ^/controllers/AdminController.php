@@ -32,15 +32,17 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_list(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.list.php';
-        G::$V->_title    = 'Administrative Options';
+        $this->View->_template = 'Admin.list.php';
+        $this->View->_title    = 'Administrative Options';
+
+        return $this->View;
     }
 
     /**
@@ -49,29 +51,31 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_Login(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.Login.php';
-        G::$V->_title    = 'Select Login';
+        $this->View->_template = 'Admin.Login.php';
+        $this->View->_title    = 'Select Login';
 
         if (isset($argv[1])) {
             $l = Login::forInitial($argv[1]);
             if ($l && 1 < count($l)) {
-                G::$V->list = $l;
+                $this->View->list = $l;
             } elseif ($l && 1 == count($l)) {
                 $L = array_shift($l);
                 return $this->do_LoginEdit(array('login', $L->login_id), array());
             }
         } else {
             $l = new Login();
-            G::$V->list = $l->search(50, 0, 'loginname');
+            $this->View->list = $l->search(50, 0, 'loginname');
         }
-        G::$V->letters = Login::initials();
+        $this->View->letters = Login::initials();
+
+        return $this->View;
     }
 
     /**
@@ -80,16 +84,16 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_LoginAdd(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.LoginAdd.php';
-        G::$V->_title    = 'Add Login';
-        G::$V->_script('/^/js/validate-email.min.js');
+        $this->View->_template = 'Admin.LoginAdd.php';
+        $this->View->_title    = 'Add Login';
+        $this->View->_script('/^/js/validate-email.min.js');
 
         if (isset($request['loginname']) && isset($request['realname'])
             && isset($request['pass1']) && isset($request['pass2'])
@@ -176,8 +180,10 @@ class AdminController extends Controller {
         } else {
             $L = new Login(true);
         }
-        G::$V->L = $L;
-        G::$V->letters = Login::initials();
+        $this->View->L = $L;
+        $this->View->letters = Login::initials();
+
+        return $this->View;
     }
 
     /**
@@ -186,16 +192,16 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_LoginEdit(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.LoginEdit.php';
-        G::$V->_title    = 'Edit Login';
-        G::$V->_script('/^/js/validate-email.min.js');
+        $this->View->_template = 'Admin.LoginEdit.php';
+        $this->View->_title    = 'Edit Login';
+        $this->View->_script('/^/js/validate-email.min.js');
 
         // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
@@ -315,14 +321,15 @@ class AdminController extends Controller {
             $L->load();
         }
 
-        G::$V->L = $L;
-        G::$V->Roles = $Roles;
-        G::$V->letters = Login::initials();
-        G::$V->referrer = $L->getReferrer();
+        $this->View->L = $L;
+        $this->View->Roles = $Roles;
+        $this->View->letters = Login::initials();
+        $this->View->referrer = $L->getReferrer();
 
         $LL = new LoginLog(array('login_id' => $L->login_id));
-        G::$V->log = $LL->search(100, 0, 'pkey', true);
+        $this->View->log = $LL->search(100, 0, 'pkey', true);
 
+        return $this->View;
     }
 
     /**
@@ -331,18 +338,20 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_Role(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.Role.php';
-        G::$V->_title    = 'Select Role';
+        $this->View->_template = 'Admin.Role.php';
+        $this->View->_title    = 'Select Role';
 
         $l = new Role();
-        G::$V->list = $l->search(50, 0, 'label');
+        $this->View->list = $l->search(50, 0, 'label');
+
+        return $this->View;
     }
 
     /**
@@ -351,15 +360,15 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_RoleAdd(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.RoleAdd.php';
-        G::$V->_title    = 'Add Role';
+        $this->View->_template = 'Admin.RoleAdd.php';
+        $this->View->_title    = 'Add Role';
 
         if (isset($request['label']) && isset($request['description'])
             && isset($request['disabled'])
@@ -380,7 +389,9 @@ class AdminController extends Controller {
         } else {
             $R = new Role(true);
         }
-        G::$V->R = $R;
+        $this->View->R = $R;
+
+        return $this->View;
     }
 
     /**
@@ -389,15 +400,15 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_RoleEdit(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Role')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.RoleEdit.php';
-        G::$V->_title    = 'Edit Role';
+        $this->View->_template = 'Admin.RoleEdit.php';
+        $this->View->_title    = 'Edit Role';
 
         // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
@@ -428,7 +439,7 @@ class AdminController extends Controller {
             }
         }
 
-        G::$V->R = $R;
+        $this->View->R = $R;
         $members = $R->getMembers();
 
         // handle grant/revoke changes
@@ -457,10 +468,12 @@ class AdminController extends Controller {
 
         // TODO: make a better way to do grants that doesn't involve loading the whole loginlist
         $L = new Login();
-        G::$V->Logins = $L->search(1000, 0, 'loginname');
-        G::$V->members = $members;
+        $this->View->Logins = $L->search(1000, 0, 'loginname');
+        $this->View->members = $members;
 
-        G::$V->creator = $R->getCreator();
+        $this->View->creator = $R->getCreator();
+
+        return $this->View;
     }
 
     /**
@@ -469,18 +482,20 @@ class AdminController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_loginLog(array $argv = array(), array $request = array()) {
         if (!G::$S->roleTest('Admin/Login')) {
             return parent::do_403($argv);
         }
 
-        G::$V->_template = 'Admin.LoginLog.php';
-        G::$V->_title    = G::$V->_siteName.': Login Log';
+        $this->View->_template = 'Admin.LoginLog.php';
+        $this->View->_title    = $this->View->_siteName.': Login Log';
 
         require_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog();
-        G::$V->log = $LL->search(100, 0, 'pkey', true);
+        $this->View->log = $LL->search(100, 0, 'pkey', true);
+
+        return $this->View;
     }
 }

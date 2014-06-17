@@ -165,11 +165,15 @@ class Dispatcher {
         DataBroker::setDict(G::$G['db']['ProviderDict']);
         /** @var Controller $Controller */
         $Controller = $this->controller.'Controller';
-        $Controller = G::build($Controller, $argv, G::build('DataBroker'));
+        $Controller = G::build($Controller, $argv, G::build('DataBroker'), G::$V);
         if (method_exists($Controller, 'do_'.$Controller->action)) {
+            $result = $Controller->act();
+            if (is_a($result, 'View')) {
+                G::$V = $result;
+            }
             G::$V->_controller = strtolower($this->controller);
             G::$V->_action = strtolower($Controller->action);
-            return $Controller->act();
+            return G::$V;
         }
 
         // else use 404 controller

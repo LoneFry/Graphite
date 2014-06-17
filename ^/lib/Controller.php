@@ -41,9 +41,9 @@ abstract class Controller {
      *
      * @param array         $argv Argument list passed from Dispatcher
      * @param IDataProvider $DB   DataProvider to use with Controller
+     * @param View          $View Graphite View helper
      */
-    public function __construct(array $argv = array(), IDataProvider $DB = null) {
-        $this->View = new View(G::$G['VIEW']);
+    public function __construct(array $argv = array(), IDataProvider $DB = null, View $View = null) {
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {
@@ -52,6 +52,10 @@ abstract class Controller {
         }
         $this->method = $_SERVER['REQUEST_METHOD'];
         $this->DB = $DB;
+        if (null === $View) {
+            $View = G::build('View', G::$G['VIEW']);
+        }
+        $this->View = $View;
     }
 
     /**
@@ -60,12 +64,14 @@ abstract class Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_403(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 403 Forbidden");
-        G::$V->_template = '403.php';
-        G::$V->_title    = 'Permission Denied';
+        $this->View->_template = '403.php';
+        $this->View->_title    = 'Permission Denied';
+
+        return $this->View;
     }
 
     /**

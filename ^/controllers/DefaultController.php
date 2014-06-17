@@ -32,12 +32,14 @@ class DefaultController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_404(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 404 File Not Found");
-        G::$V->_template = '404.php';
-        G::$V->_title    = 'Requested Page Not Found';
+        $this->View->_template = '404.php';
+        $this->View->_title    = 'Requested Page Not Found';
+
+        return $this->View;
     }
 
     /**
@@ -46,11 +48,13 @@ class DefaultController extends Controller {
      * @param array $argv    Argument list passed from Dispatcher
      * @param array $request Request_method-specific parameters
      *
-     * @return mixed
+     * @return View
      */
     public function do_500(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 500 Internal Server Error");
-        G::$V->_template = '500.php';
-        G::$V->_title    = 'Internal Server Error';
+        $this->View->_template = '500.php';
+        $this->View->_title    = 'Internal Server Error';
+
+        return $this->View;
     }
 }
