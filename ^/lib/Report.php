@@ -42,6 +42,9 @@ abstract class Report extends DataModel {
     /** @var bool ASC/DESC specifier of ORDER BY; true is ASC, false is DESC */
     protected $_asc = true;
 
+    /** @var array $vars List of parameters, defined in subclasses */
+    // protected static $vars = array();
+
     /**
      * Constructor accepts three prototypes:
      * __construct(true) will create an instance with default values
@@ -90,6 +93,8 @@ abstract class Report extends DataModel {
 
                     $query[] = sprintf($v['sql'],
                                     "'".implode("', '", $arr)."'");
+                } elseif ('b' == static::$vars[$k]['type']) {
+                    $query[] = sprintf($v['sql'], $this->vals[$k] ? "b'1'" : "b'0'");
                 } else {
                     $query[] = sprintf($v['sql'],
                                     G::$m->escape_string($this->vals[$k]));

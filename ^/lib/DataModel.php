@@ -38,6 +38,12 @@ abstract class DataModel {
     /** @var array Invalid values */
     protected $invalidVals = array();
 
+    /** @var string Database Source to use */
+    protected $_source = 'default';
+
+    /** @var array $vars, defined in subclasses */
+    // protected static $vars = array();
+
     /**
      * constructor accepts four prototypes:
      * __construct(true) will create an instance with default values
@@ -67,6 +73,24 @@ abstract class DataModel {
                 $this->setAll($a);
             }
         }
+    }
+
+    /**
+     * Return the model field list
+     *
+     * @return array Vars array representing table schema
+     */
+    public static function getFieldList() {
+        return static::$vars;
+    }
+
+    /**
+     * Returns the source
+     *
+     * @return string
+     */
+    public function getSource() {
+        return $this->_source;
     }
 
     /**

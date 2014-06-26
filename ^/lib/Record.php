@@ -28,10 +28,14 @@ abstract class Record extends DataModel implements ArrayAccess {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 
-    // Should be defined in subclasses
-    // protected static $table;// name of table
-    // protected static $pkey;// name of primary key column
-    // protected static $vars = array();// record definition
+    /** @var string $table Name of table, defined in subclasses */
+    // protected static $table;
+
+    /** @var string $pkey Primary key, defined in subclasses */
+    // protected static $pkey;
+
+    /** @var array $vars List of fields in table, defined in subclasses */
+    // protected static $vars = array();
 
     /**
      * Constructor accepts four prototypes:
