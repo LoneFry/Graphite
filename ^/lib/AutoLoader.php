@@ -52,20 +52,58 @@ class AutoLoader {
     }
 
     /**
-     * Finds all the files that we would load by default.
+     * Scan directory for classes to include
      *
-     * @param string $dir Directory to be index
+     * @param string $dir The directory to scan
      *
-     * @return array Lines returned by exec('find ...')
+     * @return array List of class files found
      */
     public static function getDirListing($dir) {
-        exec('find ' . escapeshellarg(SITE . $dir)
-            . ' -path "*/controllers/*" -name "*.php"'
-            . ' -o -path "*/lib/*"  -name "*.php"'
-            . ' -o -path "*/models/*" -name "*.php"'
-            . ' -o -path "*/reports/*" -name "*.php"',
-            $output
-        );
+        // Clean up path and prepare to prepend it to each result
+        $dir    = realpath(SITE.$dir).DIRECTORY_SEPARATOR;
+        $output = array();
+        foreach (scandir($dir) as $path) {
+            // Only scan directories expected to have classes
+            if (!in_array($path, array('controllers', 'lib', 'models', 'reports'))) {
+                continue;
+            }
+            $output = array_merge($output, self::findPhpFiles($dir.$path.DIRECTORY_SEPARATOR));
+        }
+
+        return $output;
+    }
+
+    /**
+     * Recursive wrapper to scandir that returns absolute paths of php files.
+     *
+     * @param string $dir The directory to scan
+     *
+     * @return array List of class files found
+     */
+    public static function findPhpFiles($dir) {
+        // Clean up path and prepare to prepend it to each result
+        $dir = realpath($dir).DIRECTORY_SEPARATOR;
+        // convert return values of scandir() to full paths
+        $files = array_map(function ($val) use ($dir) {
+            return $dir.$val;
+        }, scandir($dir));
+        $output = array();
+        while (!empty($files)) {
+            $file = array_shift($files);
+            if (in_array(basename($file), array('.', '..'))) {
+                continue;
+            }
+            if (is_dir($file)) {
+                // Add full paths of subdirectories to the list of paths to scan
+                $files = array_merge($files, array_map(function ($val) use ($file) {
+                    return $file.DIRECTORY_SEPARATOR.$val;
+                }, scandir($file)));
+            } elseif ('.php' == substr($file, -4)) {
+                // Add php files to the list of paths to return
+                $output[] = $file;
+            }
+        }
+
         return $output;
     }
 
@@ -78,7 +116,7 @@ class AutoLoader {
      * @return void
      */
     public static function addDirectory($path, $overwrite = false) {
-        exec('find ' . escapeshellarg($path) . ' -name "*.php"', $output);
+        $output = self::findPhpFiles($path);
         foreach ($output as $file) {
             static::addFile($file, $overwrite);
         }
