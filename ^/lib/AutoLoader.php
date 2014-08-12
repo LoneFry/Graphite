@@ -29,6 +29,8 @@
 class AutoLoader {
     /** @var array Registry of known class names */
     protected static $classNames = array();
+    /** @var string Relative path to cached class list */
+    protected static $registryFile = '/AutoLoader.registry.php';
 
     /**
      * Index the file path based on the file name minus the .php extension.
@@ -39,15 +41,25 @@ class AutoLoader {
      * @return void
      */
     public static function registerDirectory() {
-        // Grab the items in reverse so the first in the array overwrites at
-        // the end if there is a conflict.
-        $dirs = array_reverse(explode(';', G::$G['includePath']));
-        foreach ($dirs as $dir) {
-            $output = static::getDirListing($dir);
-            foreach ($output as $file) {
-                $className = basename($file, '.php');
-                static::$classNames[$className] = $file;
+        // Attempt to load cached class registry
+        if (file_exists(__DIR__.static::$registryFile)) {
+            $output = include __DIR__.static::$registryFile;
+        }
+        if (isset($output) && is_array($output)) {
+            static::$classNames = $output;
+        } else {
+            // Grab the items in reverse so the first in the array overwrites at
+            // the end if there is a conflict.
+            $dirs = array_reverse(explode(';', G::$G['includePath']));
+            foreach ($dirs as $dir) {
+                $output = static::getDirListing($dir);
+                foreach ($output as $file) {
+                    $className = basename($file, '.php');
+                    static::$classNames[$className] = $file;
+                }
             }
+            // Attempt to save cached class registry
+            file_put_contents(__DIR__.static::$registryFile, '<?php return '.var_export(static::$classNames, 1).';');
         }
     }
 
@@ -60,7 +72,11 @@ class AutoLoader {
      */
     public static function getDirListing($dir) {
         // Clean up path and prepare to prepend it to each result
-        $dir    = realpath(SITE.$dir).DIRECTORY_SEPARATOR;
+        $dir = realpath(SITE.$dir).DIRECTORY_SEPARATOR;
+        // Any missing paths will translate as root
+        if ('/' == $dir) {
+            return array();
+        }
         $output = array();
         foreach (scandir($dir) as $path) {
             // Only scan directories expected to have classes
