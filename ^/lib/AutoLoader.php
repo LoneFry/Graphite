@@ -30,7 +30,7 @@ class AutoLoader {
     /** @var array Registry of known class names */
     protected static $classNames = array();
     /** @var string Relative path to cached class list */
-    protected static $registryFile = '/AutoLoader.registry.php';
+    protected static $registryFile = '.AutoLoader.registry.php';
 
     /**
      * Index the file path based on the file name minus the .php extension.
@@ -42,8 +42,8 @@ class AutoLoader {
      */
     public static function registerDirectory() {
         // Attempt to load cached class registry
-        if (file_exists(__DIR__.static::$registryFile)) {
-            $output = include __DIR__.static::$registryFile;
+        if (file_exists('/tmp/'.G::$G['domain'].static::$registryFile)) {
+            $output = include '/tmp/'.G::$G['domain'].static::$registryFile;
         }
         if (isset($output) && is_array($output)) {
             static::$classNames = $output;
@@ -59,7 +59,8 @@ class AutoLoader {
                 }
             }
             // Attempt to save cached class registry
-            file_put_contents(__DIR__.static::$registryFile, '<?php return '.var_export(static::$classNames, 1).';');
+            file_put_contents('/tmp/'.G::$G['domain'].static::$registryFile,
+                '<?php return '.var_export(static::$classNames, 1).';');
         }
     }
 
