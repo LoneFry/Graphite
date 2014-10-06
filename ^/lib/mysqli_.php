@@ -112,11 +112,11 @@ class mysqli_ extends mysqli {
             $s .= ' - '.(isset($d[$i]['class'])?$d[$i]['class'].$d[$i]['type']:'').$d[$i]['function'];
         }
         // assemble log: query time, query, call stack, rows affected/selected
-        $t = array($t, $query, $s, $this->affected_rows);
+        $t = array(0 => $t, 3 => $s, 4 => $this->affected_rows, 5 => $query);
         // if there was an error, log that too
         if ($this->errno) {
-            $t[] = $this->error;
-            $t[] = $this->errno;
+            $t[1] = $this->error;
+            $t[2] = $this->errno;
             // report error on PHP error log
             if (self::$_log >= 2) {
                 // @codingStandardsIgnoreStart
