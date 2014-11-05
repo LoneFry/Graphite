@@ -23,6 +23,25 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
     die('disable magic quotes');
 }
 
+// Create default values for missing $_SERVER variables
+// This is most useful for running scripts from CLI with `php -f`
+if (!isset($_SERVER['SERVER_NAME'])) {
+    if ('/var/www/vhosts/' == substr(__DIR__, 0, 16)) {
+        $_SERVER['SERVER_NAME'] = substr(__DIR__, 16, strpos(__DIR__, '/', 17) - 16);
+    } else {
+        $_SERVER['SERVER_NAME'] = '';
+    }
+}
+if (!isset($_SERVER['REQUEST_URI'])) {
+    $_SERVER['REQUEST_URI'] = __FILE__;
+}
+if (!isset($_SERVER['REMOTE_ADDR'])) {
+    $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
+}
+if (!isset($_SERVER['REQUEST_METHOD'])) {
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+}
+
 require_once SITE.'/^/lib/G.php';
 require_once SITE.'/^/config.php';
 require_once SITE.'/^/lib/AutoLoader.php';
