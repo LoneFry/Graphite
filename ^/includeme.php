@@ -12,7 +12,10 @@
  * @link     http://g.lonefry.com
  */
 
-define('NOW', microtime(true));
+defined('NOW') or define('NOW', microtime(true));
+require_once __DIR__.'/lib/Profiler.php';
+$_Profiler = Profiler::getInstance(NOW);
+$_Profiler->mark('includeme');
 // the root of this website
 define('SITE', dirname(dirname(__FILE__)));
 // Graphite Version indicator, for scripts interacting herewith
@@ -67,6 +70,7 @@ if ('' == G::$G['db']['host']) {
     return;
 }
 
+$_Profiler->mark('mysql_connect');
 // setup DB connection or fail.
 G::$m = G::$M = new mysqli_(G::$G['db']['host'],
                             G::$G['db']['user'],
@@ -92,6 +96,8 @@ if (isset(G::$G['db']['ro'])
         G::$m = G::$M;
     }
 }
+$_Profiler->stop('mysql_connect');
+
 // If we could not connect to database, display appropriate error
 if (!G::$M->open) {
     G::msg('Could not connect to read/write database!', 'error');
@@ -105,6 +111,7 @@ if (!G::$M->open) {
     }
 }
 
+$_Profiler->mark('authenticate');
 G::$S = new Security();
 if (G::$S->Login && 1 == G::$S->Login->flagChangePass
     && (!isset(G::$G['CON']['path'])
@@ -114,6 +121,7 @@ if (G::$S->Login && 1 == G::$S->Login->flagChangePass
     G::msg('You must change your password before you can continue.');
     G::$G['CON']['path'] = 'Account/edit';
 }
+$_Profiler->stop('authenticate');
 
 /**
  * Load per-application includeme.php files
@@ -128,3 +136,4 @@ if (isset(G::$G['includePath'])) {
         }
     }
 }
+$_Profiler->stop('includeme');

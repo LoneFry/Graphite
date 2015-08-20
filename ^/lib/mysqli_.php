@@ -101,12 +101,16 @@ class mysqli_ extends mysqli {
         // query as sent to database
         $q = '/* '.$this->escape_string(substr($s, strrpos($s, '/'))).' */ '.$query;
 
+        // Start Profiler for 'query'
+        Profiler::getInstance()->mark(__METHOD__);
         // start time
         $t = microtime(true);
         // Call mysqli's query() method, with call stack in comment
         $result = parent::query($q);
         // [0][0] totals the time of all queries
         self::$_aQueries[0][0] += $t = microtime(true) - $t;
+        // Pause Profiler for 'query'
+        Profiler::getInstance()->stop(__METHOD__);
 
         // finish assembling the call stack
         for ($i = 2; $i < count($d); $i++) {
