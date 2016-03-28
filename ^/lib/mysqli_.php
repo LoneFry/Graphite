@@ -95,7 +95,8 @@ class mysqli_ extends mysqli {
         // assemble call stack
         $s = $d[0]['file'].':'.$d[0]['line'];
         if (isset($d[1])) {
-            $s .= ' - '.(isset($d[1]['class'])?$d[1]['class'].$d[1]['type']:'').$d[1]['function'];
+            $s .= ' - '.(isset($d[1]['class'])? (isset($d[1]['object']) ? get_class($d[1]['object'])
+                        : $d[1]['class']).$d[1]['type']:'').$d[1]['function'];
         }
         // query as sent to database
         $q = '/* '.$this->escape_string(substr($s, strrpos($s, '/'))).' */ '.$query;
@@ -109,7 +110,8 @@ class mysqli_ extends mysqli {
 
         // finish assembling the call stack
         for ($i = 2; $i < count($d); $i++) {
-            $s .= ' - '.(isset($d[$i]['class'])?$d[$i]['class'].$d[$i]['type']:'').$d[$i]['function'];
+            $s .= ' - '.(isset($d[$i]['class']) ? (isset($d[$i]['object']) ? get_class($d[$i]['object'])
+                        : $d[$i]['class']).$d[$i]['type'] : '').$d[$i]['function'];
         }
         // assemble log: query time, query, call stack, rows affected/selected
         $t = array(
