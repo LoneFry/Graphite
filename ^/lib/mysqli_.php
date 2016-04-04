@@ -91,54 +91,60 @@ class mysqli_ extends mysqli {
         }
 
         // get the last few functions on the call stack
-        $d = debug_backtrace();
+        $trace = debug_backtrace();
         // assemble call stack
-        $s = $d[0]['file'].':'.$d[0]['line'];
-        if (isset($d[1])) {
-            $s .= ' - '.(isset($d[1]['class'])? (isset($d[1]['object']) ? get_class($d[1]['object'])
-                        : $d[1]['class']).$d[1]['type']:'').$d[1]['function'];
+        $stack = $trace[0]['file'].':'.$trace[0]['line'];
+        if (isset($trace[1])) {
+            $stack .= ' - '.(isset($trace[1]['class'])? (isset($trace[1]['object']) ? get_class($trace[1]['object'])
+                        : $trace[1]['class']).$trace[1]['type']:'').$trace[1]['function'];
         }
         // query as sent to database
-        $q = '/* '.$this->escape_string(substr($s, strrpos($s, '/'))).' */ '.$query;
+        $query_stacked = '/* '.$this->escape_string(substr($stack, strrpos($stack, '/'))).' */ '.$query;
 
         // Start Profiler for 'query'
         Profiler::getInstance()->mark(__METHOD__);
         // start time
-        $t = microtime(true);
+        $time = microtime(true);
         // Call mysqli's query() method, with call stack in comment
-        $result = parent::query($q);
+        $result = parent::query($query_stacked);
         // [0][0] totals the time of all queries
-        self::$_aQueries[0][0] += $t = microtime(true) - $t;
+        self::$_aQueries[0][0] += $time = microtime(true) - $time;
         // Pause Profiler for 'query'
         Profiler::getInstance()->stop(__METHOD__);
 
         // finish assembling the call stack
-        for ($i = 2; $i < count($d); $i++) {
-            $s .= ' - '.(isset($d[$i]['class']) ? (isset($d[$i]['object']) ? get_class($d[$i]['object'])
-                        : $d[$i]['class']).$d[$i]['type'] : '').$d[$i]['function'];
+        for ($i = 2; $i < count($trace); $i++) {
+            $stack .= ' - '.(
+                isset($trace[$i]['class'])
+                    ? (isset($trace[$i]['object'])
+                        ? get_class($trace[$i]['object'])
+                        : $trace[$i]['class']
+                    ).$trace[$i]['type']
+                    : ''
+                ).$trace[$i]['function'];
         }
         // assemble log: query time, query, call stack, rows affected/selected
-        $t = array(
-            'time' => $t,
+        $log = array(
+            'time' => $time,
             'error' => '',
             'errno' => '',
-            'stack' => $s,
+            'stack' => $stack,
             'rows' => $this->affected_rows,
             'query' => $query,
         );
         // if there was an error, log that too
         if ($this->errno) {
-            $t['error'] = $this->error;
-            $t['errno'] = $this->errno;
+            $log['error'] = $this->error;
+            $log['errno'] = $this->errno;
             // report error on PHP error log
             if (self::$_log >= 2) {
                 // @codingStandardsIgnoreStart
-                trigger_error(print_r($t, 1));
+                trigger_error(print_r($log, 1));
                 // @codingStandardsIgnoreEnd
             }
         }
         // append to log
-        self::$_aQueries[] = $t;
+        self::$_aQueries[] = $log;
         // return result as normal
         return $result;
     }
