@@ -35,6 +35,9 @@ class mysqli_ extends mysqli {
     /** @var bool Whether connection succeeded */
     private $_open = false;
 
+    /** @var bool Whether connection has readonly credentials */
+    public $readonly = false;
+
     /**
      * mysqli_ constructor
      *
@@ -79,6 +82,30 @@ class mysqli_ extends mysqli {
     }
 
     /**
+     * Returns true if a connection is open
+     *
+     * @return bool
+     */
+    public function isOpen() {
+        return $this->_open;
+    }
+
+    /**
+     * Wrapper for mysqli::escape_string() that checks our open status
+     *
+     * @param string $escapestr String to escape
+     *
+     * @return string Escaped string
+     */
+    public function escape_string($escapestr) {
+        if (false === $this->_open) {
+            return false;
+        }
+
+        return parent::escape_string($escapestr);
+    }
+
+    /**
      * Wrapper for mysqli::query() that logs queries
      *
      * @param string $query Query to run
@@ -86,8 +113,14 @@ class mysqli_ extends mysqli {
      * @return mixed Passes return value from mysqli::query()
      */
     public function query($query) {
+        if (false === $this->_open) {
+            return false;
+        }
+        // If we're flagged readonly, just don't bother with DML
+        // THIS IS NOT A SECURITY FEATURE, DO NOT RELY ON IT FOR SECURITY
+        $skipQuery = $this->readonly && 'select' != strtolower(substr(ltrim($query), 0, 6));
         if (!self::$_log) {
-            return parent::query($query);
+            return $skipQuery ? false : parent::query($query);
         }
 
         // get the last few functions on the call stack
@@ -101,17 +134,21 @@ class mysqli_ extends mysqli {
         // query as sent to database
         $query_stacked = '/* '.$this->escape_string(substr($stack, strrpos($stack, '/'))).' */ '.$query;
 
-        // Start Profiler for 'query'
-        Profiler::getInstance()->mark(__METHOD__);
-        // start time
-        $time = microtime(true);
-        // Call mysqli's query() method, with call stack in comment
-        $result = parent::query($query_stacked);
-        // [0][0] totals the time of all queries
-        self::$_aQueries[0][0] += $time = microtime(true) - $time;
-        // Pause Profiler for 'query'
-        Profiler::getInstance()->stop(__METHOD__);
-
+        if ($skipQuery) {
+            $result = false;
+            $time = '-';
+        } else {
+            // Start Profiler for 'query'
+            Profiler::getInstance()->mark(__METHOD__);
+            // start time
+            $time = microtime(true);
+            // Call mysqli's query() method, with call stack in comment
+            $result = parent::query($query_stacked);
+            // [0][0] totals the time of all queries
+            self::$_aQueries[0][0] += $time = microtime(true) - $time;
+            // Pause Profiler for 'query'
+            Profiler::getInstance()->stop(__METHOD__);
+        }
         // finish assembling the call stack
         for ($i = 2; $i < count($trace); $i++) {
             $stack .= ' - '.(
@@ -125,19 +162,24 @@ class mysqli_ extends mysqli {
         }
         // assemble log: query time, query, call stack, rows affected/selected
         $log = array(
-            'time' => $time,
-            'error' => '',
-            'errno' => '',
-            'stack' => $stack,
-            'rows' => $this->affected_rows,
-            'query' => $query,
+            'time'       => $time,
+            'error'      => '',
+            'errno'      => '',
+            'stack'      => $stack,
+            'rows'       => $result == false ? 0 : $this->affected_rows,
+            '$host_info' => $this->host_info,
+            'query'      => $query,
         );
         // if there was an error, log that too
         if ($this->errno) {
             $log['error'] = $this->error;
             $log['errno'] = $this->errno;
             // report error on PHP error log
-            if (self::$_log >= 2) {
+            // unless it's a read-only mode error, we don't care about those.
+            if (self::$_log >= 2
+                && !(1290 == $this->errno
+                    && 'The MySQL server is running with the --read-only' == substr($this->error, 0, 48))
+            ) {
                 // @codingStandardsIgnoreStart
                 trigger_error(print_r($log, 1));
                 // @codingStandardsIgnoreEnd

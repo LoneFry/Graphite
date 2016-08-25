@@ -94,6 +94,8 @@ if (isset(G::$G['db']['ro'])
                         G::$G['db']['log']);
     if (mysqli_connect_error()) {
         G::$m = G::$M;
+    } else {
+        G::$m->readonly = true;
     }
 }
 $_Profiler->stop('mysql_connect');
