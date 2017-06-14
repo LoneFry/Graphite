@@ -3,7 +3,7 @@
  * DataModel - Shared functionality for data access and sanitization
  * File : /^/lib/DataModel.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -25,7 +25,7 @@
  * @see      /^/lib/Record.php
  * @see      /^/lib/Report.php
  */
-abstract class DataModel {
+abstract class DataModel implements ArrayAccess {
     /** @var string Select query used by load() */
     protected static $query;
 
@@ -103,6 +103,19 @@ abstract class DataModel {
     }
 
     /**
+     * Adds a value to the invalid values
+     *
+     * @param string $key Key to mark as invalid
+     *
+     * @return void
+     */
+    public function setInvalid($key) {
+        if (isset($this->vals[$key])) {
+            $this->invalidVals[$key] = $this->vals[$key];
+        }
+    }
+
+    /**
      * Produce meaningful array representation of Model
      *
      * @return array
@@ -120,7 +133,9 @@ abstract class DataModel {
     public function getAll() {
         $a = array();
         foreach (static::$vars as $k => $v) {
-            if (method_exists($this, $k)) {
+            if (null === $this->vals[$k]) {
+                $a[$k] = null;
+            } elseif (method_exists($this, $k)) {
                 $a[$k] = $this->$k();
             } elseif (method_exists($this, '_'.$v['type'])) {
                 $func = '_'.$v['type'];
@@ -318,6 +333,23 @@ abstract class DataModel {
      ************************************************************************/
 
     /**
+     * Determine whether specified value is within range for specified field
+     *
+     * @param string $field Field to test
+     * @param mixed  $value Value to test
+     *
+     * @return bool True if value is within min/max range for specified field
+     */
+    protected function inRange($field, $value) {
+        return (!isset(static::$vars[$field]['min'])
+            || !is_numeric(static::$vars[$field]['min'])
+            || $value >= static::$vars[$field]['min'])
+        && (!isset(static::$vars[$field]['max'])
+            || !is_numeric(static::$vars[$field]['max'])
+            || $value <= static::$vars[$field]['max']);
+    }
+
+    /**
      * Integers
      * other numeric types rejected in strict mode, casted otherwise
      *
@@ -335,14 +367,7 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if (is_numeric($v) && (int)$v == $v
-                    && (!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || $v >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || $v <= static::$vars[$k]['max'])
-                ) {
+                if (is_numeric($v) && (int)$v == $v && $this->inRange($k, $v)) {
                     $this->vals[$k] = (int)$v;
                     unset($this->invalidVals[$k]);
                 }
@@ -382,14 +407,7 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if (is_numeric($v) && (float)$v == $v
-                    && (!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || $v >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || $v <= static::$vars[$k]['max'])
-                ) {
+                if (is_numeric($v) && (float)$v == $v && $this->inRange($k, $v)) {
                     $this->vals[$k] = (float)$v;
                     unset($this->invalidVals[$k]);
                 }
@@ -478,13 +496,7 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if ((!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || $v >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || $v <= static::$vars[$k]['max'])
-                ) {
+                if ($this->inRange($k, $v)) {
                     $this->vals[$k] = date($format, $v);
                     unset($this->invalidVals[$k]);
                 }
@@ -530,13 +542,7 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if ((!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || $v >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || $v <= static::$vars[$k]['max'])
-                ) {
+                if ($this->inRange($k, $v)) {
                     $this->vals[$k] = $v;
                     unset($this->invalidVals[$k]);
                 }
@@ -577,13 +583,7 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if ((!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || strlen($v) >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || strlen($v) <= static::$vars[$k]['max'])
-                ) {
+                if ($this->inRange($k, strlen($v))) {
                     $this->vals[$k] = $v;
                     unset($this->invalidVals[$k]);
                 }
@@ -624,13 +624,8 @@ abstract class DataModel {
             if (isset(static::$vars[$k]['strict'])
                 && static::$vars[$k]['strict']
             ) {
-                if ((!isset(static::$vars[$k]['min'])
-                        || !is_numeric(static::$vars[$k]['min'])
-                        || strlen($v) >= static::$vars[$k]['min'])
-                    && (!isset(static::$vars[$k]['max'])
-                        || !is_numeric(static::$vars[$k]['max'])
-                        || strlen($v) <= static::$vars[$k]['max'])
-                    && (false !== $v = filter_var($v, FILTER_VALIDATE_EMAIL))
+                if ($this->inRange($k, strlen($v))
+                    && (false !== filter_var($v, FILTER_VALIDATE_EMAIL))
                 ) {
                     $this->vals[$k] = $v;
                     unset($this->invalidVals[$k]);
@@ -646,7 +641,7 @@ abstract class DataModel {
                     ) {
                         $v = substr($v, 0, static::$vars[$k]['max']);
                     }
-                    if (false !== $v = filter_var($v, FILTER_VALIDATE_EMAIL)) {
+                    if (false !== filter_var($v, FILTER_VALIDATE_EMAIL)) {
                         $this->vals[$k] = $v;
                         unset($this->invalidVals[$k]);
                     }
@@ -857,5 +852,53 @@ abstract class DataModel {
     /** **********************************************************************
      * END Type specific combined Getter/Setter functions
      ************************************************************************/
-}
 
+    /* **********************************************************************
+     * Implement ArrayAccess methods by wrapping DataModel magic methods
+     ***********************************************************************/
+
+    /**
+     * Determine whether the offset exists or not
+     *
+     * @param mixed $offset An offset to check for.
+     *
+     * @return boolean true on success or false on failure.
+     */
+    public function offsetExists($offset) {
+        return $this->__isset($offset);
+    }
+
+    /**
+     * Set the Offset
+     *
+     * @param mixed $offset The offset to assign the value to.
+     * @param mixed $value  The value to set.
+     *
+     * @return void
+     */
+    public function offsetSet($offset, $value) {
+        $this->__set($offset, $value);
+    }
+
+    /**
+     * Get the offset
+     *
+     * @param mixed $offset The offset to retrieve.
+     *
+     * @return mixed Can return all value types.
+     */
+    public function offsetGet($offset) {
+        return $this->__get($offset);
+    }
+
+    /**
+     * Unset the Offset
+     *
+     * @param mixed $offset The offset to unset.
+     *
+     * @return void
+     */
+    public function offsetUnset($offset) {
+        $this->__unset($offset);
+    }
+}

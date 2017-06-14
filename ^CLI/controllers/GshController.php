@@ -3,7 +3,7 @@
  * Gsh Controller - Graphite Shell Command Line Interface Controller
  * File : /^CLI/controllers/GshController.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  CLI

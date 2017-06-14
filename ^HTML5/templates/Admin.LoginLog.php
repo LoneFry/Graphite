@@ -1,8 +1,8 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
-        <li><a href="<?php echo CONT;?>Admin/Login">Logins</a></li>
+        <li><a href="/Admin">Admin</a></li>
+        <li><a href="/Admin/Login">Logins</a></li>
     </ul>
 </nav>
 <h2>Login Log</h2>
@@ -24,7 +24,7 @@ if (is_array($log) && count($log)) {
         <tr>
             <td><?php html($v->pkey);?></td>
             <td><?php echo date("r", $v->iDate);?></td>
-            <td><?php echo '<a href="'.CONT.'Admin/LoginEdit/'.$v->login_id.'">'.$v->login_id.'</a>';?></td>
+            <td><?php echo '<a href="'.'/Admin/LoginEdit/'.$v->login_id.'">'.$v->login_id.'</a>';?></td>
             <td><?php html($v->ip);?></td>
             <td><?php html($v->ua);?></td>
         </tr>

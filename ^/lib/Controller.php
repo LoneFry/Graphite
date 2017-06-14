@@ -3,7 +3,7 @@
  * Controller - Base class for all controllers
  * File : /^/lib/Controller.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -35,6 +35,10 @@ abstract class Controller {
     protected $argv = array();
     /** @var IDataProvider $DB */
     protected $DB;
+    /** @var  View $View */
+    protected $View;
+
+    const MSGID_PARAM_NAME = 'MSGID';
 
     /**
      * Controller constructor
@@ -44,13 +48,26 @@ abstract class Controller {
      * @param View          $View Graphite View helper
      */
     public function __construct(array $argv = array(), IDataProvider $DB = null, View $View = null) {
+        $this->method = $_SERVER['REQUEST_METHOD'];
+        // check for header "X-HTTP-Method-Override"
+        if ('POST' == $this->method && function_exists('apache_request_headers')) {
+            $headers = apache_request_headers();
+            if (isset($headers['X-HTTP-Method-Override'])) {
+                $this->method = $headers['X-HTTP-Method-Override'];
+            } elseif (isset($_POST['_X-HTTP-Method-Override'])) {
+                $this->method = $_POST['_X-HTTP-Method-Override'];
+                unset($_POST['_X-HTTP-Method-Override']);
+            }
+        }
+
+        // Set the action AFTER the method to support method actions
         if (is_array($argv)) {
             $this->argv = $argv;
             if (isset($argv[0]) && '' != $argv[0]) {
                 $this->action($argv[0]);
             }
         }
-        $this->method = $_SERVER['REQUEST_METHOD'];
+
         $this->DB = $DB;
         if (null === $View) {
             $View = G::build('View', G::$G['VIEW']);
@@ -68,8 +85,12 @@ abstract class Controller {
      */
     public function do_403(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 403 Forbidden");
+        $this->action = '403';
         $this->View->_template = '403.php';
+        $this->View->_header   = 'bookends/public.header.php';
+        $this->View->_footer   = 'bookends/public.footer.php';
         $this->View->_title    = 'Permission Denied';
+        $this->View->setTemplate('subheader', '');
 
         return $this->View;
     }
@@ -82,6 +103,8 @@ abstract class Controller {
     public function action() {
         if (0 < count($a = func_get_args())) {
             if (method_exists($this, 'do_'.$a[0])) {
+                $this->action = $a[0];
+            } elseif (method_exists($this, $this->method.'_'.$a[0])) {
                 $this->action = $a[0];
             } elseif (method_exists($this, 'do_404')) {
                 $this->action = '404';
@@ -103,7 +126,12 @@ abstract class Controller {
         if (null === $argv) {
             $argv = $this->argv;
         }
-        $func = 'do_'.$this->action;
+        // Check for request_method-specific action method
+        if (method_exists($this, $this->method.'_'.$this->action)) {
+            $func = $this->method.'_'.$this->action;
+        } else {
+            $func = 'do_'.$this->action;
+        }
 
         // non-numeric $_GET keys override $argv keys
         foreach ($_GET as $key => $val) {
@@ -120,8 +148,13 @@ abstract class Controller {
                 $params = $_POST;
                 break;
             default:
-                $params = array();
+                parse_str(php_getRawInputBody(), $params);
+                $GLOBALS['_'.$this->method] = $params;
                 break;
+        }
+
+        if (!empty($argv[self::MSGID_PARAM_NAME])) {
+            G::loadMsg($argv[self::MSGID_PARAM_NAME]);
         }
 
         return $this->$func($argv, $params);
@@ -139,11 +172,15 @@ abstract class Controller {
         switch ($name) {
             case 'action':
                 return $this->action($value);
+            case 'method':
+                $this->method = $value;
+                return $this->method;
             default:
                 $trace = debug_backtrace();
                 trigger_error('Undefined property via __set(): '.$name.' in '
                               .$trace[0]['file'].' on line '.$trace[0]['line'],
                               E_USER_NOTICE);
+                break;
         }
     }
 
@@ -158,23 +195,36 @@ abstract class Controller {
         switch ($name) {
             case 'action':
                 return $this->action;
+            case 'method':
+                return $this->method;
             default:
                 $trace = debug_backtrace();
                 trigger_error('Undefined property via __get(): '.$name.' in '
                               .$trace[0]['file'].' on line '.$trace[0]['line'],
                               E_USER_NOTICE);
+                break;
         }
     }
 
     /**
      * Redirects page to url
      *
-     * @param String $url URL to redirect to.
+     * @param string $url              URL to redirect to.
+     * @param bool   $retainMessageLog Flag on whether to retain the message log on redirect
      *
      * @return void
      */
-    protected function _redirect($url) {
+    protected function _redirect($url, $retainMessageLog = true) {
+        $messages = G::msg();
+
+        if (!empty($messages) && $retainMessageLog === true) {
+            $hash = G::storeMsg();
+            $url = updateQueryString($url, self::MSGID_PARAM_NAME, $hash);
+        }
+
+        header("HTTP/1.1 303 See Other");
         header("Location: ".$url);
+        G::close();
         die();
     }
 }

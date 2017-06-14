@@ -2,7 +2,7 @@
 /**
  * AutoLoader
  *
- * PHP version 5
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -12,7 +12,6 @@
  *
  * @see      http://jes.st/2011/phpunit-bootstrap-and-autoloading-classes/
  */
-
 
 /**
  * AutoLoader
@@ -29,8 +28,6 @@
 class AutoLoader {
     /** @var array Registry of known class names */
     protected static $classNames = array();
-    /** @var string Relative path to cached class list */
-    protected static $registryFile = '.AutoLoader.registry.php';
 
     /**
      * Index the file path based on the file name minus the .php extension.
@@ -38,13 +35,16 @@ class AutoLoader {
      * The intent is to cache a list of file/location pairs so it doesn't need
      * to search the directory repeatedly.
      *
+     * @param bool $rebuild If true, don't use existing registry file
+     *
      * @return void
      */
-    public static function registerDirectory() {
+    public static function registerDirectory($rebuild = false) {
         // Attempt to load cached class registry
-        if (file_exists('/tmp/'.G::$G['domain'].static::$registryFile)) {
-            $output = include '/tmp/'.G::$G['domain'].static::$registryFile;
+        if (!$rebuild) {
+            $output = static::getRegistryCache();
         }
+
         if (isset($output) && is_array($output)) {
             static::$classNames = $output;
         } else {
@@ -59,8 +59,7 @@ class AutoLoader {
                 }
             }
             // Attempt to save cached class registry
-            file_put_contents('/tmp/'.G::$G['domain'].static::$registryFile,
-                '<?php return '.var_export(static::$classNames, 1).';');
+            static::setRegistryCache();
         }
     }
 
@@ -192,6 +191,15 @@ class AutoLoader {
     public static function loadClass($className) {
         if (isset(static::$classNames[$className])) {
             require_once static::$classNames[$className];
+            return;
+        }
+
+        // Class wasn't found?  Rebuild the registry and try again.
+        trigger_error($className.' not found, rebuilding registry');
+        self::registerDirectory(true);
+
+        if (isset(static::$classNames[$className])) {
+            require_once static::$classNames[$className];
         }
     }
 
@@ -205,5 +213,31 @@ class AutoLoader {
      */
     public static function addClass($className, $path) {
         static::$classNames[$className] = $path;
+    }
+
+    /**
+     * Generate a key that is distinct to the current VHost/Server pair
+     *
+     * @return string Key name for AutoLoad Cache
+     */
+    private static function getCacheKey() {
+        return static::class.'_'.gethostname().'_'.$_SERVER['SERVER_NAME'];
+    }
+
+    /**
+     * Stub for loading registry cache
+     *
+     * @return array|null
+     */
+    private static function getRegistryCache() {
+        return null;
+    }
+
+    /**
+     * Stub for storing registry cache
+     *
+     * @return void
+     */
+    private static function setRegistryCache() {
     }
 }

@@ -3,7 +3,7 @@
  * CLI Controller - Command Line Interface Controller base class
  * File : /^CLI/lib/CLIController.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  CLI

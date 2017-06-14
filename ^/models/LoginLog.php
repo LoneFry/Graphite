@@ -3,7 +3,7 @@
  * LoginLog - AR class for logging log-ins
  * File : /^/models/LoginLog.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -24,7 +24,7 @@
  */
 class LoginLog extends Record {
     /** @var string Table name, un-prefixed */
-    protected static $table = 'LoginLog';
+    protected static $table = G_DB_TABL.'LoginLog';
     /** @var string Primary Key */
     protected static $pkey  = 'pkey';
     /** @var string Select query, without WHERE clause */
@@ -33,23 +33,8 @@ class LoginLog extends Record {
     protected static $vars  = array(
         'pkey'     => array('type' => 'i', 'min' => 1, 'guard' => true),
         'login_id' => array('type' => 'i', 'min' => 0),
-        'ip'       => array('type' => 'ip'),
+        'ip'       => array('type' => 'ip', 'def' => G_REMOTE_ADDR),
         'ua'       => array('type' => 's', 'max' => 255),
-        'iDate'    => array('type' => 'ts', 'min' => 0)
+        'iDate'    => array('type' => 'ts', 'min' => 0, 'def' => NOW)
     );
-
-    /**
-     * prime() initialized static values, call below class definition
-     *
-     * @return void
-     */
-    public static function prime() {
-        parent::prime();
-        // Store DDL before setting front-end defaults
-        self::$vars['ip']['ddl'] = static::deriveDDL('ip');
-        self::$vars['ip']['def'] = $_SERVER['REMOTE_ADDR'];
-        self::$vars['iDate']['ddl'] = static::deriveDDL('iDate');
-        self::$vars['iDate']['def'] = (int)NOW;
-    }
 }
-LoginLog::prime();

@@ -3,7 +3,7 @@
  * Password Hashing
  * File : /^/lib/PasswordHasher.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core

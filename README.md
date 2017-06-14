@@ -5,7 +5,6 @@ Graphite is a Simple MVC web-application framework
 Components
 ----------
 - /^/ : Core files, includes base classes for Models, Controllers, a Dispatcher, and a View helper
-- /^HTML4/ : HTML4 default site, contains HTML4/JS/CSS for basic functionality
 - /^HTML5/ : HTML5 default site, contains HTML5/JS/CSS for basic functionality
 - /^CLI/ : A Simple Command Line Interface, other components can expose commands to this
 

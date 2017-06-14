@@ -3,7 +3,7 @@
  * ReportMySQLDataProvider - Provide report data from MySQL
  * File : /^/lib/ReportMySQLDataProvider.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -21,7 +21,6 @@
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
- * @see      /^/lib/PassiveReport.php
  */
 abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     /**
@@ -36,7 +35,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
      *
      * @return array Found records
      */
-    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0) {
+    public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveReport $Model */
         $Model = G::build($class);
         if (!is_a($Model, 'PassiveReport')) {
@@ -61,7 +60,6 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
                 foreach ($arr as $kk => $vv) {
                     $arr[$kk] = G::$m->escape_string($vv);
                 }
-
                 $query[] = sprintf($vars[$key]['sql'], "'".implode("', '", $arr)."'");
             } else {
                 $query[] = sprintf($vars[$key]['sql'], G::$m->escape_string($val));
@@ -85,8 +83,9 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
             $query .= ' LIMIT '.$start.', '.$count;
         }
 
+        $result = G::$m->query($query);
 
-        if (false === $result = G::$m->query($query)) {
+        if (false === $result) {
             return false;
         }
         $data = array();
@@ -115,7 +114,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     /**
      * Save data does not apply to reports
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -126,7 +125,7 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     /**
      * Save data does not apply to reports
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool false
      */
@@ -135,6 +134,8 @@ abstract class ReportMySQLDataProvider extends MySQLDataProvider {
     }
 
     /**
+     * Gets the Query for the report
+     *
      * @param string $class Name of Report
      *
      * @return mixed

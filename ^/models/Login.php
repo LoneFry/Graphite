@@ -3,7 +3,7 @@
  * Login - Login (user) AR class
  * File : /^/models/Login.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -24,7 +24,7 @@
  */
 class Login extends Record {
     /** @var string Table name, un-prefixed */
-    protected static $table = 'Logins';
+    protected static $table = G_DB_TABL.'Logins';
     /** @var string Primary Key */
     protected static $pkey  = 'login_id';
     /** @var string Select query, without WHERE clause */
@@ -37,7 +37,6 @@ class Login extends Record {
         'realname'        => array('type' => 's' , 'max' => 255),
         'email'           => array('type' => 'em', 'max' => 255),
         'comment'         => array('type' => 's' , 'max' => 255),
-        'sessionStrength' => array('type' => 'i' , 'min' => 0, 'max' => 2, 'def' => 2),
         'UA'              => array('type' => 's' , 'min' => 40, 'max' => 40),
         'lastIP'          => array('type' => 'ip'),
         'dateActive'      => array('type' => 'ts', 'min' => 0),
@@ -51,7 +50,7 @@ class Login extends Record {
     );
     /** @var array List of tables that connect this to another table */
     protected static $joiners = array(
-        'Role' => 'Roles_Logins',
+        'Role' => G_DB_TABL.'Roles_Logins',
     );
 
     /** @var string A regex for determining valid loginnames */
@@ -60,33 +59,22 @@ class Login extends Record {
     protected $roles = array();
 
     /**
-     * prime() initialized static values, call below class definition
-     *
-     * @return void
-     */
-    public static function prime() {
-        parent::prime();
-        $keys = array_keys(static::$vars);
-        static::$query = 'SELECT t.`'.join('`, t.`', $keys).'`, '
-            .'GROUP_CONCAT(r.label) as roles'
-            .' FROM `'.static::$table.'` t'
-            .' LEFT JOIN `'.static::getTable('Role').'` rl'
-                .' ON t.login_id = rl.login_id'
-            .' LEFT JOIN `'.Role::getTable().'` r'
-                .' ON r.role_id = rl.role_id'
-        ;
-
-        // Add unique index on `loginname` column
-        self::$vars['loginname']['ddl'] = static::deriveDDL('loginname').' UNIQUE KEY';
-    }
-
-    /**
      * Wrap the parent constructor and set roles if passed
      *
      * @param bool|int|array $a pkey value|set defaults|set values
      * @param bool           $b Set defaults
      */
     public function __construct($a = null, $b = null) {
+        if ('' == static::$query) {
+            $keys          = array_keys(static::$vars);
+            static::$query = 'SELECT t.`'.join('`, t.`', $keys).'`, '
+                .'GROUP_CONCAT(r.`label`) as `roles`'
+                .' FROM `'.static::$table.'` t'
+                .' LEFT JOIN `'.static::getTable('Role').'` rl'
+                .' ON t.`login_id` = rl.`login_id`'
+                .' LEFT JOIN `'.Role::getTable().'` r'
+                .' ON r.`role_id` = rl.`role_id`';
+        }
         parent::__construct($a, $b);
         if (is_array($a) && isset($a['roles'])) {
             $this->roles = explode(',', $a['roles']);
@@ -149,6 +137,15 @@ class Login extends Record {
     }
 
     /**
+     * Fetch the role array.
+     *
+     * @return array  Array of rules
+     */
+    public function getRoles() {
+        return $this->roles;
+    }
+
+    /**
      * Getter/Setter for loginname value
      *
      * @return string $this->loginname
@@ -188,7 +185,7 @@ class Login extends Record {
      * @return bool True if password verified, false if not
      */
     public function test_password($password) {
-        return PasswordHasher::test_password($password, $this->password);
+        return PasswordHasher::test_password($password, $this->password());
     }
 
     /**
@@ -199,7 +196,7 @@ class Login extends Record {
     public function getReferrer() {
         if ($this->__get('referrer_id') > 0) {
             $referrer = new Login($this->__get('referrer_id'));
-            $referrer->load();
+            G::build(DataBroker::class)->load($referrer);
             return $referrer->loginname;
         }
         return '';
@@ -212,12 +209,7 @@ class Login extends Record {
      */
     public static function initials() {
         // get login counts per letter
-        $letters = array('A' => 0, 'B' => 0, 'C' => 0, 'D' => 0, 'E' => 0,
-                         'F' => 0, 'G' => 0, 'H' => 0, 'I' => 0, 'J' => 0,
-                         'K' => 0, 'L' => 0, 'M' => 0, 'N' => 0, 'O' => 0,
-                         'P' => 0, 'Q' => 0, 'R' => 0, 'S' => 0, 'T' => 0,
-                         'U' => 0, 'V' => 0, 'W' => 0, 'X' => 0, 'Y' => 0,
-                         'Z' => 0);
+        $letters = array_fill_keys(range('A', 'Z'), 0);
         $query = "SELECT UPPER(LEFT(loginname, 1)), count(loginname)"
             ." FROM `".static::$table."`"
             ." GROUP BY UPPER(LEFT(loginname, 1))"
@@ -238,7 +230,7 @@ class Login extends Record {
      *
      * @param string $c Search for logins with loginnames starting with this
      *
-     * @return array Collection of Login objects starting with passed string
+     * @return array|bool Collection of Login objects starting with passed string
      */
     public static function forInitial($c = null) {
         if (strlen($c) < 1) {
@@ -263,5 +255,29 @@ class Login extends Record {
 
         return $a;
     }
+
+    /**
+     * Searches for actions which use the given email address
+     *
+     * @param string $email Email address used
+     *
+     * @return array|bool
+     */
+    public static function searchEmail($email) {
+        // Escapes email
+        $email = G::$m->escape_string($email);
+        if (trim($email) == '') {
+            return false;
+        }
+
+        // Selects the identities that use the given email address
+        $query = "SELECT `login_id`, `loginname`"
+            ." FROM `".self::$table."`"
+            ." WHERE `email` = '$email'"
+            ." ORDER BY `login_id`"
+        ;
+        $result = G::$m->queryToArray($query, 'login_id');
+
+        return $result;
+    }
 }
-Login::prime();

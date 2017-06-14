@@ -3,7 +3,7 @@
  * PBKDF2PasswordHasher - PBKDF2 Password Hashing plugin
  * File : /^/lib/PBKDF2PasswordHasher.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -37,6 +37,11 @@ class PBKDF2PasswordHasher implements IPasswordHasher {
      * @return string hashed password for storage
      */
     public static function hash_password($password) {
+        /** @var $algo */
+        /** @var $iterations */
+        /** @var $salt_len */
+        /** @var $hash_len */
+        /** @var $sections */
         extract(G::$G['SEC']['PBKDF2']);
         if (function_exists('mcrypt_create_iv')) {
             $salt = mcrypt_create_iv($salt_len, MCRYPT_DEV_URANDOM);

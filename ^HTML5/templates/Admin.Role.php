@@ -1,11 +1,11 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
+        <li><a href="/Admin">Admin</a></li>
     </ul>
 </nav>
     <h2>Roles</h2>
-    <a href="<?php echo CONT;?>Admin/RoleAdd">Add Role</a>
+    <a href="/Admin/RoleAdd">Add Role</a>
     <table class="list">
         <thead>
             <tr>
@@ -23,7 +23,7 @@ if (isset($list) && is_array($list)) {
 ?>
         <tr class="<?php echo $v->disabled?'subtle':'';?>">
             <td><?php echo $v->role_id;?></td>
-            <td><a href="<?php echo CONT;?>Admin/RoleEdit/<?php echo $k;?>"><?php html($v->label);?></a></td>
+            <td><a href="/Admin/RoleEdit/<?php echo $k;?>"><?php html($v->label);?></a></td>
             <td><?php echo $v->creator_id;?></td>
             <td><?php echo $v->description;?></td>
             <td><?php echo $v->disabled?'Disabled':'Enabled';?></td>

@@ -1,5 +1,5 @@
 <?php get_header(); ?>
-<form action="<?php echo CONT; ?>Installer/install" method="post" id="installer">
+<form action="/Installer/install" method="post" id="installer">
 <div>
 <?php if (isset($config)) { ?>
     <h3>Config</h3>
@@ -43,9 +43,6 @@
     <label><input type="checkbox" name="HTML5" value="1"<?php if ($HTML5) {
             echo ' checked="checked"';
         } ?>> Enable HTML5 front end?</label>
-    <label><input type="checkbox" name="HTML4" value="1"<?php if ($HTML4) {
-            echo ' checked="checked"';
-        } ?>> Enable HTML4 front end?</label>
     <label><input type="checkbox" name="CLI" value="1"<?php if ($CLI) {
             echo ' checked="checked"';
         } ?>> Enable CLI?</label>

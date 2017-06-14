@@ -3,7 +3,7 @@
  * website CLI configuration file
  * File : /^CLI/config.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core

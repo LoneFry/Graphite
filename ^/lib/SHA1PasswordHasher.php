@@ -3,7 +3,7 @@
  * SHA1PasswordHasher - Simple SHA1 based Password Hashing plugin
  * File : /^/lib/SHA1PasswordHasher.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core

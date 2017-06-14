@@ -3,7 +3,7 @@
  * IDataProvider - Data Provider Interface
  * File : /^/lib/IDataProvider.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -36,7 +36,7 @@ interface IDataProvider {
      *
      * @return array Found records
      */
-    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0);
+    public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0);
 
     /**
      * Search for records of type $class according to provided primary key(s)
@@ -44,7 +44,7 @@ interface IDataProvider {
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return array Found records
+     * @return Record|array Found records
      */
     public function byPK($class, $pkey);
 

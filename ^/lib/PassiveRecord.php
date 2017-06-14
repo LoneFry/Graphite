@@ -3,7 +3,7 @@
  * PassiveRecord - core database record class
  * File : /^/lib/PassiveRecord.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -24,7 +24,7 @@
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
  */
-abstract class PassiveRecord extends DataModel {
+abstract class PassiveRecord extends DataModel implements JsonSerializable {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 
@@ -81,6 +81,15 @@ abstract class PassiveRecord extends DataModel {
      */
     public static function getPkey() {
         return static::$pkey;
+    }
+
+    /**
+     * Return the query, which is a protected static var
+     *
+     * @return string Model's SELECT query
+     */
+    public static function getQuery() {
+        return static::$query;
     }
 
     /**
@@ -143,6 +152,25 @@ abstract class PassiveRecord extends DataModel {
     }
 
     /**
+     * Return whether record was altered
+     *
+     * @return bool True if altered, False if not
+     */
+    public function hasDiff() {
+        foreach (static::$vars as $k => $v) {
+            if ($this->vals[$k] != $this->DBvals[$k]
+                || (null === $this->vals[$k]) != (null === $this->DBvals[$k])
+                || (true === $this->vals[$k]) != (true === $this->DBvals[$k])
+                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
+            ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
      * Sets DBvals to match current vals
      *
      * @return mixed Array of unregistered values on success, false on failure
@@ -198,7 +226,7 @@ abstract class PassiveRecord extends DataModel {
      *
      * @return mixed Array of unregistered values on success, false on failure
      */
-    public function load_array(array $row) {
+    public function load_array(array $row = array()) {
         if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
             return false;
         }
@@ -218,5 +246,14 @@ abstract class PassiveRecord extends DataModel {
      */
     public function toArray() {
         return $this->getAll();
+    }
+
+    /**
+     * Instruct json_encode to only encode the array cast
+     *
+     * @return string json_encode'd array of values
+     */
+    public function jsonSerialize() {
+        return $this->toArray();
     }
 }

@@ -3,7 +3,7 @@
  * Role - Role AR class
  * File : /^/models/Role.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -24,7 +24,7 @@
  */
 class Role extends Record {
     /** @var string Table name, un-prefixed */
-    protected static $table = 'Roles';
+    protected static $table = G_DB_TABL.'Roles';
     /** @var string Primary Key */
     protected static $pkey  = 'role_id';
     /** @var string Select query, without WHERE clause */
@@ -41,20 +41,8 @@ class Role extends Record {
     );
     /** @var array List of tables that connect this to another table */
     protected static $joiners = array(
-        'Login' => 'Roles_Logins',
+        'Login' => G_DB_TABL.'Roles_Logins',
     );
-
-    /**
-     * prime() initialized static values, call below class definition
-     *
-     * @return void
-     */
-    public static function prime() {
-        parent::prime();
-
-        // Add unique index on `label` column
-        self::$vars['label']['ddl'] = static::deriveDDL('label').' UNIQUE KEY';
-    }
 
     /**
      * Called by Record::insert() BEFORE running INSERT query
@@ -85,7 +73,7 @@ class Role extends Record {
     public function getCreator() {
         if ($this->__get('creator_id') > 0) {
             $creator = new Login($this->__get('creator_id'));
-            $creator->load();
+            G::build(DataBroker::class)->load($creator);
             return $creator->loginname;
         }
         return '';
@@ -139,7 +127,7 @@ class Role extends Record {
         if (!is_numeric($login_id)) {
             return false;
         }
-        $grantor = G::$S->Login?G::$S->Login->login_id:0;
+        $grantor = G::$S->Login ? G::$S->Login->login_id : 0;
         $query = "INSERT INTO `".static::getTable('Login')."` (`role_id`,`login_id`,`grantor_id`,`dateCreated`) "
             ."VALUES (".$this->__get('role_id').",".$login_id.",".$grantor.",".NOW.")";
         if (G::$M->query($query)) {
@@ -167,4 +155,3 @@ class Role extends Record {
         return false;
     }
 }
-Role::prime();

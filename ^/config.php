@@ -3,7 +3,7 @@
  * website core configuration file
  * File : /^/config.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -11,7 +11,6 @@
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
-
 
 /** **************************************************************************
  * General settings
@@ -64,6 +63,9 @@ G::$G['db']['ProviderDict'] = array(
 /** **************************************************************************
  * Settings for Security
  ****************************************************************************/
+// A blank encyption key prevents Record::encypt() and ::decrypt()
+G::$G['SEC']['encryptionKey'] = '';
+
 // Classes to use to produce and test password hash
 G::$G['SEC']['hash_class'] = array(
     'PBKDF2PasswordHasher',
@@ -102,14 +104,17 @@ G::$G['SEC']['passwords'] = array(
     'enforce_in_admin' => !true,
 );
 // Examples of useful patterns
-// G::$G['SEC']['passwords']['require'][] = array(
-//    '/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/',
-//    'Password must be at least eight characters long and contain digits and letters.'
-//    );
-// G::$G['SEC']['passwords']['require'][] = array(
-//    '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/',
-//    'Password must be at least eight characters long and contain digits, lower and upper letters, and symbols.'
-//    );
+/*
+G::$G['SEC']['passwords']['require'][] = array(
+    '/^(?=.*\d)(?=.*[a-zA-Z]).{8,}$/',
+    'Password must be at least eight characters long and contain digits and letters.'
+    );
+ G::$G['SEC']['passwords']['require'][] = array(
+    '/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[\W_]).{8,}$/',
+    'Password must be at least eight characters long and contain digits, lower and upper letters, and symbols.'
+    );
+ */
+
 /** **************************************************************************
  * Settings for Security
  ****************************************************************************/
@@ -118,9 +123,6 @@ G::$G['SEC']['passwords'] = array(
 /** **************************************************************************
  * Settings for the Dispatcher
  ****************************************************************************/
-// Paths
-G::$G['CON']['URL'] = '/';
-
 // Defaults
 G::$G['CON']['controller'] = 'Installer';
 G::$G['CON']['controller404'] = 'Default';
@@ -154,16 +156,12 @@ if (isset($_SERVER['PATH_INFO'])) {
 /** **************************************************************************
  * Settings for the View
  ****************************************************************************/
-// Paths
-G::$G['VIEW']['header'] = 'header.php';
-G::$G['VIEW']['footer'] = 'footer.php';
-G::$G['VIEW']['template'] = '404.php';
 
 // display vars
 G::$G['VIEW']['_siteName'] = 'Graphite Site';
 G::$G['VIEW']['_siteURL'] = 'http://'.$_SERVER['SERVER_NAME'];
-G::$G['VIEW']['_loginURL'] = G::$G['CON']['URL'].'Account/login';
-G::$G['VIEW']['_logoutURL'] = G::$G['CON']['URL'].'Account/Logout';
+G::$G['VIEW']['_loginURL'] = '/Account/login';
+G::$G['VIEW']['_logoutURL'] = '/Account/Logout';
 G::$G['VIEW']['_meta'] = array(
     "description" => "Graphite MVC framework",
     "keywords"    => "Graphite,MVC,framework",
@@ -175,6 +173,8 @@ G::$G['VIEW']['_script'] = array(
 G::$G['VIEW']['_link'] = array(
     array('rel' => 'shortcut icon','type' => 'image/vnd.microsoft.icon','href' => '/favicon.ico'),
 );
+G::$G['VIEW']['_siteClass'] = '';
+
 // login redirection vars
 G::$G['VIEW']['_URI'] = isset($_POST['_URI']) ? $_POST['_URI'] : $_SERVER['REQUEST_URI'];
 G::$G['VIEW']['_Lbl'] = isset($_POST['_Lbl']) ? $_POST['_Lbl'] : 'to the page you requested';
@@ -207,12 +207,31 @@ if ($_dir = opendir(SITE)) {
  * Per-Domain Settings for multi-domain sites
  *  If you are not hosting a site on multiple domains, you can cautiously
  *  use this file as your only configuration file
+ * We'll check for two files
+ *  1. 'secrets.' which should not be in your repo, and contains credentials
+ *  2. 'config.' which could be in your repo, and contains general configs
+ * We'll check two places
+ *  1. [webroot]/../siteConfigs/ which houses config files out of webroot
+ *  2. [webroot] which is webroot
+ * We'll check two versions of the current domain
+ *  1. The SERVER_NAME according to $_SERVER['SERVER_NAME']
+ *  2. The directory name of [webroot], applicable in most vhosting setups
  ****************************************************************************/
-if (file_exists(dirname(SITE).'/siteConfigs/config.'.$_SERVER['SERVER_NAME'].'.php')) {
-    include dirname(SITE).'/siteConfigs/config.'.$_SERVER['SERVER_NAME'].'.php';
-} elseif (file_exists(SITE.'/config.'.$_SERVER['SERVER_NAME'].'.php')) {
-    include SITE.'/config.'.$_SERVER['SERVER_NAME'].'.php';
+$tmppath = explode('/', SITE);
+foreach (['secrets.','config.'] as $tmpfile) {
+    foreach ([$_SERVER['SERVER_NAME'], end($tmppath)] as $tmpdomain) {
+        if (file_exists(dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php')) {
+            include_once dirname(SITE).'/siteConfigs/'.$tmpfile.$tmpdomain.'.php';
+            continue 2;
+        } elseif (file_exists(SITE.'/'.$tmpfile.$tmpdomain.'.php')) {
+            include_once SITE.'/'.$tmpfile.$tmpdomain.'.php';
+            continue 2;
+        }
+    }
 }
+unset($tmppath);
+unset($tmpfile);
+unset($tmpdomain);
 /** **************************************************************************
  * /Per-Domain Settings for multi-domain sites
  ****************************************************************************/

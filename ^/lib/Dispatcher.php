@@ -3,7 +3,7 @@
  * Dispatcher - Core dispatcher - directs request to appropriate Controller
  * File : /^/lib/Dispatcher.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -162,24 +162,26 @@ class Dispatcher {
             $argv = $this->argv;
         }
         Localizer::loadLib($this->controller);
-        DataBroker::setDict(G::$G['db']['ProviderDict']);
+        /** @var DataBroker $DB */
+        $DB = G::build('DataBroker');
         /** @var Controller $Controller */
+        G::$V->_controller = strtolower($this->controller);
         $Controller = $this->controller.'Controller';
-        $Controller = G::build($Controller, $argv, G::build('DataBroker'), G::$V);
-        if (method_exists($Controller, 'do_'.$Controller->action)) {
-            $result = $Controller->act();
-            if (is_a($result, 'View')) {
-                G::$V = $result;
-            }
-            G::$V->_controller = strtolower($this->controller);
+        $Controller = G::build($Controller, $argv, $DB, G::$V);
+        if (!method_exists($Controller, 'do_'.$Controller->action)) {
+            // else use 404 controller
+            G::$V->_controller = strtolower($this->controller404);
+            $Controller = $this->controller404.'Controller';
+            $Controller = G::build($Controller, $argv, $DB, G::$V);
+        }
+        $result = $Controller->act();
+        if (is_a($result, 'View')) {
+            G::$V = $result;
+        }
+        if (!isset(G::$V->_action)) {
             G::$V->_action = strtolower($Controller->action);
-            return G::$V;
         }
 
-        // else use 404 controller
-        $Controller = $this->controller404.'Controller';
-        $Controller = G::build($Controller, $argv, G::build('DataBroker'));
-
-        return $Controller->act();
+        return G::$V;
     }
 }

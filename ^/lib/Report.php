@@ -3,7 +3,7 @@
  * Report - Base Class for Report Models
  * File : /^/lib/Report.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -45,6 +45,8 @@ abstract class Report extends DataModel {
     /** @var array $vars List of parameters, defined in subclasses */
     // protected static $vars = array();
 
+    protected static $mySql = null;
+
     /**
      * Constructor accepts three prototypes:
      * __construct(true) will create an instance with default values
@@ -78,34 +80,8 @@ abstract class Report extends DataModel {
      */
     public function load() {
         $this->_data = array();
-        $query = array();
-
-        foreach (static::$vars as $k  => $v) {
-            if (isset($this->vals[$k]) && null !== $this->vals[$k]) {
-                if ('a' === $v['type']) {
-                    $arr = array();
-
-                    $arr = unserialize($this->$k);
-
-                    foreach ($arr as $kk => $vv) {
-                        $arr[$kk] = G::$m->escape_string($vv);
-                    }
-
-                    $query[] = sprintf($v['sql'],
-                                    "'".implode("', '", $arr)."'");
-                } elseif ('b' == static::$vars[$k]['type']) {
-                    $query[] = sprintf($v['sql'], $this->vals[$k] ? "b'1'" : "b'0'");
-                } else {
-                    $query[] = sprintf($v['sql'],
-                                    G::$m->escape_string($this->vals[$k]));
-                }
-            }
-        }
-        if (count($query) == 0) {
-            $query = sprintf(static::$query, '1');
-        } else {
-            $query = sprintf(static::$query, implode(' AND ', $query));
-        }
+        // Build the WHERE clause of the report query based on set params
+        $query = sprintf(static::$query, $this->_buildWhere());
 
         // if an order has been set, add it to the query
         if (null !== $this->_order) {
@@ -116,15 +92,127 @@ abstract class Report extends DataModel {
         // add limits also
         $query .= ' LIMIT '.$this->_start.', '.$this->_count;
 
-        if (false === $result = G::$m->query($query)) {
+        // Run the query against the DB connection specified in $this->_source
+        $result = $this->_runQueryOnSource($query);
+
+        // We Failed!
+        if (false === $result) {
             return false;
         }
-        while ($row = $result->fetch_assoc()) {
-            $this->_data[] = $row;
+
+        // Get the data into an array
+        if ($result !== true) {
+            while ($row = $result->fetch_assoc()) {
+                $this->_data[] = $row;
+            }
+            $result->close();
         }
-        $result->close();
+
         $this->onload();
         return true;
+    }
+
+    /**
+     * Run the report query with defined params and set results in $this->_data
+     *
+     * @return bool false on failure
+     */
+    public function loadCount() {
+        $count = false;
+        // Build the COUNT query based on set params
+        $query = sprintf(static::$countQuery, $this->_buildWhere());
+        // Run the query against the DB connection specified in $this->_source
+        $result = $this->_runQueryOnSource($query);
+        // Get the count scalar!
+        if (is_object($result)) {
+            $count = $result->fetch_array()[0];
+            $result->close();
+        }
+
+        return $count;
+    }
+
+    /**
+     * Build a WHERE clause based on set params
+     *
+     * @return string Query WHERE clause
+     */
+    protected function _buildWhere() {
+        $where = array();
+        foreach (static::$vars as $field => $props) {
+            if (isset($this->vals[$field]) && null !== $this->vals[$field]) {
+                if ('a' === $props['type']) {
+                    $inList = $this->implodeArray(unserialize($this->$field));
+                    $where[] = sprintf($props['sql'], $inList);
+                } elseif ('b' == static::$vars[$field]['type']) {
+                    $where[] = sprintf($props['sql'], $this->vals[$field] ? "b'1'" : "b'0'");
+                } else {
+                    $where[] = sprintf($props['sql'], G::$m->escape_string($this->vals[$field]));
+                }
+            }
+        }
+        if (count($where) == 0) {
+            $where = '1';
+        } else {
+            $where = implode(' AND ', $where);
+        }
+
+        return $where;
+    }
+
+    /**
+     * Run specified query on MySQL connection indicated in $this->_source
+     *
+     * @param string $query Query to run
+     *
+     * @return mixed MySQLi result object
+     */
+    protected function _runQueryOnSource($query) {
+        $source = $this->getSource();
+        $MySql = mysqli_::buildForSource($source);
+        if (null != $MySql) {
+            $result = $MySql->query($query);
+        } else if ($source === 'writer') {
+            $result = G::$M->query($query);
+        } else {
+            $result = G::$m->query($query);
+        }
+
+        return $result;
+    }
+
+    /**
+     * Run the report query with defined params and returns results
+     *
+     * @param string $query  Query to run
+     * @param array  $params Key indexed parameters to supply to the query.
+     *
+     * @return array|bool false on failure
+     */
+    public function runQuery($query = '', $params = array()) {
+        // Look for all {$variable} instances and replace with actual values.
+        foreach ($params as $param => $value) {
+            // Implode an array value
+            if (is_array($value)) {
+                $value = $this->implodeArray($value);
+            }
+
+            $query = str_replace('{' . $param . '}', $value, $query);
+        }
+
+        $MySql = $this->getMySql();
+        $result = $MySql->query($query);
+
+        $data = array();
+        if (!is_bool($result)) {
+            while ($row = $result->fetch_assoc()) {
+                $data[] = $row;
+            }
+            $result->close();
+        } else {
+            $data = $result;
+        }
+        return $data;
     }
 
     /**
@@ -140,10 +228,10 @@ abstract class Report extends DataModel {
      * Run report according to search params $params
      * Order results by $orders and limit results by $count, $start
      *
-     * @param array  $params Values to search against
-     * @param array  $orders Order(s) of results
-     * @param int    $count  Number of rows to fetch
-     * @param int    $start  Number of rows to skip
+     * @param array $params Values to search against
+     * @param array $orders Order(s) of results
+     * @param int   $count  Number of rows to fetch
+     * @param int   $start  Number of rows to skip
      *
      * @return array Found records
      */
@@ -165,6 +253,33 @@ abstract class Report extends DataModel {
         $this->load();
 
         return $this->toArray();
+    }
+
+    /**
+     * Run report according to search params $params
+     * Return count of rows
+     *
+     * @param array $params Values to search against
+     *
+     * @return int Found records
+     */
+    public function count(array $params = array()) {
+        if (count($params)) {
+            $this->setAll($params);
+        }
+        if (empty(static::$countQuery)) {
+            $query = static::$query;
+            static::$query = static::$countQuery;
+            $this->_order = null;
+            $this->_asc = true;
+            $this->_count = 10000;
+            $this->_start = 0;
+            $this->load();
+            static::$query = $query;
+            return count($this->_data);
+        }
+
+        return $this->loadCount();
     }
 
     /**
@@ -209,5 +324,34 @@ abstract class Report extends DataModel {
         }
 
         return parent::__set($k, $v);
+    }
+
+    /**
+     * Gets appropriate MySql Object based on source.
+     * Falls back to default if it cannot open it.
+     *
+     * @return mixed
+     */
+    public function getMySql() {
+        if (self::$mySql === null) {
+            $source = $this->getSource();
+            self::$mySql = ifset(G::$M->buildForSource($source), G::$m);
+        }
+        return self::$mySql;
+    }
+
+    /**
+     * Implodes an array in a sql safe way
+     *
+     * @param array $array Array to implode
+     *
+     * @return string
+     */
+    private function implodeArray($array) {
+        foreach ($array as $index => $value) {
+            $array[$index] = G::$m->escape_string($value);
+        }
+
+        return "'" . implode("', '", $array) . "'";
     }
 }

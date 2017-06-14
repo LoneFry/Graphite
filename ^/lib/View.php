@@ -3,7 +3,7 @@
  * View - core View processor
  * File : /^/lib/View.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -30,6 +30,7 @@ class View {
         'header'   => 'header.php',
         'footer'   => 'footer.php',
         'template' => '404.php',
+        'login'    => 'Account.Login.Form.php',
         );
     /** @var array List of paths in which to find templates */
     protected $includePath = array();
@@ -42,12 +43,14 @@ class View {
         '_tail'   => '',
         );
 
+    public $_format = null;
+
     /**
      * View Constructor
      *
      * @param array $cfg Configuration array
      */
-    public function __construct(array $cfg) {
+    function __construct($cfg) {
         // Check for and validate location of Controllers
         if (isset(G::$G['includePath'])) {
             foreach (explode(';', G::$G['includePath']) as $v) {
@@ -85,10 +88,10 @@ class View {
         if (isset($cfg['_link']) && is_array($cfg['_link']) && 0 < count($cfg['_link'])) {
             foreach ($cfg['_link'] as $a) {
                 $this->_link(
-                    isset($a['rel']  )?$a['rel']  :'',
-                    isset($a['type'] )?$a['type'] :'',
-                    isset($a['href'] )?$a['href'] :'',
-                    isset($a['title'])?$a['title']:''
+                    isset($a['rel']) ? $a['rel'] : '',
+                    isset($a['type']) ? $a['type'] : '',
+                    isset($a['href']) ? $a['href'] : '',
+                    isset($a['title']) ? $a['title'] : ''
                 );
             }
             unset($cfg['_link']);
@@ -122,6 +125,9 @@ class View {
         if (null === $src) {
             return $this->vals['_script'];
         }
+        if (preg_match('~^/[^/].*/\w+\.\w+\.js$~', $src)) {
+            $src = $src.'?v='.VERSION;
+        }
         $this->vals['_script'][] = $src;
     }
 
@@ -153,6 +159,9 @@ class View {
     public function _style($src = null) {
         if (null === $src) {
             return false;
+        }
+        if (preg_match('~^/[^/].*/\w+\.\w+\.css$~', $src)) {
+            $src = $src.'?v='.VERSION;
         }
         $this->_link('stylesheet', 'text/css', $src);
     }
@@ -194,7 +203,7 @@ class View {
                 break;
             }
         }
-        return $this->templates[$template];
+        return ifset($this->templates[$template]);
     }
 
     /**
@@ -206,7 +215,7 @@ class View {
      * @return string Prior set template
      */
     public function getTemplate($template) {
-        return $this->templates[$template];
+        return ifset($this->templates[$template]);
     }
 
 
@@ -230,6 +239,7 @@ class View {
                 return $this->setTemplate('template', $value);
             default:
                 $this->vals[$name] = $value;
+                break;
         }
     }
 
@@ -258,6 +268,7 @@ class View {
                 trigger_error('Undefined property via __get(): '.$name.' in '
                               .$trace[0]['file'].' on line '.$trace[0]['line'],
                               E_USER_NOTICE);
+                break;
         }
     }
 
@@ -284,16 +295,16 @@ class View {
     }
 
     /**
-     * Executes any actions that need to be handled before rendering.
+     * Executes any actions that need to be handled before output.
      *
      * @return void
      */
-    public function prerender() {
+    public function preoutput() {
         if (G::$G['MODE'] == 'prd') {
             $ver = isset(G::$G['VIEW']['version']) ? G::$G['VIEW']['version'] : 0;
             // JS
             foreach ($this->vals['_script'] as $key => $scriptName) {
-                $minFile =  '/min/' . $this->_getMinName($scriptName);
+                $minFile = '/min/' . $this->_getMinName($scriptName);
                 if (file_exists(SITE . $minFile)) {
                     $this->vals['_script'][$key] = $minFile . '?ver=' . $ver;
                 }
@@ -370,11 +381,17 @@ class View {
      * including template file
      *
      * @param string $_template Template to render
+     * @param array  $vals      Values to scope into template
      *
      * @return string|bool Buffered output on success, false otherwise
      */
-    public function render($_template = 'template') {
-        extract($this->vals);
+    public function render($_template = 'template', $vals = null) {
+        if (null !== $vals) {
+            extract($vals);
+        } else {
+            extract($this->vals);
+        }
+        $View = $this;
         // To prevent applications from altering these vars, they are set last
         if (G::$S && G::$S->Login) {
             $_login_id  = G::$S->Login->login_id;
@@ -388,9 +405,10 @@ class View {
         foreach ($this->includePath as $_v) {
             if (isset($this->templates[$_template])
                 && file_exists($_v.$this->templates[$_template])
+                && !is_dir($_v.$this->templates[$_template])
             ) {
                 ob_start();
-                include_once $_v.$this->templates[$_template];
+                include $_v.$this->templates[$_template];
                 return ob_get_clean();
             }
         }
@@ -418,40 +436,15 @@ class View {
     }
 }
 
-/**
- * Helper for brevity in templates - echo html escaped string
- *
- * @param string $s String to output
- *
- * @return void
- */
-function html($s) {
-    echo htmlspecialchars($s, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE);
-}
-
-/**
- * Helper for brevity in templates render configured header template
- *
- * @return void
- */
-function get_header() {
-    echo G::$V->render('header');
-}
-
-/**
- * Helper for brevity in templates render configured footer template
- *
- * @return void
- */
-function get_footer() {
-    echo G::$V->render('footer');
-}
-
-/**
- * Helper for brevity in templates render configured main template
- *
- * @return void
- */
-function get_template() {
-    echo G::$V->render();
+if (!function_exists('html')) {
+    /**
+     * Helper for brevity in templates - echo html escaped string
+     *
+     * @param string $s String to output
+     *
+     * @return void
+     */
+    function html($s) {
+        echo htmlspecialchars($s, ENT_COMPAT | ENT_HTML401 | ENT_SUBSTITUTE);
+    }
 }

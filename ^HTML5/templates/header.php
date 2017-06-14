@@ -23,7 +23,7 @@
 if ($_login_id) {
         echo 'Hello, '.$_loginname
             .'. (<a href="'.$_logoutURL.'">Logout</a> | '
-            .'<a href="'.CONT.'Account/edit" title="Your Account Settings">Account</a>)'
+            .'<a href="/Account/edit" title="Your Account Settings">Account</a>)'
             ;
 } else {
         echo '(<a id="_loginLink" href="'.$_loginURL.'?_Lbl=Back&amp;_URI='.urlencode($_SERVER["REQUEST_URI"]).'">Login</a>)'
@@ -34,7 +34,7 @@ if ($_login_id) {
                 <a href="/" title="Home Page">Home</a>
                 <a href="/Home/Contact" title="Contact">Contact</a>
 <?php if (G::$S && G::$S->Login && G::$S->roleTest('Admin')) { ?>
-                <a href="<?php echo CONT;?>Admin">Admin</a>
+                <a href="/Admin">Admin</a>
 <?php } ?>
             </nav>
             <div class="clear"></div>

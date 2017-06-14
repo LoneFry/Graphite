@@ -3,7 +3,7 @@
  * Security - core Security/Session manager
  * File : /^/lib/Security.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -31,6 +31,8 @@ class Security {
     protected $ua;
     /** @var string Hash of user-agent data */
     protected $UA;
+    /** @var Session Session wrapping object */
+    protected $Session;
 
     /**
      * Security constructor
@@ -38,15 +40,16 @@ class Security {
     public function __construct() {
         $this->ip = $_SERVER['REMOTE_ADDR'];
         $this->ua = strtolower(''
-            . (isset($_SERVER['HTTP_USER_AGENT']     )?$_SERVER['HTTP_USER_AGENT']     :'')
-            . (isset($_SERVER['HTTP_ACCEPT_LANGUAGE'])?$_SERVER['HTTP_ACCEPT_LANGUAGE']:'')
-            . (isset($_SERVER['HTTP_ACCEPT_ENCODING'])?$_SERVER['HTTP_ACCEPT_ENCODING']:'')
-            . (isset($_SERVER['HTTP_ACCEPT_CHARSET'] )?$_SERVER['HTTP_ACCEPT_CHARSET'] :'')
+            . (isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT']      : '')
+            . (isset($_SERVER['HTTP_ACCEPT_LANGUAGE']) ? $_SERVER['HTTP_ACCEPT_LANGUAGE'] : '')
+            . (isset($_SERVER['HTTP_ACCEPT_ENCODING']) ? $_SERVER['HTTP_ACCEPT_ENCODING'] : '')
+            . (isset($_SERVER['HTTP_ACCEPT_CHARSET']) ? $_SERVER['HTTP_ACCEPT_CHARSET']  : '')
             );
         $this->UA = sha1($this->ua);
 
         ini_set('session.use_only_cookies', 1);
-        session_start();
+        $this->Session = G::build('Session');
+        $this->Session->start();
         if (!isset($_SESSION['ua'])) {
             $_SESSION['ua'] = '';
         }
@@ -58,23 +61,13 @@ class Security {
             && 0 < $_SESSION['login_id']
         ) {
             $Login = new Login(array('login_id' => $_SESSION['login_id']));
-            if (false === $Login->load()) {
+            if (false === G::build(DataBroker::class)->load($Login)) {
                 G::msg(Localizer::translate('security.error.loginloadfail'), 'error');
                 $Login = false;
 
             // if login disabled, fail
             } elseif ($Login->disabled == 1) {
                 G::msg(Localizer::translate('security.error.accountdisabled'), 'error');
-                $Login = false;
-
-            // if login configured so, test UA hash against last request
-            } elseif ($Login->sessionStrength > 0 && $Login->UA != $this->UA) {
-                G::msg(Localizer::translate('security.error.mulibrowser'), 'error');
-                $Login = false;
-
-            // if login configured so, test IP against last request
-            } elseif ($Login->sessionStrength > 1 && $Login->lastIP != $this->ip) {
-                G::msg(Localizer::translate('security.error.multicomputer'), 'error');
                 $Login = false;
 
             // if we got here, we should have a valid login, update usage data
@@ -93,6 +86,7 @@ class Security {
         if (false === $this->Login) {
             $_SESSION['login_id'] = 0;
         }
+        $this->Session->write_close();
     }
 
     /**
@@ -105,7 +99,7 @@ class Security {
      */
     public function authenticate($loginname, $password) {
         $Login = new Login(array('loginname' => $loginname));
-        if (false === $Login->fill()) {
+        if (false === G::build(DataBroker::class)->fill($Login)) {
             return false;
         }
 
@@ -118,6 +112,7 @@ class Security {
             return false;
         }
 
+        $this->Session->start();
         $Login->dateLogin = NOW;
         $Login->dateActive = NOW;
         $_SESSION['ua'] = $Login->UA = $this->UA;
@@ -129,11 +124,14 @@ class Security {
 
         $this->Login = $Login;
 
-        session_regenerate_id();
+        $this->Session->regenerate_id();
+        $this->Session->write_close();
 
         include_once SITE.'/^/models/LoginLog.php';
         $LL = new LoginLog(array('login_id' => $Login->login_id, 'ua' => $this->ua), true);
-        $LL->save();
+        if ($Login->login_id != 4) {
+            G::build(DataBroker::class)->save($LL);
+        }
 
         $this->_enforceReadOnly();
 
@@ -148,17 +146,18 @@ class Security {
     public function deauthenticate() {
         if (false !== $this->Login && 'Login' == get_class($this->Login)) {
             $this->Login->dateLogout = NOW;
-            $this->Login->save();
+            G::build(DataBroker::class)->save($this->Login);
             $this->Login = false;
+            $this->Session->start();
             $_SESSION = array();
 
             // Be thorough, also delete the session cookie
             if (ini_get("session.use_cookies") && !headers_sent()) {
-                $params = session_get_cookie_params();
-                setcookie(session_name(), '', NOW - 86400, $params["path"],
+                $params = $this->Session->get_cookie_params();
+                setcookie($this->Session->name(), '', NOW - 86400, $params["path"],
                     $params["domain"], $params["secure"], $params["httponly"]);
             }
-            session_destroy();
+            $this->Session->destroy();
         }
     }
 
@@ -168,9 +167,12 @@ class Security {
      * @return void
      */
     public function close() {
-        session_write_close();
+        if (null != $this->Session) {
+            $this->Session->write_close();
+            $this->Session = null;
+        }
         if ($this->Login) {
-            $this->Login->save();
+            G::build(DataBroker::class)->save($this->Login);
         }
     }
 
@@ -197,7 +199,7 @@ class Security {
     protected function _enforceReadOnly() {
         if ($this->roleTest('Read_Only')) {
             // Save Login before revoking write access
-            $this->Login->save();
+            G::build(DataBroker::class)->save($this->Login);
 
             // If the two connections match, There must not be a read only
             if (G::$M === G::$m || null == G::$m) {

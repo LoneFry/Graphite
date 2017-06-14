@@ -3,7 +3,7 @@
  * DataBroker - Core Data Broker between applications and Data Providers
  * File : /^/lib/DataBroker.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -52,8 +52,20 @@ class DataBroker implements IDataProvider {
      *
      * @return array Found records
      */
-    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0) {
+    public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $params, $orders, $count, $start);
+    }
+
+    /**
+     * Count for records of type $class according to search params $params
+     *
+     * @param string $class  Name of Model to search for
+     * @param array  $params Values to search against
+     *
+     * @return array Count of Found records
+     */
+    public function count($class, array $params = array()) {
+        return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $params);
     }
 
     /**
@@ -62,7 +74,7 @@ class DataBroker implements IDataProvider {
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return array Found records
+     * @return Record|array Found records
      */
     public function byPK($class, $pkey) {
         return self::getDataProviderForClass($class)->{__FUNCTION__}($class, $pkey);
@@ -71,7 +83,7 @@ class DataBroker implements IDataProvider {
     /**
      * Load data for passed model
      *
-     * @param PassiveRecord &$Model Model to load, passed by reference
+     * @param PassiveRecord $Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -82,7 +94,7 @@ class DataBroker implements IDataProvider {
     /**
      * Load data for passed model by its primary key value
      *
-     * @param PassiveRecord &$Model Model to load, passed by reference
+     * @param PassiveRecord $Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -93,7 +105,7 @@ class DataBroker implements IDataProvider {
     /**
      * Load data for passed model by its set values
      *
-     * @param PassiveRecord &$Model Model to load, passed by reference
+     * @param PassiveRecord $Model Model to load, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -104,7 +116,7 @@ class DataBroker implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -115,7 +127,7 @@ class DataBroker implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -126,7 +138,18 @@ class DataBroker implements IDataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
+     *
+     * @return bool|null True on success, False on failure, Null on invalid attempt
+     */
+    public function insert_update(PassiveRecord &$Model) {
+        return self::getDataProviderForClass($Model)->{__FUNCTION__}($Model);
+    }
+
+    /**
+     * Save data for passed model
+     *
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -137,7 +160,7 @@ class DataBroker implements IDataProvider {
     /**
      * Delete record data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -148,7 +171,7 @@ class DataBroker implements IDataProvider {
     /**
      * Get Data Provider For provided Class
      *
-     * @param string $class Name of class
+     * @param string|PassiveRecord $class Name of class
      *
      * @return null|IDataProvider
      */

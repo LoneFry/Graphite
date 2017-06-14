@@ -3,7 +3,7 @@
  * ReportDataProvider - Provide report data from MySQL
  * File : /^/lib/ReportDataProvider.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -21,7 +21,6 @@
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  * @see      /^/lib/mysqli_.php
- * @see      /^/lib/PassiveReport.php
  */
 class ReportDataProvider extends DataProvider {
     /**
@@ -51,7 +50,27 @@ class ReportDataProvider extends DataProvider {
         }
 
         // Else, convert the arrays to objects
-//        $data = array_map(function($val) { return (object)$val; }, $data);
+        // $data = array_map(function($val) { return (object)$val; }, $data);
+
+        return $data;
+    }
+
+    /**
+     * Count records of type $class according to search params $params
+     *
+     * @param string $class  Name of Model to search for
+     * @param array  $params Values to search against
+     *
+     * @return array Found records
+     */
+    public function count($class, array $params = array()) {
+        /** @var Report $Model */
+        $Model = G::build($class);
+        if (!is_a($Model, 'Report')) {
+            trigger_error('Supplied class name does not extend Report', E_USER_ERROR);
+        }
+
+        $data = $Model->count($params);
 
         return $data;
     }
@@ -71,7 +90,7 @@ class ReportDataProvider extends DataProvider {
     /**
      * Save data does not apply to reports
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -82,7 +101,7 @@ class ReportDataProvider extends DataProvider {
     /**
      * Save data does not apply to reports
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool false
      */

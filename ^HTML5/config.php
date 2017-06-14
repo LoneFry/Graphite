@@ -3,10 +3,10 @@
  * website HTML5 skin configuration file
  * File : /^HTML5/config.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
- * @package  HTML4
+ * @package  HTML5
  * @author   LoneFry <dev@lonefry.com>
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com

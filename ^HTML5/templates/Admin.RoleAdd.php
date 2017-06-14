@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
-        <li><a href="<?php echo CONT;?>Admin/Role">Roles</a></li>
+        <li><a href="/Admin">Admin</a></li>
+        <li><a href="/Admin/Role">Roles</a></li>
     </ul>
 </nav>
     <h2>Add a New Role</h2>
 
-    <form action="<?php echo CONT;?>Admin/RoleAdd" method="post">
+    <form action="/Admin/RoleAdd" method="post">
         <table class="form">
             <tr>
                 <th>Label</th>

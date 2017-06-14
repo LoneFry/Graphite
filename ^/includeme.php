@@ -3,7 +3,7 @@
  * website base include file
  * File : /^/includeme.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -31,6 +31,8 @@ if (get_magic_quotes_gpc() || get_magic_quotes_runtime()) {
 if (!isset($_SERVER['SERVER_NAME'])) {
     if ('/var/www/vhosts/' == substr(__DIR__, 0, 16)) {
         $_SERVER['SERVER_NAME'] = substr(__DIR__, 16, strpos(__DIR__, '/', 17) - 16);
+    } elseif ('/mnt/vhosts/' == substr(__DIR__, 0, 12)) {
+        $_SERVER['SERVER_NAME'] = substr(__DIR__, 12, strpos(__DIR__, '/', 13) - 12);
     } else {
         $_SERVER['SERVER_NAME'] = '';
     }
@@ -41,6 +43,7 @@ if (!isset($_SERVER['REQUEST_URI'])) {
 if (!isset($_SERVER['REMOTE_ADDR'])) {
     $_SERVER['REMOTE_ADDR'] = '127.0.0.1';
 }
+define('G_REMOTE_ADDR', $_SERVER['REMOTE_ADDR']);
 if (!isset($_SERVER['REQUEST_METHOD'])) {
     $_SERVER['REQUEST_METHOD'] = 'GET';
 }
@@ -48,15 +51,19 @@ if (!isset($_SERVER['REQUEST_METHOD'])) {
 require_once SITE.'/^/lib/G.php';
 require_once SITE.'/^/config.php';
 require_once SITE.'/^/lib/AutoLoader.php';
+require_once SITE.'/^/lib/functions.php';
 
+if (file_exists(SITE."/plugins/autoload.php")) {
+    include_once SITE."/plugins/autoload.php";
+}
 AutoLoader::registerDirectory();
 spl_autoload_register(array('AutoLoader', 'loadClass'));
 G::$Factory = new Factory();
+DataBroker::setDict(G::$G['db']['ProviderDict']);
 
 Localizer::setLanguage(G::$G['language']);
 
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
-define('CONT', G::$G['CON']['URL']);// for use in URLs
 
 if ('dev' == MODE) {
     error_reporting(E_ALL | E_STRICT);
@@ -64,6 +71,13 @@ if ('dev' == MODE) {
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);
 }
+
+if (file_exists(SITE."/assets/version.php")) {
+    $version = include SITE."/assets/version.php";
+} else {
+    $version = '0000.00.00';
+}
+define('VERSION', $version);
 
 // if no DB host was specified, don't load DB or DB-based Security
 if ('' == G::$G['db']['host']) {
@@ -98,6 +112,7 @@ if (isset(G::$G['db']['ro'])
         G::$m->readonly = true;
     }
 }
+define('G_DB_TABL', G::$G['db']['tabl']);
 $_Profiler->stop('mysql_connect');
 
 // If we could not connect to database, display appropriate error
@@ -117,8 +132,7 @@ $_Profiler->mark('authenticate');
 G::$S = new Security();
 if (G::$S->Login && 1 == G::$S->Login->flagChangePass
     && (!isset(G::$G['CON']['path'])
-        || 'account/logout' != strtolower(trim(G::$G['CON']['path'], '/'))
-    )
+        || 'account/logout' != strtolower(trim(G::$G['CON']['path'], '/')))
 ) {
     G::msg('You must change your password before you can continue.');
     G::$G['CON']['path'] = 'Account/edit';

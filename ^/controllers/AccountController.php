@@ -3,7 +3,7 @@
  * Account Controller - performs user account related actions
  * File : /^/controllers/AccountController.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -37,26 +37,39 @@ class AccountController extends Controller {
      * @return View
      */
     public function do_login(array $argv = array(), array $request = array()) {
+        $this->View->setTemplate('login', 'loginForm.php');
         $this->View->_template = 'Account.Login.php';
-        $this->View->_title    = $this->View->_siteName.' : Check-in';
+        $this->View->_title    = 'Check-in : ' . $this->View->_siteName;
 
         $this->View->msg = '';
+        $this->View->l = '';
         if (isset($request['l']) && isset($request['p'])) {
             $this->View->l = $request['l'];
             if (G::$S->authenticate($request['l'], $request['p'])) {
                 $this->View->_template = 'Account.Loggedin.php';
+                $request['_URI'] = $this->requestPath($request['_URI']);
             } else {
-                $this->View->msg = 'Login Failed.';
+                $this->View->msg = G::msg('Login Failed.', 'error');
             }
         } elseif (G::$S->Login) {
             $this->View->l = G::$S->Login->loginname;
-        } else {
-            $this->View->l = '';
         }
-        $this->View->_URI = isset($request['_URI']) ? $request['_URI']
-                    : (isset($argv['_URI']) ? $argv['_URI'] : CONT);
-        $this->View->_Lbl = isset($request['_Lbl']) ? $request['_Lbl']
-                    : (isset($argv['_Lbl']) ? $argv['_Lbl'] : 'Home');
+
+        if (!G::$S->Login) {
+            $this->View->setTemplate('header', 'header.php');
+            $this->View->setTemplate('footer', 'footer.php');
+        }
+
+        $this->View->_URI = isset($request['_URI'])
+            ? $request['_URI']
+            : (isset($argv['_URI'])
+                ? $argv['_URI']
+                : '/');
+        $this->View->_Lbl = isset($request['_Lbl'])
+            ? $request['_Lbl']
+            : (isset($argv['_Lbl'])
+                ? $argv['_Lbl']
+                : 'Home');
 
         return $this->View;
     }
@@ -71,11 +84,11 @@ class AccountController extends Controller {
      */
     public function do_logout(array $argv = array(), array $request = array()) {
         $this->View->_template = 'Account.Logout.php';
-        $this->View->_title    = $this->View->_siteName.' : Check-out';
+        $this->View->_title    = 'Check-out : ' . $this->View->_siteName;
 
         G::$S->deauthenticate();
 
-        $this->View->_URI = isset($request['_URI']) ? $request['_URI'] : CONT;
+        $this->View->_URI = isset($request['_URI']) ? $request['_URI'] : '/';
         $this->View->_Lbl = isset($request['_Lbl']) ? $request['_Lbl'] : 'Home';
 
         return $this->View;
@@ -91,7 +104,7 @@ class AccountController extends Controller {
      */
     public function do_recover(array $argv = array(), array $request = array()) {
         $this->View->_template = 'Account.Recover.php';
-        $this->View->_title    = $this->View->_siteName.' : Recover Password';
+        $this->View->_title    = 'Recover Password : ' . $this->View->_siteName;
 
         $this->View->msg = '';
         if (G::$S->Login) {
@@ -100,10 +113,10 @@ class AccountController extends Controller {
         }
         if (isset($request['loginname'])) {
             $Login = new Login(array('email' => $request['loginname']));
-            $Login->fill();
+            $this->DB->fill($Login);
             if (0 == $Login->login_id) {
                 $Login = new Login(array('loginname' => $request['loginname']));
-                $Login->fill();
+                $this->DB->fill($Login);
             }
             if (0 == $Login->login_id) {
                 $this->View->msg = 'Unable to find <b>'
@@ -112,47 +125,49 @@ class AccountController extends Controller {
             } else {
                 $Login->password = $password = 'resetMe'.floor(rand(100, 999));
                 $Login->flagChangePass = 1;
-                $r = $Login->save();
+                $diff = $Login->getDiff();
+                $r = $this->DB->save($Login);
                 if (false === $r) {
-                    $this->View->msg = 'An Error occured trying to update your account.';
+                    $this->View->msg = 'An Error occurred trying to update your account.';
                 } elseif (null === $r) {
                     $this->View->msg = 'No changes detected, not trying to update your account.';
                 } else {
-                    $to = $Login->email;
-                    $message = "\n\nA password reset has been requested for"
+                    Config::log('Logins', $Login->login_id, $diff);
+
+                    /** @var Postmaster $Post */
+                    $Post = G::build('Postmaster', Postmaster::HELP_ALERT);
+                    $Post->to = $Login->email;
+                    $Post->subject = '['.$this->View->_siteName.'] Password Reset';
+                    $Post->from = G::$G['siteEmail'];
+                    $Post->replyTo = G::$G['siteEmail'];
+                    $Post->textBody = "\n\nA password reset has been requested for"
                         ." your [".$this->View->_siteName."] account.  "
                         ."The temporary password is below.  After you login"
                         ." you will be required to change your password."
                         ."\n\nLoginName: ".$Login->loginname
                         ."\nPassword: ".$password
                         ."\n\nIf you have any questions, please reply to this email to contact support.";
-                    $headers = array(
-                            'Message-ID'   => date("YmdHis").uniqid().'@'.$_SERVER['SERVER_NAME'],
-                            'To'           => $to,
-                            'Subject'      => '['.$this->View->_siteName.'] Password Reset',
-                            'From'         => G::$G['siteEmail'],
-                            'Reply-To'     => G::$G['siteEmail'],
-                            'MIME-Version' => '1.0',
-                            'Content-Type' => 'text/plain; charset=us-ascii',
-                            'X-Mailer'     => 'PHP/'.phpversion(),
-                    );
-                    $header = '';
-                    foreach ($headers as $k => $v) {
-                        $header .= $k.': '.$v."\r\n";
-                    }
-                    if (imap_mail($to, $headers['Subject'], $message, $header)) {
+                    if ($Post->send()) {
                         $this->View->msg = 'A new password has been mailed to you.  When you get it, login below.';
                         $this->View->_template = 'Account.Login.php';
-                        $this->View->_URI = CONT;
-                        $this->View->_Lbl = 'Home';
                         $this->View->l = $Login->loginname;
+                        $this->_redirect('/Account/edit');
                     } else {
                         $this->View->msg = 'Mail sending failed, please contact support for your password reset.';
                     }
                 }
             }
         }
-
+        $this->View->_URI = isset($request['_URI'])
+            ? $request['_URI']
+            : (isset($argv['_URI'])
+                ? $argv['_URI']
+                : '/');
+        $this->View->_Lbl = isset($request['_Lbl'])
+            ? $request['_Lbl']
+            : (isset($argv['_Lbl'])
+                ? $argv['_Lbl']
+                : 'Home');
         return $this->View;
     }
 
@@ -166,21 +181,23 @@ class AccountController extends Controller {
      */
     public function do_edit(array $argv = array(), array $request = array()) {
         if (!G::$S->Login) {
-            $this->View->_URI = CONT.'Account/edit';
+            $this->View->_URI = '/Account/edit';
             $this->View->_Lbl = 'Account Settings';
             return $this->do_login($argv);
         }
 
         $this->View->_template = 'Account.Edit.php';
-        $this->View->_title    = $this->View->_siteName.' : Account Settings';
+        $this->View->_title    = 'Account Settings : ' . $this->View->_siteName;
 
         if (isset($request['comment']) && isset($request['email'])
             && isset($request['password1']) && isset($request['password2'])
         ) {
-
+            $save = true;
             G::$S->Login->comment = $request['comment'];
             G::$S->Login->email = $request['email'];
             if ('' != $request['password1']) {
+                // Don't save if an error occurred with the password
+                $save = false;
                 $error = Security::validate_password($request['password1']);
                 if ($request['password1'] != $request['password2']) {
                     G::msg('Passwords do not match, please try again.', 'error');
@@ -192,28 +209,21 @@ class AccountController extends Controller {
                     G::$S->Login->password = $request['password1'];
                     G::$S->Login->flagChangePass = 0;
                     $pass = true;
+                    $save = true;
                 }
             }
-            if (true === $saved = G::$S->Login->save()) {
+            if (($save === true) && (true === $saved = $this->DB->save(G::$S->Login))) {
                 if (isset($pass) && true === $pass) {
                     G::msg('Your password was updated.');
-                    if ($request['path'] != '') {
-                        $this->_redirect('/' . $request['path']);
-                    } else {
-                        $this->_redirect('/' . $this->_redirect);
-                    }
-                } elseif (G::$S->Login->flagChangePass == 1) {
-                    G::msg('You cannot re-use your old password!', 'error');
                 }
                 G::msg('Your account was updated.');
-            } elseif (null === $saved) {
-                G::msg('No changes detected.  Your account was not updated.');
+            } elseif (!isset($saved) && false === $save) {
+                G::msg('Update Failed!', 'error');
             } else {
-                G::msg('Update Failed :(', 'error');
+                G::msg('No changes detected.  Your account was not updated.');
             }
         }
-
-        $this->View->path = $argv['_path'];
+        $this->View->path = isset($request['path']) ? $request['path'] : '/' . $argv['_path'];
         $this->View->email = G::$S->Login->email;
         $this->View->comment = G::$S->Login->comment;
 

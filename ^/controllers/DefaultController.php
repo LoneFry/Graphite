@@ -3,7 +3,7 @@
  * Default Controller - leans on Controller's defaults
  * File : /^/controllers/DefaultController.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -36,8 +36,12 @@ class DefaultController extends Controller {
      */
     public function do_404(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 404 File Not Found");
+        $this->action = '404';
         $this->View->_template = '404.php';
+        $this->View->_header   = 'header.php';
+        $this->View->_footer   = 'footer.php';
         $this->View->_title    = 'Requested Page Not Found';
+        $this->View->setTemplate('subheader', '');
 
         return $this->View;
     }
@@ -52,8 +56,12 @@ class DefaultController extends Controller {
      */
     public function do_500(array $argv = array(), array $request = array()) {
         header("HTTP/1.0 500 Internal Server Error");
+        $this->action = '500';
         $this->View->_template = '500.php';
+        $this->View->_header   = 'header.php';
+        $this->View->_footer   = 'footer.php';
         $this->View->_title    = 'Internal Server Error';
+        $this->View->setTemplate('subheader', '');
 
         return $this->View;
     }

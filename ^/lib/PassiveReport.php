@@ -3,7 +3,7 @@
  * PassiveReport - Base Class for Report Models
  * File : /^/lib/PassiveReport.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -37,7 +37,6 @@ abstract class PassiveReport extends DataModel {
 
     /** @var array Whitelist of valid ORDER BY values */
     protected $_orderables = array();
-
 
     /**
      * Override this function to perform custom actions AFTER load
@@ -119,6 +118,8 @@ abstract class PassiveReport extends DataModel {
      * TODO figure out how to make this not dumb
      *
      * @param array $data Data from DataProvider
+     *
+     * @return void
      */
     public function setData($data) {
         $this->_data = $data;

@@ -3,7 +3,7 @@
  * G - static class for scoping core Graphite objects & functions
  * File : /^/lib/G.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -56,6 +56,15 @@ final class G {
      */
     public static function build() {
         $args = func_get_args();
+        if (empty($args)) {
+            trigger_error(__METHOD__.' called with no parameters', E_USER_ERROR);
+        }
+        // Properly handle Singletons
+        if (method_exists($args[0], 'getInstance')) {
+            $className = array_shift($args);
+            return $className::getInstance($args);
+        }
+
         return call_user_func_array(
             array(self::$Factory, "build"),
             $args
@@ -83,6 +92,41 @@ final class G {
         }
         self::$_msg[] = array($s, $c);
     }
+
+    /**
+     * Log messages for output later
+     *
+     * @return mixed
+     */
+    public static function storeMsg() {
+        $hash = '';
+        if (isset($_SESSION)) {
+            $hash = substr(md5(NOW), 0, 6);
+            $_SESSION['msgStore'][$hash] = self::$_msg;
+        }
+
+        return $hash;
+    }
+
+    /**
+     * Loads previously stored messages into the running message log
+     *
+     * @param string $hash Hash of the session items to fetch
+     *
+     * @return array
+     */
+    public static function loadMsg($hash) {
+        $messages = array();
+        if (!empty($_SESSION['msgStore'][$hash])) {
+            $messages = $_SESSION['msgStore'][$hash];
+            unset($_SESSION['msgStore'][$hash]);
+            // Array Append
+            self::$_msg += $messages;
+        }
+
+        return $messages;
+    }
+
 
     /**
      * Replace special characters with their common counterparts
@@ -157,10 +201,12 @@ final class G {
             }
             // Indicate the called function
             if (isset($d[$i]['function'])) {
-                $s .= $d[$i]['function'].'() called at ';
+                $s .= $d[$i]['function'].'() called';
             }
             // Indicate the file and line of the current call
-            $s .= $d[$i]['file'].':'.$d[$i]['line'].";";
+            if (isset($d[$i]['file']) && isset($d[$i]['line'])) {
+                $s .= ' at '.$d[$i]['file'].':'.$d[$i]['line'].";";
+            }
         }
 
         return $s;

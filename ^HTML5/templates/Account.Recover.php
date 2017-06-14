@@ -5,7 +5,7 @@
                 <p>Enter your username, or the email associated with
                     your username, and a new password will be sent to you.</p>
                 <div id="bodyLogin">
-                    <form action="<?php echo CONT; ?>Account/recover" method="post">
+                    <form action="/Account/recover" method="post">
                         <div>
                             <label for="loginname">Username or Email</label>
                             <input id="loginname" type="text" name="loginname">

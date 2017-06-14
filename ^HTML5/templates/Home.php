@@ -5,7 +5,6 @@
     <h2>Components</h2>
     <ul>
         <li>/^/ : Core files, includes base classes for Models, Controllers, a Dispatcher, and a View helper</li>
-        <li>/^HTML4/ : HTML4 default site, contains HTML4/JS/CSS for basic functionality</li>
         <li>/^HTML5/ : HTML5 default site, contains HTML5/JS/CSS for basic functionality</li>
         <li>/^CLI/ : A Simple Command Line Interface, other components can expose commands to this</li>
     </ul>

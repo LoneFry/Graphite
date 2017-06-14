@@ -3,7 +3,7 @@
  * Record - core database active record class file
  * File : /^/lib/Record.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -24,18 +24,18 @@
  * @see      /^/lib/mysqli_.php
  * @see      /^/lib/DataModel.php
  */
-abstract class Record extends DataModel implements ArrayAccess {
+abstract class Record extends PassiveRecord {
     /** @var array Instance DB values of vars defined in $vars */
     protected $DBvals = array();
 
     /** @var string $table Name of table, defined in subclasses */
-    // protected static $table;
+    /* protected static $table; */
 
     /** @var string $pkey Primary key, defined in subclasses */
-    // protected static $pkey;
+    /* protected static $pkey; */
 
     /** @var array $vars List of fields in table, defined in subclasses */
-    // protected static $vars = array();
+    /* protected static $vars = array(); */
 
     /**
      * Constructor accepts four prototypes:
@@ -50,147 +50,25 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @throws Exception
      */
     public function __construct($a = null, $b = null) {
-        // Ensure that a pkey is defined in subclasses
-        if (!isset(static::$pkey) || !isset(static::$vars[static::$pkey])) {
-            throw new Exception('Record class defined with no pkey, or pkey not registered');
-        }
-        if (!isset(static::$table)) {
-            throw new Exception('Record class defined with no table');
-        }
-
-        // initialize the values arrays with null values as some tests depend
-        foreach (static::$vars as $k => $v) {
-            $this->DBvals[$k] = $this->vals[$k] = null;
-        }
-
-        // This fakes constructor overriding
-        if (true === $a) {
-            $this->defaults();
-        } elseif (is_numeric($a)) {
-            $this->setAll(array(static::$pkey => $a));
-        } else {
-            if (true === $b) {
-                $this->defaults();
-            }
-            if (is_array($a)) {
-                $this->setAll($a);
-            }
-        }
-    }
-
-    /**
-     * A suitable default static prime() function to prime the $table & $query
-     * if the subclass has not defined its query, build one from the field list
-     * ::prime() should be called immediately after extending class definition
-     *
-     * @return void
-     */
-    public static function prime() {
-        // Set the class table name by prepending the configured prefix
-        static::$table = G::$M->tabl.static::$table;
-
         // Set the query that would be used by load()
         if ('' == static::$query) {
-            $keys = array_keys(static::$vars);
+            $keys          = array_keys(static::$vars);
             static::$query = 'SELECT t.`'.join('`, t.`', $keys).'` FROM `'.static::$table.'` t';
         }
+
+        parent::__construct($a, $b);
     }
 
     /**
-     * Return the pkey, which is a protected static var
-     *
-     * @return string Model's primary key
-     */
-    public static function getPkey() {
-        return static::$pkey;
-    }
-
-    /**
-     * Return the table, which is a protected static var
-     *
-     * @param string $joiner Request a joiner table by specifying which table
-     *                        to join with
-     *
-     * @return string Model's table name
-     */
-    public static function getTable($joiner = null) {
-        // If no joiner is specified, we just want the table name
-        if (null == $joiner) {
-            return static::$table;
-        }
-
-        // If a known joiner is specified, return it
-        if (isset(static::$joiners) && isset(static::$joiners[$joiner])) {
-            return G::$m->tabl.static::$joiners[$joiner];
-        }
-
-        // If a plausible joiner is specified, derive it
-        if (preg_match('/^[\w\d]+$/i', $joiner)) {
-            return static::$table.'_'.$joiner;
-        }
-
-        // An invalid joiner was requested, that's an error
-        trigger_error('Requested invalid joiner table');
-
-        return null;
-    }
-
-    /**
-     * Return array of values changed since last DB load/save
-     *
-     * @return array Changed values
-     */
-    public function getDiff() {
-        $diff = array();
-        foreach (static::$vars as $k => $v) {
-            if ($this->vals[$k] != $this->DBvals[$k]
-                || (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
-                || (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
-                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
-            ) {
-                $diff[$k] = $this->vals[$k];
-            }
-        }
-        return $diff;
-    }
-
-    /**
-     * Produce meaningful array representation of Model
-     *
-     * @return array
-     */
-    public function toArray() {
-        return $this->getAll();
-    }
-
-    /**
-     * Override this function to perform custom actions AFTER load
-     *
-     * @param array $row Unregistered values selected in load()
+     * Flush Diff
      *
      * @return void
      */
-    public function onload(array $row = array()) {
-    }
-
-    /**
-     * "Load" object from array, sets DBvals as if loaded from database
-     *  if pkey is not passed, fail
-     *
-     * @param array $row values
-     *
-     * @return mixed Array of unregistered values on success, false on failure
-     */
-    public function load_array(array $row) {
-        if (!isset($row[static::$pkey]) || null === $row[static::$pkey]) {
-            return false;
+    public function flushDiff() {
+        // initialize the values arrays with null values as some tests depend
+        foreach (static::$vars as $key => $value) {
+            $this->DBvals[$key] = null;
         }
-        $row = $this->setAll($row, false);
-        foreach (static::$vars as $k => $v) {
-            $this->DBvals[$k] = $this->vals[$k];
-        }
-        $this->onload($row);
-        return $row;
     }
 
     /**
@@ -200,10 +78,11 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return mixed Array of unregistered values on success, false on failure
      */
     public function load() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         if (null === $this->vals[static::$pkey]) {
-            return $this->fill();
+            return G::build(DataBroker::class)->fill($this);
         }
-        return $this->select();
+        return G::build(DataBroker::class)->select($this);
     }
 
     /**
@@ -214,6 +93,7 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return mixed Array of unregistered values on success, false on failure
      */
     public function select() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         // Fail if pkey has no value
         if (null === $this->vals[static::$pkey]) {
             return false;
@@ -249,12 +129,13 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return mixed Array of unregistered values on success, false on failure
      */
     public function fill() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         // embed pkey value into instance SELECT query, then run
         $query = '';
         foreach (static::$vars as $k => $v) {
             if (null !== $this->vals[$k]) {
                 if ('b' == static::$vars[$k]['type']) {
-                    $query .= " AND t.`$k` = ".($this->vals[$k]?'1':'0');
+                    $query .= " AND t.`$k` = ".($this->vals[$k] ? '1' : '0');
                 } else {
                     $query .= " AND t.`$k` = '".G::$m->escape_string($this->vals[$k])."'";
                 }
@@ -301,12 +182,13 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return array Collection of objects found in search
      */
     public function search($count = null, $start = 0, $order = null, $desc = false) {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         // embed pkey value into instance SELECT query, then run
         $query = '';
         foreach (static::$vars as $k => $v) {
             if (null !== $this->vals[$k]) {
                 if ('b' == static::$vars[$k]['type']) {
-                    $query .= " AND t.`$k` = ".($this->vals[$k]?'1':'0');
+                    $query .= " AND t.`$k` = ".($this->vals[$k] ? '1' : '0');
                 } else {
                     $query .= " AND t.`$k` = '".G::$m->escape_string($this->vals[$k])."'";
                 }
@@ -318,27 +200,7 @@ abstract class Record extends DataModel implements ArrayAccess {
             return null;
         }
 
-        $query = static::$query." WHERE 1 ".$query
-            .' GROUP BY `'.static::$pkey.'`'
-            .(null !== $order && array_key_exists($order, static::$vars)
-                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
-                : '')
-            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-            .(is_numeric($count) && is_numeric($start)
-                ? ' LIMIT '.((int)$start).','.((int)$count)
-                : '')
-            ;
-        if (false === $result = G::$m->query($query)) {
-            return false;
-        }
-        $a = array();
-        while ($row = $result->fetch_assoc()) {
-            $a[$row[static::$pkey]] = new static();
-            $a[$row[static::$pkey]]->load_array($row);
-        }
-        $result->close();
-
-        return $a;
+        return self::search_where(" WHERE 1 ".$query, $count, $start, $order, $desc);
     }
 
     /**
@@ -355,12 +217,17 @@ abstract class Record extends DataModel implements ArrayAccess {
      */
     protected static function search_where($where = "WHERE 1", $count = null, $start = 0, $order = null, $desc = false
     ) {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
+        // if the static properties haven't been initialized, do it by invoking the constructor
+        if ('' == static::$query) {
+            new static();
+        }
         $query = static::$query.' '.$where
             .' GROUP BY `'.static::$pkey.'`'
             .(null !== $order && array_key_exists($order, static::$vars)
-                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
+                ? ' ORDER BY t.`'.$order.'` '.($desc ? 'desc' : 'asc')
                 : '')
-            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
+            .('rand()' == $order ? ' ORDER BY RAND() '.($desc ? 'desc' : 'asc') : '')
             .(is_numeric($count) && is_numeric($start)
                 ? ' LIMIT '.((int)$start).','.((int)$count)
                 : '')
@@ -389,27 +256,7 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return array Collection of objects found in search
      */
     public static function some($count = null, $start = 0, $order = null, $desc = false) {
-        $query = static::$query
-            .' GROUP BY `'.static::$pkey.'`'
-            .(null !== $order && array_key_exists($order, static::$vars)
-                ? ' ORDER BY t.`'.$order.'` '.($desc?'desc':'asc')
-                : '')
-            .('rand()' == $order ? ' ORDER BY RAND() '.($desc?'desc':'asc'):'')
-            .(is_numeric($count) && is_numeric($start)
-                ? ' LIMIT '.((int)$start).','.((int)$count)
-                : '')
-            ;
-        if (false === $result = G::$m->query($query)) {
-            return false;
-        }
-        $a = array();
-        while ($row = $result->fetch_assoc()) {
-            $a[$row[static::$pkey]] = new static();
-            $a[$row[static::$pkey]]->load_array($row);
-        }
-        $result->close();
-
-        return $a;
+        return self::search_where(" WHERE 1 ", $count, $start, $order, $desc);
     }
 
     /**
@@ -465,8 +312,9 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return object Object for specified ID
      */
     public static function byId($id) {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         $R = new static($id);
-        $R->load();
+        G::build(DataBroker::class)->load($R);
         return $R;
     }
 
@@ -478,10 +326,11 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return bool|Record False on failure or Record object for specified PKey
      */
     public static function byPK($val) {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         $R = new static();
         $pkey = static::$pkey;
         $R->$pkey = $val;
-        if (false === $R->select()) {
+        if (false === G::build(DataBroker::class)->select($R)) {
             return false;
         }
         return $R;
@@ -494,19 +343,12 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return mixed Value returned by delegated method
      */
     public function save() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         if (null === $this->vals[static::$pkey]) {
-            return $this->insert();
+            return G::build(DataBroker::class)->insert($this);
         }
-        return $this->update();
-    }
+        return G::build(DataBroker::class)->update($this);
 
-    /**
-     * Override this function to perform custom actions BEFORE insert
-     * This will not run if insert() does not commit to DB
-     *
-     * @return void
-     */
-    public function oninsert() {
     }
 
     /**
@@ -520,33 +362,18 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return mixed New primary key value of inserted row, or false on failure
      */
     public function insert() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         $query = 'INSERT INTO `'.static::$table.'` SET ';
-        $save = false;
-        foreach (static::$vars as $k => $v) {
-            if ($this->vals[$k] != $this->DBvals[$k]
-                || (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
-                || (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
-                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
-            ) {
-                $save = true;
-            }
-        }
-        // if save is still false, no fields were set, this is unexpected
-        if (false === $save) {
+        // if hasDiff returns false, no fields were set, this is unexpected
+        if (false === $this->hasDiff()) {
             return null;
         }
         $this->oninsert();
-        foreach (static::$vars as $k => $v) {
-            if ($this->vals[$k] != $this->DBvals[$k]
-                || (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
-                || (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
-                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
-            ) {
-                if ('b' == static::$vars[$k]['type']) {
-                    $query .= " `$k` = ".($this->vals[$k]?'1':'0').',';
-                } else {
-                    $query .= " `$k` = '".G::$M->escape_string($this->vals[$k])."',";
-                }
+        foreach (array_keys($this->getDiff()) as $field) {
+            if ('b' == static::$vars[$field]['type']) {
+                $query .= " `$field` = ".($this->vals[$field] ? '1' : '0').',';
+            } else {
+                $query .= " `$field` = '".G::$M->escape_string($this->vals[$field])."',";
             }
         }
 
@@ -559,20 +386,55 @@ abstract class Record extends DataModel implements ArrayAccess {
         }
 
         // Subsequent to successful DB commit, update DBvals
-        foreach (static::$vars as $k => $v) {
-            $this->DBvals[$k] = $this->vals[$k];
+        foreach (array_keys(static::$vars) as $field) {
+            $this->DBvals[$field] = $this->vals[$field];
         }
-
         return $this->vals[static::$pkey];
     }
 
     /**
-     * Override this function to perform custom actions BEFORE update
-     * This will not be called if update() does not commit to DB
+     * Build INSERT query for set values, run and store insert_id
+     * set value detection based on DBval, null for new (unloaded) records
+     * $save flag set if any field changed, typically pkey set for insert()
      *
-     * @return void
+     * returns new pkey value (insert_id)
+     * (uses MySQL specific INSERT ... SET ... syntax)
+     *
+     * @return mixed New primary key value of inserted row, or false on failure
      */
-    public function onupdate() {
+    public function insert_update() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
+        $query = 'INSERT INTO `'.static::$table.'` SET';
+        // if hasDiff returns false, no fields were set, this is unexpected
+        if (false === $this->hasDiff()) {
+            return null;
+        }
+        $this->oninsert();
+        $fields = '';
+        $this->DBvals[static::$pkey] = null;
+        foreach (array_keys($this->getDiff()) as $field) {
+            if ('b' == static::$vars[$field]['type']) {
+                $fields .= " `$field` = ".($this->vals[$field] ? '1' : '0').',';
+            } else {
+                $fields .= " `$field` = '".G::$M->escape_string($this->vals[$field])."',";
+            }
+        }
+
+        $fields = substr($fields, 0, -1);
+        $query .= $fields.' ON DUPLICATE KEY UPDATE'.$fields;
+        if (false === G::$M->query($query)) {
+            return false;
+        }
+        if (0 != G::$M->insert_id) {
+            $this->vals[static::$pkey] = G::$M->insert_id;
+        }
+
+        // Subsequent to successful DB commit, update DBvals
+        foreach (array_keys(static::$vars) as $field) {
+            $this->DBvals[$field] = $this->vals[$field];
+        }
+
+        return $this->vals[static::$pkey];
     }
 
     /**
@@ -583,59 +445,37 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return bool True on success, false on failure, null on abort
      */
     public function update() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         $query = 'UPDATE `'.static::$table.'` SET ';
-        $save = false;
-        foreach (static::$vars as $k => $v) {
-            if ($this->vals[$k] != $this->DBvals[$k]
-                || (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
-                || (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
-                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
-            ) {
-                $save = true;
-            }
-        }
-        // if save is still false, no fields were set, this is unexpected
-        if (false === $save) {
+        // if hasDiff returns false, no fields were set, this is unexpected
+        if (false === $this->hasDiff()) {
             return null;
         }
         $this->onupdate();
-        foreach (static::$vars as $k => $v) {
-            if ($this->vals[$k] != $this->DBvals[$k]
-                || (null  === $this->vals[$k]) != (null  === $this->DBvals[$k])
-                || (true  === $this->vals[$k]) != (true  === $this->DBvals[$k])
-                || (false === $this->vals[$k]) != (false === $this->DBvals[$k])
-            ) {
-                if (null === $this->vals[$k]) {
-                    $query .= '`'.$k."` = NULL,";
-                } elseif ('b' == static::$vars[$k]['type']) {
-                    $query .= '`'.$k.'` = '.($this->vals[$k]?'1':'0').',';
-                } else {
-                    $query .= '`'.$k."` = '".G::$M->escape_string($this->vals[$k])."',";
-                }
+        foreach (array_keys($this->getDiff()) as $field) {
+            if (null === $this->vals[$field]) {
+                $query .= '`'.$field."` = NULL,";
+            } elseif ('b' == static::$vars[$field]['type']) {
+                $query .= '`'.$field.'` = '.($this->vals[$field] ? '1' : '0').',';
+            } else {
+                $query .= '`'.$field."` = '".G::$M->escape_string($this->vals[$field])."',";
             }
         }
 
         $query = substr($query, 0, -1)
-            ." WHERE `".static::$pkey."` = '".G::$M->escape_string($this->vals[static::$pkey])."' LIMIT 1";
+            ." WHERE `".static::$pkey."` = '".G::$M->escape_string($this->vals[static::$pkey])."'";
         if (false === G::$M->query($query)) {
             return false;
         }
-
-        // Subsequent to successful DB commit, update DBvals
-        foreach (static::$vars as $k => $v) {
-            $this->DBvals[$k] = $this->vals[$k];
+        if (1 < G::$M->affected_rows) {
+            trigger_error('PKEY UPDATE affected more than one row!!! '.$query);
         }
 
+        // Subsequent to successful DB commit, update DBvals
+        foreach (array_keys(static::$vars) as $field) {
+            $this->DBvals[$field] = $this->vals[$field];
+        }
         return true;
-    }
-
-    /**
-     * Override this function to perform custom actions BEFORE delete
-     * This will not be called if update() does not commit to DB
-     *
-     * @return void
-     */
-    public function ondelete() {
     }
 
     /**
@@ -644,6 +484,7 @@ abstract class Record extends DataModel implements ArrayAccess {
      * @return bool True on success, false on failure
      */
     public function delete() {
+        trigger_error('Call to deprecated method: '.__METHOD__, E_USER_DEPRECATED);
         // Fail if pkey has no value
         if (null === $this->vals[static::$pkey]) {
             return false;
@@ -714,13 +555,15 @@ abstract class Record extends DataModel implements ArrayAccess {
         }
         $config = static::$vars[$field];
         switch ($config['type']) {
-            case 'f': // float
+            case 'f':
+                // float
                 $config['ddl'] = '`'.$field.'` FLOAT NOT NULL';
                 if (isset($config['def']) && is_numeric($config['def'])) {
                     $config['ddl'] .= ' DEFAULT '.$config['def'];
                 }
                 break;
-            case 'b': // boolean stored as bit
+            case 'b':
+                // boolean stored as bit
                 $config['ddl'] = '`'.$field.'` BIT(1) NOT NULL';
                 if (isset($config['def'])) {
                     $config['ddl'] .= ' DEFAULT '.($config['def'] ? "b'1'" : "b'0'");
@@ -728,7 +571,8 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['ddl'] .= " DEFAULT b'0'";
                 }
                 break;
-            case 'ip': // IP address stored as int
+            case 'ip':
+                // IP address stored as int
                 $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
                 if (isset($config['def'])) {
                     if (!is_numeric($config['def'])) {
@@ -740,11 +584,16 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['ddl'] .= ' DEFAULT 0';
                 }
                 break;
-            case 'em': // email address
-            case 'o': // serialize()'d variables
-            case 'j': // json_encoded()'d variables
-            case 'a': // serialized arrays
-            case 's': // string
+            case 'em':
+                // email address
+            case 'o':
+                // serialize()'d variables
+            case 'j':
+                // json_encoded()'d variables
+            case 'a':
+                // serialized arrays
+            case 's':
+                // string
                 if (!isset($config['max']) || !is_numeric($config['max']) || 16777215 < $config['max']) {
                     $config['ddl'] = '`'.$field.'` LONGTEXT NOT NULL';
                 } elseif (65535 < $config['max']) {
@@ -758,7 +607,8 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
                 }
                 break;
-            case 'ts': // int based timestamps
+            case 'ts':
+                // int based timestamps
                 // convert date min/max values to ints and fall through
                 if (isset($config['min']) && !is_numeric($config['min'])) {
                     $config['min'] = strtotime($config['min']);
@@ -770,7 +620,8 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['def'] = strtotime($config['def']);
                 }
             // fall through
-            case 'i': // integers
+            case 'i':
+                // integers
                 if (isset($config['min']) && is_numeric($config['min']) && 0 <= $config['min']) {
                     if (!isset($config['max']) || !is_numeric($config['max'])) {
                         $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
@@ -812,7 +663,8 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['ddl'] .= ' AUTO_INCREMENT';
                 }
                 break;
-            case 'e': // enums
+            case 'e':
+                // enums
                 $config['ddl'] = '`'.$field.'` ENUM(';
                 foreach ($config['values'] as $v) {
                     $config['ddl'] .= "'".G::$M->escape_string($v)."',";
@@ -822,7 +674,8 @@ abstract class Record extends DataModel implements ArrayAccess {
                     $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
                 }
                 break;
-            case 'dt': // datetimes and mysql timestamps
+            case 'dt':
+                // datetimes and mysql timestamps
                 // A column called 'recordChanged' is assumed to be a MySQL timestamp
                 if ('recordChanged' == $field) {
                     $config['ddl'] = '`'.$field.'` TIMESTAMP NOT NULL'
@@ -841,51 +694,47 @@ abstract class Record extends DataModel implements ArrayAccess {
                 break;
             default:
                 trigger_error('Unknown field type "'.$config['type'].'" in Record::create()');
-
                 return false;
         }
 
         return $config['ddl'];
     }
 
-    /* **********************************************************************
-     * Implement ArrayAccess methods by wrapping DataModel magic methods
-     ***********************************************************************/
-
     /**
-     * @param mixed $offset An offset to check for.
+     * Encrypt a string
      *
-     * @return boolean true on success or false on failure.
+     * @param string $a String to encrypt
+     *
+     * @return string
      */
-    public function offsetExists($offset) {
-        return $this->__isset($offset);
+    public function encrypt($a) {
+        if (empty(G::$G['SEC']['encryptionKey'])) {
+            trigger_error('Encryption key not set!', E_USER_ERROR);
+        }
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv = mcrypt_create_iv($iv_size, MCRYPT_RAND);
+        $ciphertext = mcrypt_encrypt(MCRYPT_RIJNDAEL_128, G::$G['SEC']['encryptionKey'], $a, MCRYPT_MODE_CBC, $iv);
+        $ciphertext = $iv . $ciphertext;
+        $ciphertext_base64 = base64_encode($ciphertext);
+        return $ciphertext_base64;
     }
-
     /**
-     * @param mixed $offset The offset to assign the value to.
-     * @param mixed $value  The value to set.
+     * Decrypt a string
      *
-     * @return void
-     */
-    public function offsetSet($offset, $value) {
-        $this->__set($offset, $value);
-    }
-
-    /**
-     * @param mixed $offset The offset to retrieve.
+     * @param string $a String to decrypt
      *
-     * @return mixed Can return all value types.
+     * @return string
      */
-    public function offsetGet($offset) {
-        return $this->__get($offset);
-    }
-
-    /**
-     * @param mixed $offset The offset to unset.
-     *
-     * @return void
-     */
-    public function offsetUnset($offset) {
-        $this->__unset($offset);
+    public function decrypt($a) {
+        if (empty(G::$G['SEC']['encryptionKey'])) {
+            trigger_error('Encryption key not set!', E_USER_ERROR);
+        }
+        $ciphertext_dec = base64_decode($a);
+        $iv_size = mcrypt_get_iv_size(MCRYPT_RIJNDAEL_128, MCRYPT_MODE_CBC);
+        $iv_dec = substr($ciphertext_dec, 0, $iv_size);
+        $ciphertext_dec = substr($ciphertext_dec, $iv_size);
+        $a_dec = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, G::$G['SEC']['encryptionKey'],
+            $ciphertext_dec, MCRYPT_MODE_CBC, $iv_dec);
+        return rtrim($a_dec, chr(0));
     }
 }

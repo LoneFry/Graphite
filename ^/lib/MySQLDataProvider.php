@@ -3,7 +3,7 @@
  * MysqlDataProvider - Provide data from MySQL
  * File : /^/lib/MysqlDataProvider.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -36,7 +36,7 @@ class MysqlDataProvider extends DataProvider {
      *
      * @return array Found records
      */
-    public function fetch($class, array $params, array $orders = array(), $count = null, $start = 0) {
+    public function fetch($class, array $params = array(), array $orders = array(), $count = null, $start = 0) {
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
         if (!is_a($Model, 'PassiveRecord')) {
@@ -52,37 +52,47 @@ class MysqlDataProvider extends DataProvider {
                 continue;
             }
             // Support list of values for IN conditions
-            if (is_array($val) && !in_array($vars['type'], array('a', 'j', 'o', 'b'))) {
+            if (is_array($val) && !in_array($vars[$key]['type'], array('a', 'j', 'o', 'b'))) {
                 foreach ($val as $key2 => $val2) {
                     // Sanitize each value through the model
                     $Model->$key = $val2;
                     $val2 = $Model->$key;
                     $val[$key2] = G::$m->escape_string($val2);
                 }
-                $values[] = "`$key` IN ('".implode("', '", $val)."')";
+                $values[] = "t.`$key` IN ('".implode("', '", $val)."')";
             } else {
                 $Model->$key = $val;
                 $val = $Model->$key;
                 if ('b' == $vars[$key]['type']) {
-                    $values[] = "`$key` = ".($val ? "b'1'" : "b'0'");
+                    $values[] = "t.`$key` = ".($val ? "b'1'" : "b'0'");
                 } else {
-                    $values[] = "`$key` = '".G::$M->escape_string($val)."'";
+                    $values[] = "t.`$key` = '".G::$M->escape_string($val)."'";
                 }
             }
         }
 
-        $prefix = is_a($Model, 'ActiveRecord') ? '' : G::$m->tabl;
         $keys = array_keys($vars);
-        $query = 'SELECT t.`'.join('`, t.`', $keys).'`'
-            .' FROM `'.$prefix.$Model->getTable().'` t'
-            .(count($values) ? ' WHERE '.join(' AND ', $values) : '')
-            .' GROUP BY `'.$Model->getPkey().'`'
+        $query = $Model->getQuery();
+        if ('' == $query) {
+            $query = 'SELECT t.`'.join('`, t.`', $keys).'`'
+                .' FROM `'.$Model->getTable().'` t';
+        }
+        $query .= (count($values) ? ' WHERE '.join(' AND ', $values) : '')
+            .' GROUP BY t.`'.$Model->getPkey().'`'
             .$this->_makeOrderBy($orders, array_keys($vars))
             .(is_numeric($count) && is_numeric($start)
                 ? ' LIMIT '.((int)$start).','.((int)$count)
                 : '')
         ;
-        if (false === $result = G::$m->query($query)) {
+
+        $source = $Model->getSource();
+        $MySql = mysqli_::buildForSource($source);
+        if (null != $MySql) {
+            $result = $MySql->query($query);
+        } else {
+            $result = G::$m->query($query);
+        }
+        if (false === $result) {
             return false;
         }
 
@@ -100,7 +110,7 @@ class MysqlDataProvider extends DataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -126,9 +136,63 @@ class MysqlDataProvider extends DataProvider {
             }
         }
 
-        $query = 'INSERT INTO `'.$Model->getTable().'` '
-            . '(`' . implode('`, `', $fields) . '`)'
-            . "VALUES (" . implode(",", $values) . ")";
+        $query = 'INSERT INTO `'.$Model->getTable().'`'
+            . ' (`' . implode('`, `', $fields) . '`)'
+            . " VALUES (" . implode(", ", $values) . ")";
+
+        if (false === G::$M->query($query)) {
+            return false;
+        }
+        if (0 != G::$M->insert_id) {
+            $Model->{$Model->getPkey()} = G::$M->insert_id;
+        }
+
+        $Model->unDiff();
+
+        return $Model->{$Model->getPkey()};
+    }
+
+     /**
+     * Save data for passed model
+     *
+     * @param PassiveRecord $Model Model to save, passed by reference
+     *
+     * @return bool|null True on success, False on failure, Null on invalid attempt
+     */
+    public function insert_update(PassiveRecord &$Model) {
+        $diff = $Model->getDiff();
+
+        // If no fields were set, this is unexpected
+        if (0 == count($diff)) {
+            return null;
+        }
+
+        // Iff the pkey has a value, add it to the diff to ensure the UPDATE works
+        if (null !== $Model->{$Model->getPkey()}) {
+            $diff[$Model->getPkey()] = $Model->{$Model->getPkey()};
+        }
+        $vars = $Model->getFieldList();
+        $fields = array();
+        $values = array();
+        $updates = array();
+
+        $Model->oninsert();
+        foreach ($diff as $key => $val) {
+            $fields[] = $key;
+            if ('b' == $vars[$key]['type']) {
+                $values[] = $diff[$key] ? "b'1'" : "b'0'";
+                $updates[] = "`$key` = ".($diff[$key] ? "b'1'" : "b'0'");
+            } else {
+                $values[] = "'".G::$M->escape_string($diff[$key])."'";
+                $updates[] = "`$key` = '".G::$M->escape_string($diff[$key])."'";
+            }
+        }
+
+        $query = 'INSERT INTO `'.$Model->getTable().'`'
+            . ' (`' . implode('`, `', $fields) . '`)'
+            . " VALUES (" . implode(", ", $values) . ")"
+            . " ON DUPLICATE KEY UPDATE "
+            .implode(', ', $updates);
 
         if (false === G::$M->query($query)) {
             return false;
@@ -145,7 +209,7 @@ class MysqlDataProvider extends DataProvider {
     /**
      * Save data for passed model
      *
-     * @param PassiveRecord &$Model Model to save, passed by reference
+     * @param PassiveRecord $Model Model to save, passed by reference
      *
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
@@ -175,7 +239,7 @@ class MysqlDataProvider extends DataProvider {
         }
 
         $query = 'UPDATE `'.$Model->getTable().'` SET '
-            .implode(',', $values)
+            .implode(', ', $values)
             ." WHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
 
         if (false === G::$M->query($query)) {
@@ -199,8 +263,7 @@ class MysqlDataProvider extends DataProvider {
         }
 
         $Model->ondelete();
-        $prefix = is_a($Model, 'ActiveRecord') ? '' : G::$m->tabl;
-        $query  = 'DELETE FROM `'.$prefix.$Model->getTable().'` '
+        $query  = 'DELETE FROM `'.$Model->getTable().'` '
             ." WHERE `".$Model->getPkey()."` = '".G::$M->escape_string($Model->{$Model->getPkey()})."'";
 
         return G::$M->query($query);
@@ -236,152 +299,5 @@ class MysqlDataProvider extends DataProvider {
         }
 
         return 'ORDER BY '.join(',', $orders);
-    }
-
-    /**
-     * TODO figure out where this belongs
-     * Derive DDL for a field as configured
-     *
-     * @param string $field  Name of field to derive DDL for
-     * @param array  $config Definition of field from Model
-     *
-     * @return bool|string
-     */
-    protected function _deriveDDL($field, array $config) {
-        switch ($config['type']) {
-            case 'f': // float
-                $config['ddl'] = '`'.$field.'` FLOAT NOT NULL';
-                if (isset($config['def']) && is_numeric($config['def'])) {
-                    $config['ddl'] .= ' DEFAULT '.$config['def'];
-                }
-                break;
-            case 'b': // boolean stored as bit
-                $config['ddl'] = '`'.$field.'` BIT(1) NOT NULL';
-                if (isset($config['def'])) {
-                    $config['ddl'] .= ' DEFAULT '.($config['def'] ? "b'1'" : "b'0'");
-                } else {
-                    $config['ddl'] .= " DEFAULT b'0'";
-                }
-                break;
-            case 'ip': // IP address stored as int
-                $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
-                if (isset($config['def'])) {
-                    if (!is_numeric($config['def'])) {
-                        $config['ddl'] .= ' DEFAULT '.ip2long($config['def']);
-                    } else {
-                        $config['ddl'] .= ' DEFAULT '.$config['def'];
-                    }
-                } else {
-                    $config['ddl'] .= ' DEFAULT 0';
-                }
-                break;
-            case 'em': // email address
-            case 'o': // serialize()'d variables
-            case 'j': // json_encoded()'d variables
-            case 'a': // serialized arrays
-            case 's': // string
-                if (!isset($config['max']) || !is_numeric($config['max']) || 16777215 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` LONGTEXT NOT NULL';
-                } elseif (65535 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` MEDIUMTEXT NOT NULL';
-                } elseif (255 < $config['max']) {
-                    $config['ddl'] = '`'.$field.'` TEXT NOT NULL';
-                } else {
-                    $config['ddl'] = '`'.$field.'` VARCHAR('.((int)$config['max']).') NOT NULL';
-                }
-                if (isset($config['def'])) {
-                    $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
-                }
-                break;
-            case 'ts': // int based timestamps
-                // convert date min/max values to ints and fall through
-                if (isset($config['min']) && !is_numeric($config['min'])) {
-                    $config['min'] = strtotime($config['min']);
-                }
-                if (isset($config['max']) && !is_numeric($config['max'])) {
-                    $config['max'] = strtotime($config['max']);
-                }
-                if (isset($config['def']) && !is_numeric($config['def'])) {
-                    $config['def'] = strtotime($config['def']);
-                }
-            // fall through
-            case 'i': // integers
-                if (isset($config['min']) && is_numeric($config['min']) && 0 <= $config['min']) {
-                    if (!isset($config['max']) || !is_numeric($config['max'])) {
-                        $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
-                    } elseif (4294967295 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` BIGINT(20) UNSIGNED NOT NULL';
-                    } elseif (16777215 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` INT(10) UNSIGNED NOT NULL';
-                    } elseif (65535 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` MEDIUMINT(7) UNSIGNED NOT NULL';
-                    } elseif (255 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` SMALLINT(5) UNSIGNED NOT NULL';
-                    } elseif (0 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` TINYINT(3) UNSIGNED NOT NULL';
-                    }
-                } else {
-                    if (!isset($config['max']) || !is_numeric($config['max'])) {
-                        $config['ddl'] = '`'.$field.'` INT(11) NOT NULL';
-                    } elseif (2147483647 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` BIGINT(20) NOT NULL';
-                    } elseif (8388607 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` INT(11) NOT NULL';
-                    } elseif (32767 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` MEDIUMINT(8) NOT NULL';
-                    } elseif (127 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` SMALLINT(6) NOT NULL';
-                    } elseif (0 < $config['max']) {
-                        $config['ddl'] = '`'.$field.'` TINYINT(4) NOT NULL';
-                    }
-                }
-                if (isset($config['def']) && is_numeric($config['def'])) {
-                    $config['ddl'] .= ' DEFAULT '.$config['def'];
-/* TODO pkey
-                } elseif ($field != static::$pkey) {
-                    $config['ddl'] .= ' DEFAULT 0';
-                }
-
-                // If the PRIMARY KEY is an INT type, assume AUTO_INCREMENT
-                // This can be overridden with an explicit DDL
-                if ($field == static::$pkey) {
-                    $config['ddl'] .= ' AUTO_INCREMENT';
-*/
-                }
-                break;
-            case 'e': // enums
-                $config['ddl'] = '`'.$field.'` ENUM(';
-                foreach ($config['values'] as $v) {
-                    $config['ddl'] .= "'".G::$M->escape_string($v)."',";
-                }
-                $config['ddl'] = substr($config['ddl'], 0, -1).') NOT NULL';
-                if (isset($config['def'])) {
-                    $config['ddl'] .= " DEFAULT '".G::$M->escape_string($config['def'])."'";
-                }
-                break;
-            case 'dt': // datetimes and mysql timestamps
-                // A column called 'recordChanged' is assumed to be a MySQL timestamp
-                if ('recordChanged' == $field) {
-                    $config['ddl'] = '`'.$field.'` TIMESTAMP NOT NULL'
-                        .' DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP';
-                    break;
-                }
-
-                $config['ddl'] = '`'.$field.'` DATETIME NOT NULL';
-                if (isset($config['def'])) {
-                    // This supports more flexible defaults, like '5 days ago'
-                    if (!is_numeric($config['def'])) {
-                        $config['def'] = strtotime($config['def']);
-                    }
-                    $config['ddl'] .= " DEFAULT '".date('Y-m-d H:i:s', $config['def'])."'";
-                }
-                break;
-            default:
-                trigger_error('Unknown field type "'.$config['type'].'"');
-
-                return false;
-        }
-
-        return $config['ddl'];
     }
 }

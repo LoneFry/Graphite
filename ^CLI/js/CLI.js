@@ -2,8 +2,6 @@
  * Graphite CLI front-end scripts
  * File : /^CLI/js/CLI.js
  *
- * PHP version 5.3
- *
  * @category Graphite
  * @package  CLI
  * @author   LoneFry <dev@lonefry.com>

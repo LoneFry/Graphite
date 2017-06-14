@@ -3,7 +3,7 @@
  * mysqli_ - mysqli query-logging wrapper
  * File : /^/lib/mysqli_.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -11,7 +11,6 @@
  * @license  CC BY-NC-SA http://creativecommons.org/licenses/by-nc-sa/3.0/
  * @link     http://g.lonefry.com
  */
-
 
 /**
  * mysqli_ class - extend mysqli to add query logging
@@ -118,7 +117,8 @@ class mysqli_ extends mysqli {
         }
         // If we're flagged readonly, just don't bother with DML
         // THIS IS NOT A SECURITY FEATURE, DO NOT RELY ON IT FOR SECURITY
-        $skipQuery = $this->readonly && 'select' != strtolower(substr(ltrim($query), 0, 6));
+        $skipQuery = $this->readonly
+            && !in_array(strtolower(substr(ltrim($query), 0, 6)), ['select', 'explai', 'descri', 'show t']);
         if (!self::$_log) {
             return $skipQuery ? false : parent::query($query);
         }
@@ -128,8 +128,14 @@ class mysqli_ extends mysqli {
         // assemble call stack
         $stack = $trace[0]['file'].':'.$trace[0]['line'];
         if (isset($trace[1])) {
-            $stack .= ' - '.(isset($trace[1]['class'])? (isset($trace[1]['object']) ? get_class($trace[1]['object'])
-                        : $trace[1]['class']).$trace[1]['type']:'').$trace[1]['function'];
+            $stack .= ' - '.(
+                isset($trace[1]['class'])
+                    ? (isset($trace[1]['object'])
+                        ? get_class($trace[1]['object'])
+                        : $trace[1]['class']
+                    ).$trace[1]['type']
+                    : ''
+                ).$trace[1]['function'];
         }
         // query as sent to database
         $query_stacked = '/* '.$this->escape_string(substr($stack, strrpos($stack, '/'))).' */ '.$query;
@@ -215,7 +221,7 @@ class mysqli_ extends mysqli {
         // We have rows, fetch them all into a new array to return
         $data = array();
         // Get the first row to verify the keyField
-        $row  = $result->fetch_assoc();
+        $row = $result->fetch_assoc();
         if (null !== $keyField && !isset($row[$keyField])) {
             trigger_error('Invalid keyField specified in '.__METHOD__.', falling back to numeric indexing');
             $keyField = null;
@@ -264,8 +270,42 @@ class mysqli_ extends mysqli {
                 $d = debug_backtrace();
                 trigger_error('Undefined property via __get(): '.$k.' in '.$d[0]['file'].' on line '.$d[0]['line'],
                     E_USER_NOTICE);
-
                 return null;
         }
+    }
+
+    /**
+     * Build and return a MySQL connection object for the specified source
+     *
+     * @param string $source name of source in the configs
+     *
+     * @return mysqli_|null
+     */
+    public static function buildForSource($source) {
+        if ($source !== 'default'
+            && isset(G::$G['db'][$source]['host'])
+            && isset(G::$G['db'][$source]['user'])
+            && isset(G::$G['db'][$source]['pass'])
+            && isset(G::$G['db'][$source]['name'])
+        ) {
+            $MySql = G::build(
+                self::class,
+                G::$G['db'][$source]['host'],
+                G::$G['db'][$source]['user'],
+                G::$G['db'][$source]['pass'],
+                G::$G['db'][$source]['name'],
+                null,
+                null,
+                G::$G['db']['tabl'],
+                G::$G['db']['log']
+            );
+            if ($MySql->isOpen()) {
+                return $MySql;
+            }
+            trigger_error('Falling back to primary on secondary db query.');
+        }
+
+        // Fail
+        return null;
     }
 }

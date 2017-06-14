@@ -26,6 +26,6 @@
                     </div>
                 </form>
             </div>
-            <p><a href="<?php echo CONT; ?>Account/recover">Forgot Password?</a></p>
+            <p><a href="/Account/recover">Forgot Password?</a></p>
         </section>
 <?php get_footer();

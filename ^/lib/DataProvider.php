@@ -3,7 +3,7 @@
  * DataProvider - Base class for DataProviders
  * File : /^/lib/DataProvider.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -25,18 +25,28 @@
  */
 abstract class DataProvider implements IDataProvider {
     /**
-     * Search for records of type $class according to provided primary key(s)
+     * Search for record(s) of type $class according to provided primary key(s)
      *
      * @param string $class Name of Model to search for
      * @param mixed  $pkey  Value(s) of primary key to fetch
      *
-     * @return array Found records
+     * @return Record|array Found records
      */
     public function byPK($class, $pkey) {
         /** @var PassiveRecord $Model */
         $Model = G::build($class);
         if (!is_a($Model, 'PassiveRecord')) {
             trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
+        }
+
+        if ($class::getFieldList()[$class::getPkey()]['type'] == 'i') {
+            if (!is_array($pkey)) {
+                $pkey = (int)$pkey;
+            } else {
+                foreach ($pkey as $key => $val) {
+                    $pkey[$key] = (int)$val;
+                }
+            }
         }
 
         $result = $this->fetch($class, array($class::getPkey() => $pkey));
@@ -50,6 +60,35 @@ abstract class DataProvider implements IDataProvider {
         }
 
         return $result;
+    }
+
+    /**
+     * Get or Create record of type $class according to provided primary key
+     *
+     * @param string $class Name of Model to search for
+     * @param mixed  $pkey  Value(s) of primary key to fetch
+     *
+     * @return array Found records
+     */
+    public function provide($class, $pkey) {
+        if (!is_numeric($pkey)) {
+            return false;
+        }
+        /** @var PassiveRecord $Model */
+        $Model = G::build($class, $pkey);
+        if (!is_a($Model, 'PassiveRecord')) {
+            trigger_error('Supplied class name does not extend PassiveRecord', E_USER_ERROR);
+        }
+
+        $result = $this->fetch($class, array($class::getPkey() => $pkey));
+
+        if (!isset($result[$pkey])) {
+            $this->insert($Model);
+        } else {
+            $Model = $result[$pkey];
+        }
+
+        return $Model;
     }
 
     /**
@@ -80,7 +119,7 @@ abstract class DataProvider implements IDataProvider {
         }
 
         $results = $this->fetch(get_class($Model), array($Model->getPkey() => $Model->{$Model->getPkey()}));
-        if (count($results)) {
+        if (!empty($results) && count($results)) {
             $Model = array_shift($results);
             return true;
         }

@@ -3,7 +3,7 @@
  * Profiler - Stores runtime checkpoint metrics
  * File : /^/lib/Profiler.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core
@@ -58,6 +58,11 @@ class Profiler {
         }
     }
 
+    /**
+     * Traces the code
+     *
+     * @return string
+     */
     protected function trace() {
         // __FILE__:__LINE__(__METHOD__)
         $trace = debug_backtrace();

@@ -5,7 +5,7 @@
  * just delete this file.  It is only needed for stand-alone
  * File : /index.php
  *
- * PHP version 5.3
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core

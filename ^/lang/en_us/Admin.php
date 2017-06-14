@@ -2,7 +2,7 @@
 /**
  * Admin Language File
  *
- * PHP version 5
+ * PHP version 5.6
  *
  * @category Graphite
  * @package  Core

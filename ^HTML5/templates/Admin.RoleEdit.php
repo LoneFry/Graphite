@@ -1,11 +1,11 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
-        <li><a href="<?php echo CONT;?>Admin/Role">Roles</a></li>
+        <li><a href="/Admin">Admin</a></li>
+        <li><a href="/Admin/Role">Roles</a></li>
     </ul>
 </nav>
-    <form action="<?php echo CONT.'Admin/RoleEdit/'.$R->role_id;?>" method="post">
+    <form action="<?php echo '/Admin/RoleEdit/'.$R->role_id;?>" method="post">
 
     <div>
         <h2>Edit Role</h2>
@@ -30,7 +30,7 @@
 
             <tr>
                 <th>Creator Login</th>
-                <td><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $R->creator_id;?>"><?php html($creator);?></a></td>
+                <td><a href="/Admin/LoginEdit/<?php echo $R->creator_id;?>"><?php html($creator);?></a></td>
             </tr>
             <tr>
                 <th>Created</th>

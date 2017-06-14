@@ -1,13 +1,13 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
-        <li><a href="<?php echo CONT;?>Admin/Login">Logins</a></li>
+        <li><a href="/Admin">Admin</a></li>
+        <li><a href="/Admin/Login">Logins</a></li>
     </ul>
 </nav>
 <?php include 'Admin.LoginSearch.php'; ?>
 
-<form action="<?php echo CONT.'Admin/LoginEdit/'.$L->login_id;?>" method="post" id="Admin_LoginEdit">
+<form action="<?php echo '/Admin/LoginEdit/'.$L->login_id;?>" method="post" id="Admin_LoginEdit">
     <div>
         <h2>Edit Account Settings</h2>
 
@@ -64,7 +64,7 @@
 
             <tr>
                 <th>Referring Login</th>
-                <td><a href="<?php echo CONT;?>Admin/LoginEdit/<?php echo $L->referrer_id;?>"><?php html($referrer);?></a></td>
+                <td><a href="/Admin/LoginEdit/<?php echo $L->referrer_id;?>"><?php html($referrer);?></a></td>
             </tr>
             <tr>
                 <th>Created</th>

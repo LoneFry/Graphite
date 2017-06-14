@@ -1,15 +1,15 @@
 <?php get_header(); ?>
 <nav>
     <ul class="breadcrumbs">
-        <li><a href="<?php echo CONT;?>Admin">Admin</a></li>
-        <li><a href="<?php echo CONT;?>Admin/Login">Logins</a></li>
+        <li><a href="/Admin">Admin</a></li>
+        <li><a href="/Admin/Login">Logins</a></li>
     </ul>
 </nav>
 <?php include 'Admin.LoginSearch.php'; ?>
 
     <h2>Add a New Account</h2>
 
-    <form action="<?php echo CONT;?>Admin/LoginAdd" method="post">
+    <form action="/Admin/LoginAdd" method="post">
         <table class="form">
             <tr>
                 <th>LoginName</th>
