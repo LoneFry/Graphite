@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <form action="/Installer/install" method="post" id="installer">
 <div>
 <?php if (isset($config)) { ?>
@@ -49,4 +49,4 @@
     <input type="submit" value="Install">
 </div>
 </form>
-<?php get_footer();
+<?php echo $View->render('footer');

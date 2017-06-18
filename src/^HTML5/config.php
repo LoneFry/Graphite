@@ -12,5 +12,5 @@
  * @link     http://g.lonefry.com
  */
 
-G::$G['VIEW']['_link'][] = array('rel' => 'stylesheet','type' => 'text/css','href' => '/^HTML5/css/default.css');
-G::$G['VIEW']['_script'][] = '/^HTML5/js/details-shim.min.js';
+G::$G['VIEW']['_link'][] = array('rel' => 'stylesheet','type' => 'text/css','href' => '/%5EHTML5/css/default.css');
+G::$G['VIEW']['_script'][] = '/%5EHTML5/js/details-shim.min.js';

@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
     <h2>Graphite</h2>
     <p>Graphite is a Simple MVC web-application framework</p>
 
@@ -36,4 +36,4 @@
         <a href="http://creativecommons.org/licenses/by-nc-sa/3.0/">http://creativecommons.org/licenses/by-nc-sa/3.0/</a>
     </p>
 
-<?php get_footer();
+<?php echo $View->render('footer');

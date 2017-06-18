@@ -15,8 +15,8 @@
 
 /** **************************************************************************
  * CLI command list
- *  list which commands are available in the Graphite Shell, and their actor
- *  G::$G['CLI']['command'] = array('actor', 'help description', refresh);
+ *  list which commands are available in the Graphite Shell, and their controller
+ *  G::$G['CLI']['command'] = array('controller', 'help description', refresh);
  ****************************************************************************/
 
 G::$G['CLI']['login']  = array('Account', 'show login form', true);

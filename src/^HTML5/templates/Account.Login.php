@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <?php if ($_login_id) { ?>
         <section class="Account Account_left">
             <h2>You Are Already Checked In</h2>
@@ -28,4 +28,4 @@
             </div>
             <p><a href="/Account/recover">Forgot Password?</a></p>
         </section>
-<?php get_footer();
+<?php echo $View->render('footer');

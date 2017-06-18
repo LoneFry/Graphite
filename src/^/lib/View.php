@@ -62,16 +62,20 @@ class View {
         }
 
         if (isset($cfg['_header'])) {
-            $this->setTemplate('header', $cfg['header']);
+            $this->setTemplate('header', $cfg['_header']);
             unset($cfg['_header']);
         }
         if (isset($cfg['_footer'])) {
-            $this->setTemplate('footer', $cfg['footer']);
+            $this->setTemplate('footer', $cfg['_footer']);
             unset($cfg['_footer']);
         }
         if (isset($cfg['_template'])) {
-            $this->setTemplate('template', $cfg['template']);
+            $this->setTemplate('template', $cfg['_template']);
             unset($cfg['_template']);
+        }
+        if (isset($cfg['_debug'])) {
+            $this->setTemplate('debug', $cfg['_debug']);
+            unset($cfg['_debug']);
         }
         if (isset($cfg['_meta']) && is_array($cfg['_meta']) && 0 < count($cfg['_meta'])) {
             foreach ($cfg['_meta'] as $name => $content) {

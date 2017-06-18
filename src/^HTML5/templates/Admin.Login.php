@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <nav>
     <ul class="breadcrumbs">
         <li><a href="/Admin">Admin</a></li>
@@ -17,4 +17,4 @@ if (isset($list) && is_array($list)) {
 }
 ?>
 </ul>
-<?php get_footer();
+<?php echo $View->render('footer');

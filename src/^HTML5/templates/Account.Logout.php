@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
             <section class="Account">
                 <h2>Checked Out</h2>
                 <p>It looks like you checked out successfully!
@@ -7,4 +7,4 @@
                         window.setTimeout("location.replace('<?php html($_URI);?>')",1);// --></script>
                 </p>
             </section>
-<?php get_footer();
+<?php echo $View->render('footer');

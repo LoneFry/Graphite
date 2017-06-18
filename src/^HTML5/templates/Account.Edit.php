@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
             <section class="Account">
                 <h2>Account Settings</h2>
                 <div id="bodyLogin">
@@ -27,4 +27,4 @@
                     </form>
                 </div>
             </section>
-<?php get_footer();
+<?php echo $View->render('footer');

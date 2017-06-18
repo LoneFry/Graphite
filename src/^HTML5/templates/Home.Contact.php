@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
         <h3>Contact</h3>
         <form action="<?php echo $_SERVER["REQUEST_URI"];?>" method="post" onsubmit="return contactValid();" id="Home_Contact">
             <div class="c<?php echo $from; ?>">
@@ -33,4 +33,4 @@
                 return true;
             }
         // --></script>
-<?php get_footer();
+<?php echo $View->render('footer');

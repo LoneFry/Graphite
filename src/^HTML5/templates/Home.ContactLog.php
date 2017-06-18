@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <h2>Contact Log</h2>
 <table class="list">
     <thead>
@@ -34,4 +34,4 @@ if (is_array($log) && count($log)) {
 ?>
     </tbody>
 </table>
-<?php get_footer();
+<?php echo $View->render('footer');

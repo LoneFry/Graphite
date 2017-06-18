@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <nav>
     <ul class="breadcrumbs">
         <li><a href="/Admin">Admin</a></li>
@@ -32,4 +32,4 @@
             </tr>
         </table>
     </form>
-<?php get_footer();
+<?php echo $View->render('footer');

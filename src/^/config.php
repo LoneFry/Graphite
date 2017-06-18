@@ -162,6 +162,10 @@ G::$G['VIEW']['_siteName'] = 'Graphite Site';
 G::$G['VIEW']['_siteURL'] = 'http://'.$_SERVER['SERVER_NAME'];
 G::$G['VIEW']['_loginURL'] = '/Account/login';
 G::$G['VIEW']['_logoutURL'] = '/Account/Logout';
+G::$G['VIEW']['_header'] = 'header.php';
+G::$G['VIEW']['_footer'] = 'footer.php';
+G::$G['VIEW']['_debug'] = 'footer.debug.php';
+
 G::$G['VIEW']['_meta'] = array(
     "description" => "Graphite MVC framework",
     "keywords"    => "Graphite,MVC,framework",

@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
             <section class="Account">
                 <h2>Checked In</h2>
                 <p>It looks like you checked in successfully!
@@ -11,4 +11,4 @@
                     (<a href="<?php html($_logoutURL); ?>">Logout</a>)
                 </div>
             </section>
-<?php get_footer();
+<?php echo $View->render('footer');

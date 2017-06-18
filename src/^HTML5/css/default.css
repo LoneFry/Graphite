@@ -48,10 +48,10 @@ a img {border:0;}
 a {color:#0076fd;}
 a[rel~="external"] {background: url(/^HTML5/images/url_icon.gif) no-repeat left center;padding-left:15px;}
 
-pre.G__croak{background:white;color:black;white-space:pre-wrap;font:10pt monospace;}
-div.G__croak_info{padding-left:5px;border-left:5px solid black;}
+div.G__croak{background:white;color:black;white-space:pre-wrap;font:10pt monospace;}
+div.G__croak pre.G__croak_info{padding-left:5px;border-left:5px solid black;}
 div.G__croak hr{margin:0;}
-div.G__croak_value{padding-left:10px;}
+div.G__croak pre.G__croak_value{padding-left:10px;}
 
 
 form#Home_Contact {margin:0 3em;}

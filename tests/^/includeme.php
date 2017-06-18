@@ -42,11 +42,7 @@ AutoLoader::registerDirectory();
 
 spl_autoload_register(array('AutoLoader', 'loadClass'));
 
-
-
-
 define('MODE', G::$G['MODE']);      // controls a few things that assist dev
-define('CONT', G::$G['CON']['URL']);// for use in URLs
 
 if (isset(G::$G['timezone'])) {
     date_default_timezone_set(G::$G['timezone']);

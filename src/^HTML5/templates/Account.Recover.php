@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
             <section class="Account">
                 <h2>Password Recovery</h2>
                 <p><?php echo $msg; ?></p>
@@ -17,4 +17,4 @@
                     </form>
                 </div>
             </section>
-<?php get_footer();
+<?php echo $View->render('footer');

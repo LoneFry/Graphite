@@ -24,7 +24,7 @@
  */
 class DefaultController extends Controller {
     /** @var string Default action */
-    protected $action = '404';
+    protected $action = '200';
 
     /**
      * Default action for handling 404 errors
@@ -61,6 +61,25 @@ class DefaultController extends Controller {
         $this->View->_header   = 'header.php';
         $this->View->_footer   = 'footer.php';
         $this->View->_title    = 'Internal Server Error';
+        $this->View->setTemplate('subheader', '');
+
+        return $this->View;
+    }
+
+    /**
+     * Default action for handling 200 OK
+     *
+     * @param array $argv    Argument list passed from Dispatcher
+     * @param array $request Request_method-specific parameters
+     *
+     * @return View
+     */
+    public function do_200(array $argv = array(), array $request = array()) {
+        $this->action = '200';
+        $this->View->_template = '200.php';
+        $this->View->_header   = 'header.php';
+        $this->View->_footer   = 'footer.php';
+        $this->View->_title    = 'Default OK Page';
         $this->View->setTemplate('subheader', '');
 
         return $this->View;

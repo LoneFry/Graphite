@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <nav>
     <ul class="breadcrumbs">
         <li><a href="/Admin">Admin</a></li>
@@ -38,4 +38,4 @@ if (is_array($log) && count($log)) {
 ?>
     </tbody>
 </table>
-<?php get_footer();
+<?php echo $View->render('footer');

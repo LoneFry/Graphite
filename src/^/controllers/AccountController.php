@@ -47,7 +47,6 @@ class AccountController extends Controller {
             $this->View->l = $request['l'];
             if (G::$S->authenticate($request['l'], $request['p'])) {
                 $this->View->_template = 'Account.Loggedin.php';
-                $request['_URI'] = $this->requestPath($request['_URI']);
             } else {
                 $this->View->msg = G::msg('Login Failed.', 'error');
             }

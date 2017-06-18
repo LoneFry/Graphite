@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <nav>
     <ul class="breadcrumbs">
         <li><a href="/Admin">Admin</a></li>
@@ -81,4 +81,4 @@ if (is_array($Logins)) {
         </table>
     </div>
 </form>
-<?php get_footer();
+<?php echo $View->render('footer');

@@ -1,4 +1,4 @@
-<?php get_header(); ?>
+<?php echo $View->render('header'); ?>
 <h2>Administrative Options</h2>
 <nav>
     <ul>
@@ -14,4 +14,4 @@
 <?php } ?>
     </ul>
 </nav>
-<?php get_footer();
+<?php echo $View->render('footer');

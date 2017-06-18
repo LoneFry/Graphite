@@ -95,7 +95,7 @@ class AdminController extends Controller {
 
         $this->View->_template = 'Admin.LoginAdd.php';
         $this->View->_title    = 'Add Login : ' . $this->View->_siteName;
-        $this->View->_script('/^/js/validate-email.min.js');
+        $this->View->_script('/%5E/js/validate-email.min.js');
 
         if (isset($request['loginname']) && isset($request['realname'])
             && isset($request['pass1']) && isset($request['pass2'])
@@ -203,7 +203,7 @@ class AdminController extends Controller {
 
         $this->View->_template = 'Admin.LoginEdit.php';
         $this->View->_title    = 'Edit Login';
-        $this->View->_script('/^/js/validate-email.min.js');
+        $this->View->_script('/%5E/js/validate-email.min.js');
 
         // If not passed a number, defer to search/list
         if (!isset($argv[1]) || !is_numeric($argv[1])) {
