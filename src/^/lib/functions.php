@@ -93,3 +93,50 @@ function updateQueryString($url, $variable, $value) {
 function ifset(&$test, $default = null) {
     return isset($test) ? $test : $default;
 }
+
+
+/**
+ * Compares an array (supports multidimensional) to a other versions and merges differences
+ *
+ * @param array $base       Base array before changes were made
+ * @param array ...$patches Other arrays to compare with
+ *
+ * @return array $result Array containing the merged differences
+ */
+function array_patch(array $base, array ...$patches) {
+    // Initialize result array to base array
+    $result = [] + $base;
+
+    // Loop over patch arrays and patch the result with each
+    foreach ($patches as $patch) {
+        // Merge things result which are absent from base
+        foreach ($patch as $key => $value) {
+            if (!isset($base[$key])) {
+                $result[$key] = $patch[$key];
+            }
+        }
+
+        foreach ($base as $key => $value) {
+            // remove things from result which are missing from patch
+            if (!isset($patch[$key])) {
+                unset($result[$key]);
+                continue;
+            }
+            // Skip items which are unchanged
+            // soft equals to ignore types and allow unordered array compare
+            if ($patch[$key] == $base[$key]) {
+                continue;
+            }
+            // Merge things into result which are different from base in patch
+            // If both values are arrays, use recusion
+            if (is_array($patch[$key]) && is_array($base[$key])) {
+                $result[$key] = array_patch($base[$key], $patch[$key]);
+                continue;
+            }
+            // If either value is scalar, merge the patch value into the result
+            $result[$key] = $patch[$key];
+        }
+    }
+
+    return $result;
+}
