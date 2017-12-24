@@ -140,3 +140,21 @@ function array_patch(array $base, array ...$patches) {
 
     return $result;
 }
+
+/**
+ * Determine if the specified array contains all the specified keys
+ * j
+ * @param array $keys   Keys to seek
+ * @param array $search Array to seek in
+ *
+ * @return bool
+ */
+function array_keys_exist($keys, $search) {
+    // If we were passed a single key, use existing function
+    if (!is_array($keys)) {
+        return array_key_exists($keys, $search);
+    }
+    // If there are no keys in $search that are not in $keys
+    // We have all the keys
+    return [] == array_diff($keys, array_keys($search));
+}
