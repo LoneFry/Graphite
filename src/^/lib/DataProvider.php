@@ -166,4 +166,15 @@ abstract class DataProvider implements IDataProvider {
 
         return $this->insert($Model);
     }
+
+    /**
+     * Delete data for passed model
+     *
+     * @param PassiveRecord $Model Model to delete, passed by reference
+     *
+     * @return bool|null True on success, False on failure, Null on invalid attempt
+     */
+    public function delete(PassiveRecord &$Model) {
+        return null;
+    }
 }

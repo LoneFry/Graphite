@@ -101,4 +101,13 @@ interface IDataProvider {
      * @return bool|null True on success, False on failure, Null on invalid attempt
      */
     public function update(PassiveRecord &$Model);
+
+    /**
+     * Delete data for passed model
+     *
+     * @param PassiveRecord $Model Model to delete, passed by reference
+     *
+     * @return bool|null True on success, False on failure, Null on invalid attempt
+     */
+    public function delete(PassiveRecord &$Model);
 }
