@@ -1,0 +1,19 @@
+{
+  "name": "graphite/core",
+  "description": "A small PHP framework",
+  "homepage": "https://github.com/LoneFry/Graphite",
+  "require": {
+    "php": "^7.0"
+  },
+  "suggest": {
+    "graphite/barrel": "Default controllers for basic auth/admin functionality",
+    "mpdf/mpdf": "To render views as PDF"
+  },
+  "require-dev": {
+  },
+  "autoload": {
+    "psr-4": {
+      "Graphite\\core\\": "src/"
+    }
+  }
+}
